@@ -1,11 +1,9 @@
 import React from "react";
 import { Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { ExamCategory, ExamApplied, ExamAccepted } from "../index";
-import { useParams } from "react-router-dom";
+import { UserCategory } from "../index";
 
-const ExamParticipants = () => {
-    const { examId } = useParams();
+const UserMain = () => {
     return (
         <Stack
             direction={"column"}
@@ -15,10 +13,10 @@ const ExamParticipants = () => {
             padding={"0.5rem"}
             m={"auto"}
         >
-            <ExamCategory />
+            <UserCategory />
             <Outlet />
         </Stack>
     );
 };
 
-export default ExamParticipants;
+export default UserMain;

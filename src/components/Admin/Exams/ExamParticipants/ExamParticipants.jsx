@@ -1,11 +1,11 @@
-import { AdminCategory } from "../index";
+import React from "react";
 import { Stack } from "@mui/material";
-import { globalContext } from "../../hooks/hook";
 import { Outlet } from "react-router-dom";
+import { ExamCategory, ExamApplied, ExamAccepted } from "../../../index";
+import { useParams } from "react-router-dom";
 
-const AdminMain = () => {
-    const { category } = globalContext();
-
+const ExamParticipants = () => {
+    const { examId } = useParams();
     return (
         <Stack
             direction={"column"}
@@ -15,10 +15,10 @@ const AdminMain = () => {
             padding={"0.5rem"}
             m={"auto"}
         >
-            <AdminCategory />
+            <ExamCategory />
             <Outlet />
         </Stack>
     );
 };
 
-export default AdminMain;
+export default ExamParticipants;

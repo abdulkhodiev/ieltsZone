@@ -14,10 +14,11 @@
         "@emotion/styled": "^11.11.0",
         "@fontsource/poppins": "^5.0.12",
         "@mui/icons-material": "^5.15.13",
-        "@mui/material": "^5.15.13",
+        "@mui/material": "^5.15.14",
         "axios": "^1.6.7",
         "bootstrap": "^5.3.3",
         "inherits": "^2.0.4",
+        "js-cookies": "^1.0.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.22.3"
@@ -30,6 +31,7 @@
         "eslint-plugin-react": "^7.34.0",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.5",
+        "js-cookie": "^3.0.5",
         "vite": "^5.1.6"
     }
 }

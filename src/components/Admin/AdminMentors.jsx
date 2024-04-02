@@ -11,8 +11,12 @@ import {
     Box,
     TextField,
 } from "@mui/material";
+
 import axios from "axios";
 import MyModal from "../UI/MyModal";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import PersonIcon from "@mui/icons-material/Person";
 
 const AdmainMentors = () => {
     const zoneAPI = axios.create({
@@ -128,7 +132,9 @@ const AdmainMentors = () => {
                                 <TableCell>Name</TableCell>
                                 <TableCell>Last Name</TableCell>
                                 <TableCell>Phone</TableCell>
-                                <TableCell>Role</TableCell>
+                                <TableCell>
+                                    Role <VerifiedUserIcon />
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

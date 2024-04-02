@@ -3,7 +3,7 @@ import { Stack, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { Link, useLocation } from "react-router-dom";
 
-const AdminCategory = () => {
+const UserCategory = () => {
     const { pathname } = useLocation();
 
     return (
@@ -18,13 +18,13 @@ const AdminCategory = () => {
             bgcolor={colors.secondary}
             my={"2rem"}
         >
-            <Link to="/admin/mentors">
+            <Link to="/user/exams">
                 <Button
                     variant="contained"
                     sx={{
                         fontWeight: "bold",
                         bgcolor:
-                            pathname === "/admin/mentors"
+                            pathname === "/user/exams"
                                 ? colors.primary
                                 : colors.secondary,
                         ":hover": {
@@ -33,41 +33,40 @@ const AdminCategory = () => {
                         },
                         borderRadius: "0.8rem",
                         px: "2rem",
-                        color:
-                            pathname === "/admin/mentors" ? "white" : "black",
-                        boxShadow: "none",
-                    }}
-                >
-                    Admins
-                </Button>
-            </Link>
-            <Link to="/admin/exams">
-                <Button
-                    variant="contained"
-                    sx={{
-                        fontWeight: "bold",
-                        bgcolor:
-                            pathname === "/admin/exams"
-                                ? colors.primary
-                                : colors.secondary,
-                        ":hover": {
-                            bgcolor: colors.primary,
-                            color: colors.secondary,
-                        },
-                        borderRadius: "0.8rem",
-                        px: "2rem",
-                        color:
-                            pathname === "/admin/exams"
-                                ? colors.secondary
-                                : colors.primary,
+                        color: pathname === "/user/exams" ? "white" : "black",
                         boxShadow: "none",
                     }}
                 >
                     Exams
                 </Button>
             </Link>
+            <Link to="/user/results">
+                <Button
+                    variant="contained"
+                    sx={{
+                        fontWeight: "bold",
+                        bgcolor:
+                            pathname === "/user/results"
+                                ? colors.primary
+                                : colors.secondary,
+                        ":hover": {
+                            bgcolor: colors.primary,
+                            color: colors.secondary,
+                        },
+                        borderRadius: "0.8rem",
+                        px: "2rem",
+                        color:
+                            pathname === "/user/results"
+                                ? colors.secondary
+                                : colors.primary,
+                        boxShadow: "none",
+                    }}
+                >
+                    Results
+                </Button>
+            </Link>
         </Stack>
     );
 };
 
-export default AdminCategory;
+export default UserCategory;

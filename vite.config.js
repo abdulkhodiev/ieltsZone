@@ -8,4 +8,7 @@ export default defineConfig({
         include: ["inherits"],
         exclude: ["http-errors"],
     },
+    server: {
+        port: 3000,
+    },
 });

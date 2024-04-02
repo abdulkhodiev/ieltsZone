@@ -36,10 +36,10 @@ const Navbar = () => {
                 </a>
             </Box>
             <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Link>
+                <Link to="/register">
                     <MyButton>Sign Up</MyButton>
                 </Link>
-                <Link to="/admin/mentors">
+                <Link to="/login">
                     <MyButton>Log In</MyButton>
                 </Link>
             </Box>

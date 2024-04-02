@@ -13,9 +13,20 @@ import {
     PaymentCheck,
     ExamCheck,
     SectionCheck,
+    UserMain,
+    AdminLayout,
+    ExamParticipantsLayout,
+    UserExams,
+    UserResults,
+    UserApply,
+    UserSectionScore,
+    UserScoreCheck,
+    Login,
+    Register,
 } from "../index";
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
+import UserLayout from "../User/UserLayout";
 
 function App() {
     return (
@@ -23,38 +34,68 @@ function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Main />} />
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
 
-                    <Route path="/admin" element={<AdminMain />}>
-                        <Route path="mentors" element={<AdminMentors />} />{" "}
-                        <Route path="exams" element={<AdminExams />} />{" "}
+                    <Route path="admin" element={<AdminLayout />}>
+                        <Route element={<AdminMain />}>
+                            <Route path="mentors" element={<AdminMentors />} />
+                            <Route path="exams" element={<AdminExams />} />
+                        </Route>
+
+                        <Route path="exams/create" element={<ExamCreation />} />
+                        <Route
+                            path="exams/:examId/edit"
+                            element={<ExamCreation />}
+                        />
+                        <Route
+                            path="exams/:examId/participants"
+                            element={<ExamParticipantsLayout />}
+                        >
+                            <Route element={<ExamParticipants />}>
+                                <Route
+                                    path="applied"
+                                    element={<ExamApplied />}
+                                />
+                                <Route
+                                    path="accepted"
+                                    element={<ExamAccepted />}
+                                />
+                            </Route>
+
+                            <Route
+                                path="applied/:rowId"
+                                element={<PaymentCheck />}
+                            />
+                            <Route
+                                path="accepted/:rowId"
+                                element={<ExamCheck />}
+                            />
+                            <Route
+                                path="accepted/:rowId/:section"
+                                element={<SectionCheck />}
+                            />
+                        </Route>
                     </Route>
-                    <Route
-                        path="/admin/exams/create"
-                        element={<ExamCreation />}
-                    />
-                    <Route
-                        path="/admin/exams/:examId/edit"
-                        element={<ExamCreation />}
-                    />
-                    <Route
-                        path="/admin/exams/:examId/participants"
-                        element={<ExamParticipants />}
-                    >
-                        <Route path="applied" element={<ExamApplied />} />
-                        <Route path="accepted" element={<ExamAccepted />} />
+
+                    <Route path="user" element={<UserLayout />}>
+                        <Route element={<UserMain />}>
+                            <Route path="exams" element={<UserExams />} />
+                            <Route path="results" element={<UserResults />} />
+                        </Route>
+                        <Route
+                            path="exams/apply/:examId"
+                            element={<UserApply />}
+                        />
+                        <Route
+                            path="results/:examId/scores"
+                            element={<UserScoreCheck />}
+                        />
+                        <Route
+                            path="results/:examId/scores/:section"
+                            element={<UserSectionScore />}
+                        />
                     </Route>
-                    <Route
-                        path="/admin/exams/:examId/participants/applied/:rowId"
-                        element={<PaymentCheck />}
-                    />
-                    <Route
-                        path="/admin/exams/:examId/participants/accepted/:rowId"
-                        element={<ExamCheck />}
-                    />
-                    <Route
-                        path="/admin/exams/:examId/participants/accepted/:rowId/:section"
-                        element={<SectionCheck />}
-                    />
                 </Route>
             </Routes>
         </Box>
