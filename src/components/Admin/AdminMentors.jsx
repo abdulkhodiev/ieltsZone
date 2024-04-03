@@ -12,6 +12,8 @@ import {
     TextField,
 } from "@mui/material";
 
+import { getAdmins } from "../../utils/api/requests/get-admins";
+import { AddAdminJs } from "../../utils/api/requests/add-admins";
 import axios from "axios";
 import MyModal from "../UI/MyModal";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
@@ -29,50 +31,46 @@ const AdmainMentors = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
 
-    const fetchExamData = async () => {
-        try {
-            const response = await zoneAPI.get("/users/admins");
-            setRows(response.data);
-        } catch (error) {
-            console.error("Failed to fetch exam data:", error);
-        }
-    };
-
     const addAdmin = async () => {
         try {
-            await zoneAPI.post("/users", {
-                firstName,
-                lastName,
-                phoneNumber,
-                password,
-                role: "ADMIN",
-            });
-
-            setFirstName("");
-            setLastName("");
-            setPhoneNumber("");
-            setPassword("");
-
-            fetchExamData();
-
+            AddAdminJs(firstName, lastName, phoneNumber, password, "ADMIN");
+            getAdmins;
             alert("Admin added successfully.");
         } catch (error) {
             console.error("Failed to add admin:", error);
-
-            if (
-                error.response &&
-                error.response.data &&
-                error.response.data.phoneNumber
-            ) {
-                alert(`Error: ${error.response.data.phoneNumber}`);
-            } else {
-                alert("An unexpected error occurred. Please try again.");
-            }
+            alert("An unexpected error occurred. Please try again.");
         }
     };
 
+    // const addAdmin = async () => {
+    //     try {
+    //         // Assuming your backend endpoint for adding an admin is "/users/admins"
+    //         await zoneAPI.post("/users/admins", {
+    //             firstName,
+    //             lastName,
+    //             phoneNumber,
+    //             password,
+    //             role: "ADMIN",
+    //         });
+
+    //         // Clear the form fields
+    //         setFirstName("");
+    //         setLastName("");
+    //         setPhoneNumber("");
+    //         setPassword("");
+
+    //         // Refetch the admin list to update the UI
+    //         fetchAdminData();
+
+    //         alert("Admin added successfully.");
+    //     } catch (error) {
+    //         console.error("Failed to add admin:", error);
+    //         alert("An unexpected error occurred. Please try again.");
+    //     }
+    // };
+
     useEffect(() => {
-        fetchExamData();
+        getAdmins();
     }, []);
 
     return (

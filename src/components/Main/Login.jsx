@@ -3,6 +3,7 @@ import { TextField, Button, Paper, Typography, Container } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { postLogin } from "../../utils/api/requests/login";
 
 export const colors = {
     primary: "#330140",
@@ -19,62 +20,19 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
+    const updateAxiosToken = () => {};
+
+    useEffect(() => {
+        // Ensure axios has the correct token on initial load
+        updateAxiosToken();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
-            const response = await zoneAPI.post("auth/signin", {
-                phoneNumber,
-                password,
-            });
-
-            console.log("Login successful:", response.data);
-            const { token } = response.data;
-            Cookies.set("authToken", token, { expires: 7 });
-    }
-
-    // const updateAxiosToken = () => {
-    //     const token = Cookies.get("authToken");
-    //     if (token) {
-    //         zoneAPI.defaults.headers.common[
-    //             "Authorization"
-    //         ] = `Bearer ${token}`;
-    //     } else {
-    //         delete zoneAPI.defaults.headers.common["Authorization"];
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     // Ensure axios has the correct token on initial load
-    //     updateAxiosToken();
-    // }, []);
-
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     try {
-    //         const response = await zoneAPI.post("auth/signin", {
-    //             phoneNumber,
-    //             password,
-    //         });
-
-    //         console.log("Login successful:", response.data);
-    //         const { token } = response.data;
-
-    //         // Store the token in cookies
-    //         Cookies.set("authToken", token, { expires: 7 });
-
-    //         // Update axios headers with the new token
-    //         updateAxiosToken();
-
-    //         // Navigate to the next page
-    //         navigate("/admin/mentors");
-    //     } catch (error) {
-    //         console.error(
-    //             "Login error:",
-    //             error.response ? error.response.data : error
-    //         );
-    //     }
+        postLogin(phoneNumber, password);
+        navigate("/admin/mentors");
     };
+
     return (
         <Container component="main" maxWidth="xs" style={{ marginTop: "8%" }}>
             <Paper
