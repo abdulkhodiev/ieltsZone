@@ -11,45 +11,37 @@ import {
 import { colors } from "../../constants/colors";
 import { Link } from "react-router-dom";
 import { Delete, Edit, PeopleAlt } from "@mui/icons-material";
-import axios from "axios";
+import { getExams, deleteExams } from "../../utils/api/requests/add-exams";
 
 const AdminExams = () => {
     const [exams, setExams] = useState([]);
 
-    // Initialize Axios instance
-    const api = axios.create({
-        baseURL: "http://localhost:8070/api/v1",
-    });
+    const fetchExams = async () => {
+        try {
+            const response = await getExams();
+            const formattedExams = response.map((exam) => {
+                const examDate = new Date(exam.examDateTime);
+                const day = String(examDate.getDate()).padStart(2, "0");
+                const month = String(examDate.getMonth() + 1).padStart(2, "0");
+                const year = examDate.getFullYear();
+                return {
+                    ...exam,
+                    formattedDate: `${year}-${month}-${day}`,
+                };
+            });
+            setExams(formattedExams);
+        } catch (error) {
+            console.error("Failed to fetch exams:", error);
+        }
+    };
+
+    const handleDelete = async (examId) => {
+        console.log("Deleting exam with ID:", examId);
+        await deleteExams(examId);
+        fetchExams();
+    };
 
     useEffect(() => {
-        const fetchExams = async () => {
-            try {
-                const response = await api.get("/exam");
-                if (Array.isArray(response.data)) {
-                    const formattedExams = response.data.map((exam) => {
-                        const examDate = new Date(exam.examDateTime);
-                        const day = String(examDate.getDate()).padStart(2, "0");
-                        const month = String(examDate.getMonth() + 1).padStart(
-                            2,
-                            "0"
-                        );
-                        const year = examDate.getFullYear();
-                        return {
-                            ...exam,
-                            formattedDate: `${day}.${month}.${year}`,
-                        };
-                    });
-                    setExams(formattedExams);
-                } else {
-                    throw new Error(
-                        "Data format is incorrect, expected an array."
-                    );
-                }
-            } catch (error) {
-                console.error("Failed to fetch exams:", error);
-            }
-        };
-
         fetchExams();
     }, []);
 
@@ -137,10 +129,7 @@ const AdminExams = () => {
                                 borderBottomLeftRadius: "1rem",
                             }}
                         >
-                            <Typography>
-                                {exam.details}{" "}
-                                {/* Assuming `exam.description` contains the exam description */}
-                            </Typography>
+                            <Typography>{exam.details} </Typography>
                             <Box
                                 sx={{
                                     mt: "1rem",
@@ -150,6 +139,7 @@ const AdminExams = () => {
                                 }}
                             >
                                 <Button
+                                    onClick={() => handleDelete(exam.id)}
                                     variant="contained"
                                     sx={{
                                         bgcolor: "red",
@@ -158,10 +148,12 @@ const AdminExams = () => {
                                 >
                                     <Delete sx={{ fontSize: "1.2rem" }} />
                                 </Button>
+
                                 <Button
                                     component={Link}
                                     to={`/admin/exams/${exam.id}/edit`}
                                     variant="contained"
+                                    onClick={() => EditExam(exam.id, exam)}
                                     sx={{
                                         bgcolor: "green",
                                         borderRadius: "0.7rem",

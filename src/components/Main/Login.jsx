@@ -4,33 +4,32 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { postLogin } from "../../utils/api/requests/login";
-
-export const colors = {
-    primary: "#330140",
-    secondary: "#DEF1FF",
-    cardColor: "#FDEDE4",
-};
-
-const zoneAPI = axios.create({
-    baseURL: "http://localhost:8070/api/v1/",
-});
+import { colors } from "../../constants/colors";
 
 const Login = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const updateAxiosToken = () => {};
-
-    useEffect(() => {
-        // Ensure axios has the correct token on initial load
-        updateAxiosToken();
-    }, []);
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-        postLogin(phoneNumber, password);
-        navigate("/admin/mentors");
+        try {
+            const userData = await postLogin(phoneNumber, password);
+            if (userData && userData.role) {
+                const { role } = userData;
+                if (role === "ADMIN") {
+                    navigate("/admin/mentors");
+                } else if (role === "USER") {
+                    navigate("/user/exams");
+                } else {
+                    navigate("/");
+                }
+            } else {
+                console.error("Unexpected response structure:", userData);
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+        }
     };
 
     return (

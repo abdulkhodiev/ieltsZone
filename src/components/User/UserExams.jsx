@@ -10,48 +10,35 @@ import {
 } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { colors } from "../../constants/colors"; // Ensure this path is correct
+import { getExams } from "../../utils/api/requests/add-exams";
+
+import { colors } from "../../constants/colors";
 
 const UserExams = () => {
     const [exams, setExams] = useState([]);
 
-    const api = axios.create({
-        baseURL: "http://localhost:8070/api/v1",
-    });
+    const fetchExams = async () => {
+        try {
+            const response = await getExams();
+            const formattedExams = response.map((exam) => {
+                const examDate = new Date(exam.examDateTime);
+                const day = String(examDate.getDate()).padStart(2, "0");
+                const month = String(examDate.getMonth() + 1).padStart(2, "0");
+                const year = examDate.getFullYear();
+                return {
+                    ...exam,
+                    formattedDate: `${year}-${month}-${day}`,
+                };
+            });
+            setExams(formattedExams);
+        } catch (error) {
+            console.error("Failed to fetch exams:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchExams = async () => {
-            try {
-                const response = await api.get("/exam");
-                if (Array.isArray(response.data)) {
-                    const formattedExams = response.data.map((exam) => {
-                        const examDate = new Date(exam.examDateTime);
-                        const day = String(examDate.getDate()).padStart(2, "0");
-                        const month = String(examDate.getMonth() + 1).padStart(
-                            2,
-                            "0"
-                        );
-                        const year = examDate.getFullYear();
-                        return {
-                            ...exam,
-                            formattedDate: `${day}.${month}.${year}`,
-                        };
-                    });
-                    setExams(formattedExams);
-                } else {
-                    throw new Error(
-                        "Data format is incorrect, expected an array."
-                    );
-                }
-            } catch (error) {
-                console.error("Failed to fetch exams:", error);
-            }
-        };
-
         fetchExams();
     }, []);
-
     return (
         <Stack
             direction={"column"}

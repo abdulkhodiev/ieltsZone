@@ -11,6 +11,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { colors } from "../../../constants/colors";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import {
+    AddExam,
+    EditExam,
+    getExamById,
+} from "../../../utils/api/requests/add-exams";
 
 const ExamCreation = () => {
     const { examId } = useParams();
@@ -24,38 +29,6 @@ const ExamCreation = () => {
     const [details, setDetails] = useState("");
     const [speakingDates, setSpeakingDates] = useState([""]);
 
-    const zoneAPI = axios.create({
-        baseURL: "http://localhost:8070/api/v1",
-    });
-
-    useEffect(() => {
-        if (examId) {
-            zoneAPI
-                .get(`/exam/${examId}`)
-                .then((response) => {
-                    const {
-                        examDateTime,
-                        price,
-                        numberOfPlaces,
-                        location,
-                        locationUrl,
-                        details,
-                        speakingDates,
-                    } = response.data;
-                    setExamDateTime(examDateTime);
-                    setPrice(price);
-                    setNumberOfPlaces(numberOfPlaces);
-                    setLocation(location);
-                    setLocationUrl(locationUrl);
-                    setDetails(details);
-                    setSpeakingDates(speakingDates);
-                })
-                .catch((error) => {
-                    console.error("Error fetching exam details:", error);
-                });
-        }
-    }, [examId]);
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         const examData = {
@@ -65,29 +38,47 @@ const ExamCreation = () => {
             location,
             locationUrl,
             details,
-            speakingDates, // Assuming this is correctly structured for your backend
+            speakingDates,
         };
 
         try {
-            const endpoint = examId ? `/exam/${examId}` : "/exam";
-            // Use the appropriate method based on whether you have an examId
             if (examId) {
-                await zoneAPI.put(endpoint, examData);
+                await EditExam(examId, examData);
             } else {
-                await zoneAPI.post(endpoint, examData);
+                console.log("Sending Exam Data:", examData);
+                await AddExam(examData);
             }
 
-            alert("Exam data saved successfully!");
             navigate("/admin/exams");
         } catch (error) {
-            console.error("Error saving exam data:", error);
-            alert(
-                `Error saving exam data: ${
-                    error.response?.data?.message || "Please try again."
-                }`
-            );
+            console.error(error);
         }
     };
+
+    useEffect(() => {
+        const fetchExamDetails = async () => {
+            if (examId) {
+                // Checks if there's an examId, indicating you're in "edit" mode
+                try {
+                    const examDetails = await getExamById(examId);
+                    // Now populate your component's state with these details
+                    setExamDateTime(examDetails.examDateTime);
+                    setPrice(examDetails.price);
+                    setNumberOfPlaces(examDetails.numberOfPlaces);
+                    setLocation(examDetails.location);
+                    setLocationUrl(examDetails.locationUrl);
+                    setDetails(examDetails.details);
+                    // Ensure speakingDates is an array before setting it
+                    setSpeakingDates(examDetails.speakingDates || [""]);
+                } catch (error) {
+                    console.error("Failed to fetch exam details:", error);
+                    // Handle error (e.g., show a notification or set error state)
+                }
+            }
+        };
+
+        fetchExamDetails();
+    }, [examId]); // The useEffect hook depends on examId, it runs when examId changes
 
     const handleSpeakingTimeChange = (index, value) => {
         const updatedSpeakingTimes = speakingDates.map((time, i) =>
@@ -209,7 +200,7 @@ const ExamCreation = () => {
                     <Box sx={{ width: "100%" }} my={2}>
                         {speakingDates.map((time, index) => (
                             <Stack
-                                key={index} // Use index as key for simplicity
+                                key={index}
                                 direction="row"
                                 alignItems="center"
                                 spacing={2}

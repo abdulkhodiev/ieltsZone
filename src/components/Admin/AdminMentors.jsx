@@ -21,56 +21,29 @@ import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import PersonIcon from "@mui/icons-material/Person";
 
 const AdmainMentors = () => {
-    const zoneAPI = axios.create({
-        baseURL: "http://localhost:8070/api/v1",
-    });
-
     const [rows, setRows] = useState([]);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
 
-    const addAdmin = async () => {
-        try {
-            AddAdminJs(firstName, lastName, phoneNumber, password, "ADMIN");
-            getAdmins;
-            alert("Admin added successfully.");
-        } catch (error) {
-            console.error("Failed to add admin:", error);
-            alert("An unexpected error occurred. Please try again.");
-        }
+    const addAdmin = () => {
+        setFirstName("");
+        setLastName("");
+        setPhoneNumber("");
+        setPassword("");
+        AddAdminJs(firstName, lastName, phoneNumber, password, "ADMIN").then(
+            () => {
+                getAdmins().then((admins) => {
+                    setRows(admins);
+                    console.log(admins);
+                });
+            }
+        );
     };
 
-    // const addAdmin = async () => {
-    //     try {
-    //         // Assuming your backend endpoint for adding an admin is "/users/admins"
-    //         await zoneAPI.post("/users/admins", {
-    //             firstName,
-    //             lastName,
-    //             phoneNumber,
-    //             password,
-    //             role: "ADMIN",
-    //         });
-
-    //         // Clear the form fields
-    //         setFirstName("");
-    //         setLastName("");
-    //         setPhoneNumber("");
-    //         setPassword("");
-
-    //         // Refetch the admin list to update the UI
-    //         fetchAdminData();
-
-    //         alert("Admin added successfully.");
-    //     } catch (error) {
-    //         console.error("Failed to add admin:", error);
-    //         alert("An unexpected error occurred. Please try again.");
-    //     }
-    // };
-
     useEffect(() => {
-        getAdmins();
+        getAdmins().then((admins) => setRows(admins));
     }, []);
 
     return (
