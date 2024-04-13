@@ -2,60 +2,57 @@ import React, { useState, useEffect } from "react";
 import { Stack, Box, Typography, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios"; // Ensure axios is installed or replace with your fetch method
+import {
+    getStudentInfo,
+    getSectionResults,
+} from "../../utils/api/requests/exam-check-by-section";
 
 const UserScoreCheck = () => {
-    const { examId, rowId } = useParams();
-    const [participantDetails, setParticipantDetails] = useState({
-        participantName: "Loading...", // Default loading state
-        scores: {
-            listening: "N/A", // Default values
-            reading: "N/A",
-            writing: "N/A",
-            speaking: "N/A",
-            bandScore: "N/A",
-        },
-    });
+    const { examRegistrationId } = useParams();
 
-    useEffect(() => {
-        const fetchParticipantDetails = async () => {
-            try {
-                const response = await axios.get(
-                    `/api/exams/${examId}/participants/${rowId}`
-                );
-                if (
-                    response.data &&
-                    response.data.firstName &&
-                    response.data.lastName &&
-                    response.data.scores
-                ) {
-                    setParticipantDetails({
-                        participantName: `${response.data.firstName} ${response.data.lastName}`,
-                        scores: response.data.scores,
-                    });
-                } else {
-                    console.error("Invalid response structure:", response.data);
-                    // Handle unexpected structure or missing data
-                }
-            } catch (error) {
-                console.error(
-                    "There was an error fetching the participant details: ",
-                    error
-                );
-            }
-        };
-
-        fetchParticipantDetails();
-    }, [examId, rowId]);
-
-    const { participantName, scores } = participantDetails;
     const sections = [
-        "Listening",
-        "Reading",
-        "Writing",
-        "Speaking",
+        "listening",
+        "reading",
+        "writing",
+        "speaking",
         "Band Score",
     ];
+
+    const [name, setName] = useState({ firstName: "", lastName: "" });
+    const [sectionResults, setSectionResults] = useState([]);
+
+    const fetchName = async () => {
+        const data = await getStudentInfo(examRegistrationId);
+        setName(data.student);
+    };
+
+    const fetchSectionResults = async () => {
+        const data = await getSectionResults(examRegistrationId);
+        setSectionResults(data.sectionResults);
+    };
+
+    useEffect(() => {
+        fetchName();
+        fetchSectionResults();
+    }, [examRegistrationId]);
+
+    const calculateBandScore = () => {
+        let totalScore = 0;
+        sections.forEach((section) => {
+            if (section !== "Band Score") {
+                const result = sectionResults.find(
+                    (result) => result.sectionName.toLowerCase() === section
+                );
+                if (result && result.score !== null) {
+                    totalScore += result.score;
+                }
+            }
+        });
+        const bandScore = Math.round((totalScore / 4) * 2) / 2;
+        return bandScore;
+    };
+
+    const bandScore = calculateBandScore();
 
     return (
         <Stack
@@ -72,7 +69,7 @@ const UserScoreCheck = () => {
                     py={"1rem"}
                     textAlign={"center"}
                 >
-                    {participantName}
+                    {name.firstName} {name.lastName}
                 </Typography>
             </Box>
 
@@ -84,7 +81,10 @@ const UserScoreCheck = () => {
                         fontWeight={"bold"}
                         py={"0.5rem"}
                     >
-                        {section}
+                        {section === "Band Score"
+                            ? "Band Score"
+                            : section.charAt(0).toUpperCase() +
+                              section.slice(1)}
                     </Typography>
                     <Stack
                         direction={"row"}
@@ -111,16 +111,32 @@ const UserScoreCheck = () => {
                             textAlign={"left"}
                             fontWeight={section === "Band Score" ? "bold" : ""}
                         >
-                            {scores[section.toLowerCase().replace(/\s/g, "")] ||
-                                "N/A"}{" "}
-                            {/* Ensure the key matches the object structure */}
+                            {section === "Band Score"
+                                ? bandScore
+                                : sectionResults.length > 0
+                                ? sectionResults.find(
+                                      (result) =>
+                                          result.sectionName.toLowerCase() ===
+                                          section.toLowerCase()
+                                  ) !== undefined &&
+                                  sectionResults.find(
+                                      (result) =>
+                                          result.sectionName.toLowerCase() ===
+                                          section.toLowerCase()
+                                  ).score !== null
+                                    ? sectionResults.find(
+                                          (result) =>
+                                              result.sectionName.toLowerCase() ===
+                                              section.toLowerCase()
+                                      ).score
+                                    : "N/A"
+                                : "N/A"}
                         </Typography>
                         {section !== "Band Score" && (
                             <Button
                                 component={Link}
                                 variant="contained"
-                                to={`/user/results/${examId}/scores/${section.toLowerCase()}`}
-                                state={{ participant: participantDetails }}
+                                to={`/user/results/scores/${examRegistrationId}/${section}`}
                                 sx={{
                                     bgcolor: colors.primary,
                                     ":hover": { bgcolor: colors.primary },

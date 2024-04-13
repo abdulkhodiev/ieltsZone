@@ -7,14 +7,40 @@ import {
     Stack,
     Box,
     Button,
+    Modal,
 } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { Link } from "react-router-dom";
 import { Delete, Edit, PeopleAlt } from "@mui/icons-material";
-import { getExams, deleteExams } from "../../utils/api/requests/add-exams";
+import {
+    getExams,
+    deleteExams,
+    examInformation,
+} from "../../utils/api/requests/add-exams";
+
+const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+    padding: "2rem",
+    width: "45%",
+    borderRadius: "0.6rem",
+
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+};
 
 const AdminExams = () => {
     const [exams, setExams] = useState([]);
+    const [examInfo, setExamInfo] = useState({});
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => setOpen(false);
 
     const fetchExams = async () => {
         try {
@@ -39,6 +65,28 @@ const AdminExams = () => {
         console.log("Deleting exam with ID:", examId);
         await deleteExams(examId);
         fetchExams();
+    };
+
+    const getExamInformation = async (examId) => {
+        setOpen(true);
+        const response = await examInformation(examId);
+
+        const formattedResponse = {
+            ...response,
+            createdBy: response.createdBy,
+            createdDate: formatDate(response.createdDate),
+            updatedAt: formatDate(response.updatedAt),
+            updatedBy: response.updatedBy,
+        };
+
+        setExamInfo(formattedResponse);
+        console.log(formattedResponse);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const formattedDate = date.toLocaleString();
+        return formattedDate;
     };
 
     useEffect(() => {
@@ -138,6 +186,66 @@ const AdminExams = () => {
                                     justifyContent: "end",
                                 }}
                             >
+                                <Button
+                                    onClick={() => getExamInformation(exam.id)}
+                                    variant="contained"
+                                    sx={{
+                                        bgcolor: "yellow",
+                                        color: colors.primary,
+                                        borderRadius: "0.7rem",
+                                    }}
+                                >
+                                    audit
+                                </Button>
+                                <Modal
+                                    open={open}
+                                    onClose={handleClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style}>
+                                        <Typography
+                                            id="modal-modal-title"
+                                            variant="h6"
+                                            component="h2"
+                                        >
+                                            Exam Information
+                                        </Typography>
+                                        <Typography id="modal-modal-description">
+                                            Exam is created by:{" "}
+                                            <span
+                                                style={{ fontWeight: "bold" }}
+                                            >
+                                                {examInfo.createdBy}{" "}
+                                            </span>
+                                        </Typography>
+                                        <Typography id="modal-modal-description">
+                                            Exam is created at:{" "}
+                                            <span
+                                                style={{ fontWeight: "bold" }}
+                                            >
+                                                {" "}
+                                                {examInfo.createdDate}
+                                            </span>
+                                        </Typography>
+                                        <Typography id="modal-modal-description">
+                                            Exam is updated by:{" "}
+                                            <span
+                                                style={{ fontWeight: "bold" }}
+                                            >
+                                                {examInfo.updatedBy}
+                                            </span>
+                                        </Typography>
+                                        <Typography id="modal-modal-description">
+                                            Exam is updated at:{" "}
+                                            <span
+                                                style={{ fontWeight: "bold" }}
+                                            >
+                                                {examInfo.updatedAt}
+                                            </span>
+                                        </Typography>
+                                    </Box>
+                                </Modal>
                                 <Button
                                     onClick={() => handleDelete(exam.id)}
                                     variant="contained"

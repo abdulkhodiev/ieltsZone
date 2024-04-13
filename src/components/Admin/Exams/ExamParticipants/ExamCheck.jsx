@@ -1,14 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Stack, Box, Typography, Button } from "@mui/material";
 import { colors } from "../../../../constants/colors";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Context from "../../../../context/Context";
+import {
+    getStudentInfo,
+    getSectionResults,
+} from "../../../../utils/api/requests/exam-check-by-section";
 
 const ExamCheck = () => {
-    const location = useLocation();
     const { examId, rowId } = useParams();
-    const participant = location.state?.participant;
-    const { scores } = useContext(Context);
+
     const sections = [
         "listening",
         "reading",
@@ -16,6 +18,42 @@ const ExamCheck = () => {
         "speaking",
         "Band Score",
     ];
+
+    const [name, setName] = useState({ firstName: "", lastName: "" });
+    const [sectionResults, setSectionResults] = useState([]);
+
+    const fetchName = async () => {
+        const data = await getStudentInfo(rowId);
+        setName(data.student);
+    };
+
+    const fetchSectionResults = async () => {
+        const data = await getSectionResults(rowId);
+        setSectionResults(data.sectionResults);
+    };
+
+    useEffect(() => {
+        fetchName();
+        fetchSectionResults();
+    }, [rowId]);
+
+    const calculateBandScore = () => {
+        let totalScore = 0;
+        sections.forEach((section) => {
+            if (section !== "Band Score") {
+                const result = sectionResults.find(
+                    (result) => result.sectionName.toLowerCase() === section
+                );
+                if (result && result.score !== null) {
+                    totalScore += result.score;
+                }
+            }
+        });
+        const bandScore = Math.round((totalScore / 4) * 2) / 2; // Round to the nearest 0.5
+        return bandScore;
+    };
+
+    const bandScore = calculateBandScore();
 
     return (
         <Stack
@@ -29,12 +67,10 @@ const ExamCheck = () => {
                 <Typography
                     variant="h4"
                     fontWeight={"bold"}
-                    py={"1rem"}
+                    py={"2rem"}
                     textAlign={"center"}
                 >
-                    {participant
-                        ? `${participant.firstName} ${participant.lastName}`
-                        : "Participant"}
+                    {name.firstName} {name.lastName}
                 </Typography>
             </Box>
 
@@ -46,7 +82,10 @@ const ExamCheck = () => {
                         fontWeight={"bold"}
                         py={"0.5rem"}
                     >
-                        {section.charAt(0).toUpperCase() + section.slice(1)}
+                        {section === "Band Score"
+                            ? "Band Score"
+                            : section.charAt(0).toUpperCase() +
+                              section.slice(1)}
                     </Typography>
                     <Stack
                         direction={"row"}
@@ -74,15 +113,31 @@ const ExamCheck = () => {
                             fontWeight={section === "Band Score" ? "bold" : ""}
                         >
                             {section === "Band Score"
-                                ? scores.BandScore
-                                : scores[section.toLowerCase()]}
+                                ? bandScore
+                                : sectionResults.length > 0
+                                ? sectionResults.find(
+                                      (result) =>
+                                          result.sectionName.toLowerCase() ===
+                                          section.toLowerCase()
+                                  ) !== undefined &&
+                                  sectionResults.find(
+                                      (result) =>
+                                          result.sectionName.toLowerCase() ===
+                                          section.toLowerCase()
+                                  ).score !== null
+                                    ? sectionResults.find(
+                                          (result) =>
+                                              result.sectionName.toLowerCase() ===
+                                              section.toLowerCase()
+                                      ).score
+                                    : "N/A"
+                                : "N/A"}
                         </Typography>
                         {section !== "Band Score" && (
                             <Button
                                 component={Link}
                                 variant="contained"
                                 to={`/admin/exams/${examId}/participants/accepted/${rowId}/${section.toLowerCase()}`}
-                                state={{ participant }}
                                 sx={{
                                     bgcolor: colors.primary,
                                     ":hover": { bgcolor: colors.primary },

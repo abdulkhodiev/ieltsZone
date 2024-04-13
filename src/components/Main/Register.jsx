@@ -8,8 +8,23 @@ import {
     Link,
     Alert,
 } from "@mui/material";
+import { MuiTelInput } from "mui-tel-input";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { register } from "../../utils/api/requests/register";
+
+const MyComponent = ({ value, onChange }) => {
+    return (
+        <MuiTelInput
+            style={{ marginBottom: "1rem" }}
+            onlyCountries={["UZ"]}
+            defaultCountry="UZ"
+            fullWidth
+            required
+            value={value}
+            onChange={onChange}
+        />
+    );
+};
 
 const Register = () => {
     const navigate = useNavigate();
@@ -18,15 +33,24 @@ const Register = () => {
         lastName: "",
         phoneNumber: "",
         password: "",
+        confirmPassword: "",
     });
     const [error, setError] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setCredentials((prevCredentials) => ({
-            ...prevCredentials,
-            [name]: value,
-        }));
+        if (name === "phoneNumber") {
+            const phoneNumberWithoutSpaces = value.replace(/\s/g, "");
+            setCredentials((prevCredentials) => ({
+                ...prevCredentials,
+                [name]: phoneNumberWithoutSpaces,
+            }));
+        } else {
+            setCredentials((prevCredentials) => ({
+                ...prevCredentials,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSubmit = async (event) => {
@@ -104,16 +128,16 @@ const Register = () => {
                             required
                             style={{ marginBottom: "1rem" }}
                         />
-                        <TextField
-                            label="Phone Number"
-                            variant="outlined"
-                            name="phoneNumber"
+                        <MyComponent
                             value={credentials.phoneNumber}
-                            onChange={handleChange}
-                            fullWidth
-                            required
-                            type="number" // Changed to type="tel" for semantic correctness
-                            style={{ marginBottom: "1rem" }}
+                            onChange={(newValue) =>
+                                handleChange({
+                                    target: {
+                                        name: "phoneNumber",
+                                        value: newValue,
+                                    },
+                                })
+                            }
                         />
                         <TextField
                             label="Password"

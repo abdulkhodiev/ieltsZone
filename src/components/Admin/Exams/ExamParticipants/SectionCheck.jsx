@@ -1,34 +1,64 @@
-import React, { useState, useRef, useContext } from "react";
-import { styled } from "@mui/material/styles";
-import { Stack, Box, Typography, Button, TextField } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import {
+    Stack,
+    Box,
+    Typography,
+    Button,
+    TextField,
+    Grid,
+    IconButton,
+    Paper,
+    CardMedia,
+} from "@mui/material";
 import { colors } from "../../../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Context from "../../../../context/Context";
+import {
+    getSectionResults,
+    putSectionSecore,
+    examPicture,
+} from "../../../../utils/api/requests/exam-check-by-section";
 
 const SectionCheck = () => {
-    const location = useLocation();
     const { examId, rowId, section } = useParams();
     const navigate = useNavigate();
-    const participant = location.state?.participant;
     const { scores, setScores } = useContext(Context);
+    const [userInfo, setUserInfo] = useState({});
+    const [examImg, setExamImg] = useState(null);
     const [formData, setFormData] = useState({
         score: scores[section] || "",
         details: "",
     });
-    const fileInputRef = useRef(null);
+    const [pictureId, setPictureId] = useState(0);
+    const [sectionResults, setSectionResults] = useState([]);
 
-    const VisuallyHiddenInput = styled("input")({
-        clip: "rect(0 0 0 0)",
-        clipPath: "inset(50%)",
-        height: 1,
-        overflow: "hidden",
-        position: "absolute",
-        whiteSpace: "nowrap",
-        width: 1,
-    });
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getSectionResults(rowId);
+                setUserInfo(data.user);
+                setSectionResults(data.sectionResults);
+            } catch (error) {
+                console.error("Error fetching section results:", error);
+            }
+        };
 
-    // Capitalize the first letter of the section name for display
+        fetchData();
+    }, [rowId]);
+
+    const handleExamImg = async (event) => {
+        const file = event.target.files[0];
+        setExamImg(URL.createObjectURL(file));
+
+        try {
+            const pictureRes = await examPicture(file);
+            setPictureId(pictureRes);
+        } catch (error) {
+            console.error("Error uploading payment image:", error);
+        }
+    };
+
     const displaySectionName =
         section.charAt(0).toUpperCase() + section.slice(1);
 
@@ -40,23 +70,30 @@ const SectionCheck = () => {
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const file = fileInputRef.current.files[0];
-        // Assuming file handling logic here
-        const dataToSend = {
-            ...formData,
-            file,
+
+        const sectionResult = sectionResults.find(
+            (result) =>
+                result.sectionName.toUpperCase() === section.toUpperCase()
+        );
+
+        if (!sectionResult) {
+            console.error(
+                "Section result not found for the given section:",
+                section
+            );
+            return;
+        }
+
+        const data = {
+            score: parseFloat(formData.score),
+            feedback: formData.details,
+            sectionResultPictureId: pictureId,
         };
-        // Here you would handle the file upload and form data submission logic
-        console.log("Data to send:", dataToSend);
-        // Update the scores context after handling the data
-        setScores((prevScores) => ({
-            ...prevScores,
-            [section]: formData.score,
-        }));
-        // Navigate to the desired path after submission
-        navigate("/path-to-redirect-after-saving");
+        await putSectionSecore(sectionResult.id, data);
+
+        navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`);
     };
 
     return (
@@ -77,16 +114,14 @@ const SectionCheck = () => {
                     alignItems="center"
                 >
                     <Typography variant="h4" fontWeight={"bold"}>
-                        {participant
-                            ? `${participant.firstName} ${participant.lastName}`
-                            : "Participant"}
+                        {userInfo.firstName} {userInfo.lastName}
                     </Typography>
                     <Typography
                         color={colors.primary}
                         variant="h4"
                         fontWeight={"bold"}
                     >
-                        {displaySectionName} {/* Dynamic section name */}
+                        {displaySectionName}
                     </Typography>{" "}
                 </Stack>
                 <form onSubmit={handleSubmit} style={{ width: "100%" }}>
@@ -100,7 +135,6 @@ const SectionCheck = () => {
                                 step: 0.5,
                                 min: 0,
                                 max: 9,
-                                type: "number",
                             }}
                             name="score"
                             value={formData.score}
@@ -115,58 +149,85 @@ const SectionCheck = () => {
                             value={formData.details}
                             onChange={handleChange}
                         />
-                        <Stack direction="row" justifyContent="space-between">
+                        <Grid item xs={12} sx={{ textAlign: "end" }}>
+                            <input
+                                style={{ display: "none" }}
+                                id="payment-screenshot"
+                                type="file"
+                                onChange={handleExamImg}
+                            />
+                            <label htmlFor="payment-screenshot">
+                                <IconButton
+                                    component="span"
+                                    sx={{
+                                        border: `2px solid ${colors.primary}`,
+                                        borderRadius: "1rem",
+                                        color: colors.primary,
+                                        fontSize: "1.2rem",
+                                        width: "100%",
+                                        padding: "0.5rem 1rem",
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                    }}
+                                    aria-label="upload picture"
+                                >
+                                    <CloudUploadIcon
+                                        fontSize="medium"
+                                        sx={{ marginRight: "0.5rem" }}
+                                    />
+                                    Upload Payment Screenshot
+                                </IconButton>
+                            </label>
+                        </Grid>
+                        <Grid item xs={12}>
+                            {examImg && (
+                                <CardMedia
+                                    component="img"
+                                    sx={{ borderRadius: "1rem" }}
+                                    height="160"
+                                    image={examImg}
+                                    alt="Payment Screenshot"
+                                />
+                            )}
+                        </Grid>
+                        <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            spacing={2}
+                        >
                             <Button
-                                component="label"
+                                component={Link}
+                                to={`/admin/exams/${examId}/participants/accepted/${rowId}`}
+                                sx={{
+                                    bgcolor: "red",
+                                    ":hover": { bgcolor: "red" },
+                                    borderRadius: "0.6rem",
+                                    textTransform: "none",
+                                    fontSize: "1.2rem",
+                                    width: "50%",
+                                    padding: "0.5rem 1rem",
+                                    color: "white",
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
                                 variant="contained"
+                                type="submit"
                                 sx={{
                                     bgcolor: colors.primary,
                                     ":hover": { bgcolor: colors.primary },
                                     borderRadius: "0.6rem",
+                                    padding: "0.5rem 1rem",
                                     textTransform: "none",
                                     fontSize: "1.1rem",
+                                    width: "50%",
                                 }}
-                                startIcon={<CloudUploadIcon />}
                             >
-                                Upload file
-                                <VisuallyHiddenInput
-                                    ref={fileInputRef}
-                                    type="file"
-                                />
+                                Save
                             </Button>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                justifyContent="center"
-                            >
-                                <Button
-                                    component={Link}
-                                    to={`/admin/exams/${examId}/participants/accepted/${rowId}`}
-                                    sx={{
-                                        bgcolor: "red",
-                                        ":hover": { bgcolor: "red" },
-                                        borderRadius: "0.6rem",
-                                        textTransform: "none",
-                                        fontSize: "1.1rem",
-                                        color: "white",
-                                    }}
-                                >
-                                    Chancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    type="submit"
-                                    sx={{
-                                        bgcolor: colors.primary,
-                                        ":hover": { bgcolor: colors.primary },
-                                        borderRadius: "0.6rem",
-                                        textTransform: "none",
-                                        fontSize: "1.1rem",
-                                    }}
-                                >
-                                    Save
-                                </Button>
-                            </Stack>
                         </Stack>
                     </Stack>
                 </form>

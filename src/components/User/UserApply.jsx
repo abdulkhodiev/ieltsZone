@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
     Container,
-    TextField,
     Button,
     Typography,
     Radio,
@@ -10,7 +9,6 @@ import {
     FormControlLabel,
     FormLabel,
     Stack,
-    Box,
     Grid,
     IconButton,
     Paper,
@@ -44,14 +42,8 @@ const UserApply = () => {
     const fetchAvailableTimes = async () => {
         try {
             const response = await speakingDates(examId);
-            console.log("Available speaking times:", response.speakingDates);
 
-            const formattedDates = response.speakingDates.map((date) => {
-                const formattedDate = new Date(date).toLocaleString();
-                return formattedDate;
-            });
-
-            setAvailableSpeakingTimes(formattedDates);
+            setAvailableSpeakingTimes(response.speakingDates);
         } catch (error) {
             console.error("Error fetching available speaking times:", error);
         }
@@ -62,10 +54,10 @@ const UserApply = () => {
         try {
             const userData = {
                 isStudent,
-                speakingDate,
+                speakingDate: speakingDate, // Set the formatted speaking date
                 paymentPictureId,
             };
-            await userInfo(userData);
+            await userInfo(examId, userData);
 
             alert("Application submitted successfully!");
             navigate("/user/exams");
@@ -77,23 +69,15 @@ const UserApply = () => {
 
     const handlePaymentScreenshotChange = async (event) => {
         const file = event.target.files[0];
-        setPaymentScreenshot(file);
         setPaymentImagePreview(URL.createObjectURL(file));
 
         try {
-            // Upload the image to the database
-            const paymentRes = await paymentPic({ file: file });
-            const paymentImageUrl = paymentRes.paymentPictureId;
-            console.log(
-                "Payment image uploaded successfully:",
-                paymentImageUrl
-            );
-            setPaymentPictureId(paymentImageUrl);
+            const paymentRes = await paymentPic(file);
+            setPaymentPictureId(paymentRes);
         } catch (error) {
             console.error("Error uploading payment image:", error);
         }
     };
-
     return (
         <Container
             maxWidth="md"
@@ -194,7 +178,6 @@ const UserApply = () => {
                         </Grid>
                         <Grid item xs={12} sx={{ textAlign: "center" }}>
                             <input
-                                accept="image/*"
                                 style={{ display: "none" }}
                                 id="payment-screenshot"
                                 type="file"
@@ -202,6 +185,7 @@ const UserApply = () => {
                             />
                             <label htmlFor="payment-screenshot">
                                 <IconButton
+                                    component="span"
                                     sx={{
                                         border: `2px solid ${colors.primary}`,
                                         borderRadius: "1rem",
@@ -214,7 +198,6 @@ const UserApply = () => {
                                         },
                                     }}
                                     aria-label="upload picture"
-                                    component="span"
                                 >
                                     <CloudUploadIcon
                                         fontSize="medium"

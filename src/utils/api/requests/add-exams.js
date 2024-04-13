@@ -56,3 +56,25 @@ export const deleteExams = async (examId) => {
         throw error;
     }
 };
+
+export const reserveExamTemporariy = async (examId) => {
+    try {
+        const response = await $api.post(
+            `/registration/reserve?examId=${examId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error reserving:", error);
+        throw error;
+    }
+};
+
+export const examInformation = async (examId) => {
+    try {
+        const response = await $api.get(`/exam/audit/${examId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching exam information:", error);
+        throw error;
+    }
+};

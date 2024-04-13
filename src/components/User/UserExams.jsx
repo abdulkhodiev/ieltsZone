@@ -9,13 +9,17 @@ import {
     Button,
 } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import { getExams } from "../../utils/api/requests/add-exams";
+import { Link, useNavigate } from "react-router-dom";
+import {
+    getExams,
+    reserveExamTemporariy,
+} from "../../utils/api/requests/add-exams";
 
 import { colors } from "../../constants/colors";
 
 const UserExams = () => {
     const [exams, setExams] = useState([]);
+    const navigate = useNavigate();
 
     const fetchExams = async () => {
         try {
@@ -36,9 +40,20 @@ const UserExams = () => {
         }
     };
 
+    const handleReserveExam = async (examId) => {
+        const response = await reserveExamTemporariy(examId);
+        if ((response.success = true)) {
+            navigate(`/user/exams/apply/${examId}`);
+        } else {
+            console.warn();
+            ("No places left for this exam.");
+        }
+    };
+
     useEffect(() => {
         fetchExams();
     }, []);
+
     return (
         <Stack
             direction={"column"}
@@ -118,8 +133,7 @@ const UserExams = () => {
                                 }}
                             >
                                 <Button
-                                    component={Link}
-                                    to={`/user/exams/apply/${exam.id}`}
+                                    onClick={() => handleReserveExam(exam.id)}
                                     variant="contained"
                                     sx={{
                                         bgcolor: colors.primary,

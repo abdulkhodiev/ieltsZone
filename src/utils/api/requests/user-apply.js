@@ -1,13 +1,23 @@
 import { $api } from "../interceptor";
 
-export const userInfo = async (data) => {
-    const res = await $api.post("/registration/register", data);
+export const userInfo = async (examId, data) => {
+    const res = await $api.post(
+        `/registration/register?examId=${examId}`,
+        data
+    );
     return res.data;
 };
 
 export const paymentPic = async (file) => {
     try {
-        const res = await $api.post("/picture", file);
+        const formData = new FormData();
+        formData.append("file", file); // Append the file to the FormData object
+
+        const res = await $api.post("/picture", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+            },
+        });
         return res.data;
     } catch (error) {
         console.error("Payment picture problem:", error);

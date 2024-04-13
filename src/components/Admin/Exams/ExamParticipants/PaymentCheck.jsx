@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     Button,
     Stack,
@@ -12,87 +12,73 @@ import {
     TextField,
 } from "@mui/material";
 import { colors } from "../../../../constants/colors";
-
-// Mock function to simulate fetching data from the backend
-const fetchStudentData = async (studentName) => {
-    return {
-        ieltsZoneStudent: "True",
-        status: "pending",
-        details: "",
-    };
-};
-
-// Replace this URL with your actual backend endpoint
-const SAVE_ENDPOINT = "/path/to/your/backend/endpoint";
+import {
+    getAppliedUserPaymentCheck,
+    updatePaymentCheck,
+} from "../../../../utils/api/requests/applied-users";
 
 const PaymentCheck = () => {
-    const { examId } = useParams();
-    const location = useLocation();
-    const studentName = location.state
-        ? `${location.state.firstName} ${location.state.lastName}`
-        : "Unknown";
+    const { examId, rowId } = useParams();
+    const navigate = useNavigate();
+
     const [studentData, setStudentData] = useState({
-        ieltsZoneStudent: "False",
-        status: "",
-        details: "",
+        firstName: "Loading",
+        lastName: "",
+        ieltsZoneStudent: false,
+        status: "REJECTED",
+        message: "",
     });
     const [img, setImage] = useState(
         "https://images.pexels.com/photos/5428826/pexels-photo-5428826.jpeg?auto=compress&cs=tinysrgb&w=600"
     );
+    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetchStudentData(studentName);
-            setStudentData((prev) => ({ ...prev, ...data }));
-        };
-        fetchData();
-    }, [studentName]);
+    const getPaymentCheck = async () => {
+        try {
+            const res = await getAppliedUserPaymentCheck(rowId);
+            setStudentData({
+                firstName: res.student.firstName,
+                lastName: res.student.lastName,
+                ieltsZoneStudent: res.isStudent,
+            });
+            setImage(res.paymentPictureUrl);
+        } catch (error) {
+            setError("Failed to fetch payment check data.");
+            console.error("Error fetching payment check:", error);
+        }
+    };
 
     const handleStatusChange = (event) => {
         setStudentData({ ...studentData, status: event.target.value });
     };
 
     const handleDetailsChange = (event) => {
-        setStudentData({ ...studentData, details: event.target.value });
+        setStudentData({ ...studentData, message: event.target.value });
     };
 
-    // Function to handle save action
     const handleSave = async () => {
-        const payload = {
-            studentName,
-            ...studentData,
-        };
-
-        try {
-            const response = await fetch(SAVE_ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-                // Handle successful save here (e.g., show a success message)
-                console.log("Save successful");
-            } else {
-                // Handle error response from your backend
-                console.error("Save failed");
-            }
-        } catch (error) {
-            // Handle network or other errors here
-            console.error("Error saving data:", error);
-        }
+        await updatePaymentCheck(rowId, {
+            status: studentData.status,
+            message: studentData.message,
+        });
+        console.log("Payment check updated successfully.");
+        navigate(`/admin/exams/${examId}/participants/applied`);
     };
+
+    useEffect(() => {
+        getPaymentCheck();
+    }, [rowId]);
+
     return (
         <Stack width={"65%"} m={"auto"} p={"2rem"}>
+            {error && <Typography color="error">{error}</Typography>}
             <Stack
                 direction={"row"}
                 justifyContent={"space-between"}
                 pb={"1rem"}
             >
                 <Typography variant="h4" fontWeight={"bold"}>
-                    {studentName}
+                    {studentData.firstName} {studentData.lastName}
                 </Typography>
                 <Typography variant="h4" fontWeight={"bold"}>
                     Payment Check
@@ -121,7 +107,7 @@ const PaymentCheck = () => {
                     <Typography variant="h6">
                         IELTSZONE STUDENT:{" "}
                         <span style={{ fontWeight: "bold" }}>
-                            {studentData.ieltsZoneStudent === "True"
+                            {studentData.ieltsZoneStudent === true
                                 ? "YES"
                                 : "NO"}
                         </span>
@@ -129,23 +115,25 @@ const PaymentCheck = () => {
                     <FormControl fullWidth>
                         <InputLabel id="status-label">Status</InputLabel>
                         <Select
+                            required
                             labelId="status-label"
                             id="status"
                             value={studentData.status}
                             label="Status"
                             onChange={handleStatusChange}
                         >
-                            <MenuItem value={"Rejected"}>Rejected</MenuItem>
-                            <MenuItem value={"Accepted"}>Accepted</MenuItem>
+                            <MenuItem value={"REJECTED"}>REJECTED</MenuItem>
+                            <MenuItem value={"ACCEPTED"}>ACCEPTED</MenuItem>
                         </Select>
                         <TextField
                             fullWidth
+                            required
                             label="Details"
                             multiline
                             name="details"
-                            value={studentData.details}
+                            value={studentData.message}
                             onChange={handleDetailsChange}
-                            margin="normal" // Added for spacing
+                            margin="normal"
                         />
                     </FormControl>
                     <Stack
@@ -170,7 +158,7 @@ const PaymentCheck = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            type="button" // Change to "button" to prevent form submission if inside a form
+                            type="button"
                             sx={{
                                 bgcolor: colors.primary,
                                 "&:hover": { bgcolor: colors.darkPrimary },
@@ -178,7 +166,7 @@ const PaymentCheck = () => {
                                 textTransform: "none",
                                 fontSize: "1.1rem",
                             }}
-                            onClick={handleSave} // Add the onClick handler here
+                            onClick={handleSave}
                         >
                             Save
                         </Button>

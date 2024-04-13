@@ -1,43 +1,30 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { styled } from "@mui/material/styles";
+import React, { useState, useEffect, useRef } from "react";
 import { Stack, Box, Typography, Button, TextField } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios"; // Make sure axios is installed
+import { getExamDetails } from "../../utils/api/requests/get-registered-exams";
+
 import { colors } from "../../constants/colors";
 
 const UserSectionScore = () => {
-    const { examId, rowId, section } = useParams();
-    const navigate = useNavigate();
-    const [participantInfo, setParticipantInfo] = useState({
-        firstName: "Loading",
-        lastName: "...",
-        score: "N/A",
-        details: "",
-        image: "",
-    });
+    const { examRegistrationId, section } = useParams();
+
+    const [userInfo, setUserInfo] = useState({});
+    const [sectionResult, setSectionResult] = useState({});
+
+    const fetchUserInfo = async () => {
+        const data = await getExamDetails(examRegistrationId);
+        setUserInfo(data.user);
+        setSectionResult(
+            data.sectionResults.find(
+                (result) =>
+                    result.sectionName.toUpperCase() === section.toUpperCase()
+            )
+        );
+    };
 
     useEffect(() => {
-        // Fetch the participant's section score, comments, and photo from backend
-        const fetchSectionDetails = async () => {
-            try {
-                const response = await axios.get(
-                    `/api/exams/${examId}/participants/${rowId}/${section}`
-                );
-                setParticipantInfo({
-                    firstName: response.data.firstName,
-                    lastName: response.data.lastName,
-                    score: response.data.score,
-                    details: response.data.details,
-                    image: response.data.image,
-                });
-            } catch (error) {
-                console.error("Failed to fetch section details:", error);
-            }
-        };
-
-        fetchSectionDetails();
-    }, [examId, rowId, section]);
+        fetchUserInfo();
+    }, []);
 
     return (
         <Box
@@ -57,7 +44,7 @@ const UserSectionScore = () => {
                     alignItems="center"
                 >
                     <Typography variant="h4" fontWeight={"bold"}>
-                        {participantInfo.firstName} {participantInfo.lastName}
+                        {userInfo.firstName} {userInfo.lastName}
                     </Typography>
                     <Typography
                         color={colors.primary}
@@ -77,7 +64,7 @@ const UserSectionScore = () => {
                 >
                     <img
                         style={{ width: "350px", borderRadius: "1rem" }}
-                        src="https://images.pexels.com/photos/5428826/pexels-photo-5428826.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        src={sectionResult.resultPictureUrl}
                         alt="Loading..."
                     />
                     <Stack
@@ -92,7 +79,7 @@ const UserSectionScore = () => {
                                 color={colors.primary}
                                 textTransform={"capitalize"}
                             >
-                                ={section} Score: {participantInfo.score}
+                                {section} Score: {sectionResult.score}
                             </Typography>
                             <Typography
                                 fontWeight={"bold"}
@@ -110,13 +97,13 @@ const UserSectionScore = () => {
                                         fontSize: "1rem",
                                     }}
                                 >
-                                    {participantInfo.details}
+                                    {sectionResult.feedback}
                                 </span>
                             </Typography>
                         </Stack>
                         <Button
                             component={Link}
-                            to={`/user/results/${examId}/scores`}
+                            to={`/user/results/scores/${examRegistrationId}`}
                             sx={{
                                 bgcolor: "red",
                                 ":hover": { bgcolor: "red" },

@@ -88,11 +88,11 @@ function App() {
                             element={<UserApply />}
                         />
                         <Route
-                            path="results/:examId/scores"
+                            path="results/scores/:examRegistrationId"
                             element={<UserScoreCheck />}
                         />
                         <Route
-                            path="results/:examId/scores/:section"
+                            path="results/scores/:examRegistrationId/:section"
                             element={<UserSectionScore />}
                         />
                     </Route>

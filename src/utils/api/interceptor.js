@@ -15,7 +15,7 @@ const $apiAuth = axios.create({
 
 $api.interceptors.request.use((config) => {
     const accessToken = Cookies.get("token");
-    console.log(accessToken);
+
     if (config.headers && accessToken) {
         config.headers.Authorization = "Bearer " + accessToken;
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import {
     Table,
@@ -10,37 +10,28 @@ import {
     Paper,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+import { getAppliedUsers } from "../../../../utils/api/requests/applied-users";
 
 const ExamApplied = () => {
     const navigate = useNavigate();
-    const { examId, rowId } = useParams();
-    const [rows, setRows] = useState([
-        {
-            id: 1,
-            firstName: "John",
-            lastName: "Doe",
-            phoneNumber: "1234567890",
-            status: "Pending",
-        },
-        {
-            id: 2,
-            firstName: "Kate",
-            lastName: "Paul",
-            phoneNumber: "3456789012",
-            status: "Pending",
-        },
-        {
-            id: 3,
-            firstName: "Henry",
-            lastName: "Lennon",
-            phoneNumber: "5678901234",
-            status: "Pending",
-        },
-    ]);
+    const { examId } = useParams();
+    const [rows, setRows] = useState([]);
+
+    const fetchData = async () => {
+        const data = await getAppliedUsers(examId);
+        setRows(data);
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [examId]);
 
     const handleRowClick = (row) => {
         navigate(`/admin/exams/${examId}/participants/applied/${row.id}`, {
-            state: { firstName: row.firstName, lastName: row.lastName },
+            state: {
+                firstName: row.user.firstName,
+                lastName: row.user.lastName,
+            },
         });
     };
 
@@ -79,15 +70,15 @@ const ExamApplied = () => {
                             onClick={() => handleRowClick(row)}
                         >
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{row.firstName}</TableCell>
-                            <TableCell>{row.lastName}</TableCell>
-                            <TableCell>{row.phoneNumber}</TableCell>
+                            <TableCell>{row.user.firstName}</TableCell>
+                            <TableCell>{row.user.lastName}</TableCell>
+                            <TableCell>{row.user.phoneNumber}</TableCell>
                             <TableCell
                                 sx={{
                                     color:
-                                        row.status === "Accepted"
+                                        row.status === "ACCEPTED"
                                             ? "green"
-                                            : "inherit",
+                                            : "red",
                                     fontWeight: "bold",
                                 }}
                             >
