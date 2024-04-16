@@ -6,14 +6,28 @@ import { Instagram, Facebook, Telegram } from "@mui/icons-material";
 
 const MainContact = () => {
     return (
-        <Stack height={"40vh"} sx={{ bgcolor: colors.primary }}>
+        <Stack minHeight={"40vh"} sx={{ bgcolor: colors.primary }}>
             <Stack
-                direction={"row"}
-                justifyContent={"space-between"}
+                direction={{ xs: "column", sm: "column", md: "row" }}
+                justifyContent={{
+                    xs: "center",
+                    sm: "center",
+                    md: "space-between",
+                }}
+                gap={5}
+                alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
                 width={"90%"}
                 m={"auto"}
+                py={{ xs: 5, sm: 5, md: 0 }}
             >
-                <Box width={"20%"}>
+                <Box
+                    width={{ xs: "100%", sm: "100%", md: "40%" }}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
+                >
                     <img
                         src={logo}
                         alt="Logo"
@@ -29,6 +43,7 @@ const MainContact = () => {
                         variant="body2"
                         fontSize={"0.7rem"}
                         color={colors.secondary}
+                        textAlign={{ xs: "center", sm: "center", md: "left" }}
                     >
                         IELTSZONE is a specialized teaching center that prepares
                         individuals for the IELTS exam, with a focus on Mock

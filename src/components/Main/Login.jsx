@@ -82,9 +82,14 @@ const Login = () => {
             }}
         >
             <Card
-                style={{
+                sx={{
                     minWidth: 275,
-                    maxWidth: "35%",
+                    maxWidth: {
+                        xs: "90%",
+                        sm: "75%",
+                        md: "50%",
+                        lg: "50%",
+                    },
                     boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.2)",
                 }}
             >

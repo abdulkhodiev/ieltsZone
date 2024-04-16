@@ -6,7 +6,6 @@ const MainHeader = () => {
     return (
         <Box
             height={"80vh"}
-            my={"2.5vh"}
             sx={{
                 borderRadius: "1rem",
                 bgcolor: colors.secondary,
@@ -14,7 +13,12 @@ const MainHeader = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                gap: "2rem",
+                gap: {
+                    xs: "1.5rem",
+                    sm: "2rem",
+                    md: "2rem",
+                    lg: "2rem",
+                },
             }}
         >
             <Box
@@ -23,12 +27,23 @@ const MainHeader = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "87%",
+                    width: {
+                        xs: "95%",
+                        sm: "90%",
+                        md: "87%",
+                        lg: "87%",
+                    },
                 }}
             >
                 <Typography
                     variant="h3"
                     sx={{
+                        fontSize: {
+                            xs: "1.5rem",
+                            sm: "2rem",
+                            md: "2.5rem",
+                            lg: "3rem",
+                        },
                         fontWeight: "bold",
                         textAlign: "center",
                         color: colors.primary,
@@ -40,9 +55,14 @@ const MainHeader = () => {
                 <Typography
                     variant="h5"
                     sx={{
+                        fontSize: {
+                            xs: "1rem",
+                            sm: "1.2rem",
+                            md: "1.5rem",
+                            lg: "1.8rem",
+                        },
                         textAlign: "center",
                         width: "80%",
-                        fontSize: "1.1rem",
                     }}
                     py={2}
                 >
@@ -63,7 +83,12 @@ const MainHeader = () => {
                     fontWeight: "bold",
                     color: "white",
                     textTransform: "none",
-                    fontSize: "1.4rem",
+                    fontSize: {
+                        xs: "0.8rem",
+                        sm: "1rem",
+                        md: "1.2rem",
+                        lg: "1.5rem",
+                    },
                     padding: "0.8rem 1.5rem",
                 }}
             >

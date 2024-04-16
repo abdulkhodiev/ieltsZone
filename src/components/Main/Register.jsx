@@ -82,9 +82,14 @@ const Register = () => {
             }}
         >
             <Card
-                style={{
+                sx={{
                     minWidth: 275,
-                    maxWidth: "50%",
+                    maxWidth: {
+                        xs: "90%",
+                        sm: "90%",
+                        md: "60%",
+                        lg: "%",
+                    },
                     boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.2)",
                 }}
             >
