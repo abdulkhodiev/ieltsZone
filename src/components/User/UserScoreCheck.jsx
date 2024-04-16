@@ -56,11 +56,19 @@ const UserScoreCheck = () => {
 
     return (
         <Stack
-            width={"70%"}
             height={"100vh"}
             m={"auto"}
             p={"1em"}
             justifyContent={"center"}
+            sx={{
+                width: {
+                    xs: "100%",
+                    sm: "95%",
+                    md: "90%",
+                    lg: "75%",
+                    xl: "75%",
+                },
+            }}
         >
             <Box>
                 <Typography

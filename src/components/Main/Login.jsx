@@ -1,108 +1,153 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Paper, Typography, Container } from "@mui/material";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import {
+    Card,
+    CardContent,
+    TextField,
+    Button,
+    Typography,
+    Link,
+    Alert,
+} from "@mui/material";
 import { postLogin } from "../../utils/api/requests/login";
 import { colors } from "../../constants/colors";
+import { MuiTelInput } from "mui-tel-input";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
+const MyComponent = ({ value, onChange }) => {
+    return (
+        <MuiTelInput
+            style={{ marginBottom: "1rem" }}
+            onlyCountries={["UZ"]}
+            defaultCountry="UZ"
+            fullWidth
+            required
+            value={value}
+            onChange={onChange}
+        />
+    );
+};
 const Login = () => {
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [password, setPassword] = useState("");
     const navigate = useNavigate();
+
+    const [credentials, setCredentials] = useState({
+        phoneNumber: "",
+        password: "",
+    });
+    const [error, setError] = useState("");
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        if (name === "phoneNumber") {
+            const phoneNumberWithoutSpaces = value.replace(/\s/g, "");
+            setCredentials((prevCredentials) => ({
+                ...prevCredentials,
+                [name]: phoneNumberWithoutSpaces,
+            }));
+        } else {
+            setCredentials((prevCredentials) => ({
+                ...prevCredentials,
+                [name]: value,
+            }));
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
-            const userData = await postLogin(phoneNumber, password);
-            if (userData && userData.role) {
-                const { role } = userData;
-                if (role === "ADMIN") {
-                    navigate("/admin/mentors");
-                } else if (role === "USER") {
-                    navigate("/user/exams");
-                } else {
-                    navigate("/");
-                }
+
+        const userData = await postLogin(
+            credentials.phoneNumber,
+            credentials.password
+        );
+        if (userData && userData.role) {
+            const { role } = userData;
+            if (role === "ADMIN") {
+                navigate("/admin/mentors");
+            } else if (role === "USER") {
+                navigate("/user/exams");
             } else {
-                console.error("Unexpected response structure:", userData);
+                navigate("/");
             }
-        } catch (error) {
-            console.error("Login failed:", error);
+        } else {
+            console.error("Unexpected response structure:", userData);
         }
     };
 
     return (
-        <Container component="main" maxWidth="xs" style={{ marginTop: "8%" }}>
-            <Paper
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+            }}
+        >
+            <Card
                 style={{
-                    marginTop: "8%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    padding: "20px",
-                    backgroundColor: colors.cardColor,
-                    borderRadius: "10px",
+                    minWidth: 275,
+                    maxWidth: "35%",
+                    boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.2)",
                 }}
             >
-                <Typography
-                    component="h1"
-                    variant="h5"
+                <CardContent
                     style={{
-                        color: colors.primary,
-                        marginBottom: "20px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        padding: "2rem",
                     }}
                 >
-                    Log In
-                </Typography>
-                <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="phoneNumber"
-                        label="Phone Number"
-                        name="phoneNumber"
-                        autoComplete="phoneNumber"
-                        autoFocus
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        style={{ marginBottom: "20px" }}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={{ marginBottom: "20px" }}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        style={{
-                            margin: "30px 0 20px",
-                            backgroundColor: colors.primary,
-                            color: "#FFFFFF",
-                            "&:hover": {
-                                backgroundColor: colors.secondary,
-                                color: colors.primary,
-                            },
-                        }}
-                    >
+                    <Typography variant="h5" style={{ marginBottom: "2rem" }}>
                         Log In
-                    </Button>
-                </form>
-            </Paper>
-        </Container>
+                    </Typography>
+                    {error && (
+                        <Alert
+                            severity="error"
+                            style={{ width: "100%", marginBottom: "1rem" }}
+                        >
+                            {error}
+                        </Alert>
+                    )}
+                    <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+                        <MyComponent
+                            value={credentials.phoneNumber}
+                            onChange={(newValue) =>
+                                handleChange({
+                                    target: {
+                                        name: "phoneNumber",
+                                        value: newValue,
+                                    },
+                                })
+                            }
+                        />
+                        <TextField
+                            label="Password"
+                            variant="outlined"
+                            type="password"
+                            name="password"
+                            value={credentials.password}
+                            onChange={handleChange}
+                            fullWidth
+                            required
+                            style={{ marginBottom: "1rem" }}
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            style={{
+                                backgroundColor: "#330140",
+                                color: "white",
+                                padding: "10px 0",
+                                borderRadius: "15px",
+                                marginBottom: "1rem",
+                            }}
+                        >
+                            Log In
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

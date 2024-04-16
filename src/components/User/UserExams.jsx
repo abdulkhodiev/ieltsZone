@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Typography,
-    Stack,
-    Box,
-    Button,
-} from "@mui/material";
+import { Typography, Stack, Box, Button } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import {
     getExams,
     reserveExamTemporariy,
 } from "../../utils/api/requests/add-exams";
-
+import Accordion from "../UI/Accordion";
 import { colors } from "../../constants/colors";
 
 const UserExams = () => {
@@ -57,10 +49,18 @@ const UserExams = () => {
     return (
         <Stack
             direction={"column"}
-            width={"75%"}
             justifyContent={"center"}
             alignItems={"center"}
             padding={"0.5rem"}
+            sx={{
+                width: {
+                    xs: "100%",
+                    sm: "95%",
+                    md: "90%",
+                    lg: "75%",
+                    xl: "75%",
+                },
+            }}
         >
             <Box
                 sx={{
@@ -73,84 +73,43 @@ const UserExams = () => {
                 {exams.map((exam) => (
                     <Accordion
                         key={exam.id}
-                        sx={{
-                            boxShadow: "none",
-                            borderRadius: "1rem",
-                            overflow: "hidden",
-                            ":before": { display: "none" },
-                        }}
+                        regionName={exam.location}
+                        price={exam.price}
+                        examTime={exam.examDateTime.slice(11, 16)}
+                        examDate={exam.formattedDate}
+                        details={exam.details}
                     >
-                        <AccordionSummary
-                            aria-controls={`panel1-content-${exam.id}`}
-                            id={`panel1-header-${exam.id}`}
+                        <Box
                             sx={{
-                                bgcolor: colors.secondary,
-                                borderTopRightRadius: "1rem",
-                                borderTopLeftRadius: "1rem",
+                                display: "flex",
+                                gap: "0.5rem",
+                                justifyContent: "end",
                             }}
                         >
-                            <Box width="100%" sx={{ borderRadius: "1rem" }}>
-                                <Stack
-                                    direction={"row"}
-                                    justifyContent="space-between"
-                                    sx={{ alignItems: "center", width: "100%" }}
-                                >
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.formattedDate}
-                                    </Typography>
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.examDateTime.slice(11, 16)}
-                                    </Typography>
-                                </Stack>
-                                <Stack
-                                    direction={"row"}
-                                    justifyContent="space-between"
-                                    sx={{ width: "100%" }}
-                                >
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.location}
-                                    </Typography>
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.price} som
-                                    </Typography>
-                                </Stack>
-                            </Box>
-                        </AccordionSummary>
-                        <AccordionDetails
-                            sx={{
-                                bgcolor: colors.cardColor,
-                                borderBottomRightRadius: "1rem",
-                                borderBottomLeftRadius: "1rem",
-                            }}
-                        >
-                            <Typography>{exam.details}</Typography>
-                            <Box
+                            <Button
+                                component={Link}
+                                to={`/user/exams/apply/${exam.id}`}
+                                variant="contained"
                                 sx={{
-                                    mt: "1rem",
-                                    display: "flex",
-                                    gap: "0.5rem",
-                                    justifyContent: "end",
+                                    bgcolor: colors.primary,
+                                    borderRadius: "0.7rem",
+                                    padding: {
+                                        sm: "0.3rem 0.8rem",
+                                        md: "0.4rem 1rem",
+                                    },
+                                    fontSize: {
+                                        sm: "0.8rem",
+                                        md: "1rem",
+                                    },
+                                    gap: "0.3rem",
                                 }}
                             >
-                                <Button
-                                    onClick={() => handleReserveExam(exam.id)}
-                                    variant="contained"
-                                    sx={{
-                                        bgcolor: colors.primary,
-                                        borderRadius: "0.7rem",
-                                        gap: "0.5rem",
-                                    }}
-                                >
-                                    <AddCircleOutline />
-                                    Apply
-                                </Button>
-                            </Box>
-                        </AccordionDetails>
+                                <AddCircleOutline sx={{ fontSize: "1.5rem" }} />
+                                Apply
+                            </Button>
+                        </Box>
                     </Accordion>
                 ))}
-                <Accordion sx={{ display: "none" }}>
-                    <AccordionSummary></AccordionSummary>
-                </Accordion>
             </Box>
         </Stack>
     );

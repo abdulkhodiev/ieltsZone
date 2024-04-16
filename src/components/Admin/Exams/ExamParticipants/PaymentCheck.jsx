@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     Button,
@@ -10,6 +10,8 @@ import {
     MenuItem,
     Select,
     TextField,
+    useTheme,
+    useMediaQuery,
 } from "@mui/material";
 import { colors } from "../../../../constants/colors";
 import {
@@ -20,6 +22,8 @@ import {
 const PaymentCheck = () => {
     const { examId, rowId } = useParams();
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const [studentData, setStudentData] = useState({
         firstName: "Loading",
@@ -33,20 +37,23 @@ const PaymentCheck = () => {
     );
     const [error, setError] = useState(null);
 
-    const getPaymentCheck = async () => {
-        try {
-            const res = await getAppliedUserPaymentCheck(rowId);
-            setStudentData({
-                firstName: res.student.firstName,
-                lastName: res.student.lastName,
-                ieltsZoneStudent: res.isStudent,
-            });
-            setImage(res.paymentPictureUrl);
-        } catch (error) {
-            setError("Failed to fetch payment check data.");
-            console.error("Error fetching payment check:", error);
-        }
-    };
+    useEffect(() => {
+        const fetchPaymentCheck = async () => {
+            try {
+                const res = await getAppliedUserPaymentCheck(rowId);
+                setStudentData({
+                    firstName: res.student.firstName,
+                    lastName: res.student.lastName,
+                    ieltsZoneStudent: res.isStudent,
+                });
+                setImage(res.paymentPictureUrl);
+            } catch (error) {
+                setError("Failed to fetch payment check data.");
+                console.error("Error fetching payment check:", error);
+            }
+        };
+        fetchPaymentCheck();
+    }, [rowId]);
 
     const handleStatusChange = (event) => {
         setStudentData({ ...studentData, status: event.target.value });
@@ -57,59 +64,71 @@ const PaymentCheck = () => {
     };
 
     const handleSave = async () => {
-        await updatePaymentCheck(rowId, {
-            status: studentData.status,
-            message: studentData.message,
-        });
-        console.log("Payment check updated successfully.");
-        navigate(`/admin/exams/${examId}/participants/applied`);
+        try {
+            await updatePaymentCheck(rowId, {
+                status: studentData.status,
+                message: studentData.message,
+            });
+            console.log("Payment check updated successfully.");
+            navigate(`/admin/exams/${examId}/participants/applied`);
+        } catch (error) {
+            setError("Failed to update payment check.");
+            console.error("Error updating payment check:", error);
+        }
     };
 
-    useEffect(() => {
-        getPaymentCheck();
-    }, [rowId]);
-
     return (
-        <Stack width={"65%"} m={"auto"} p={"2rem"}>
+        <Stack width={isMobile ? "100%" : "max-content"} m="auto" p="2rem">
             {error && <Typography color="error">{error}</Typography>}
             <Stack
-                direction={"row"}
-                justifyContent={"space-between"}
-                pb={"1rem"}
+                direction="row"
+                mt={"2rem"}
+                justifyContent="space-between"
+                pb="1rem"
             >
-                <Typography variant="h4" fontWeight={"bold"}>
+                <Typography
+                    variant="h4"
+                    sx={{ textAlign: { xs: "center", md: "left" } }}
+                    fontWeight="bold"
+                >
                     {studentData.firstName} {studentData.lastName}
                 </Typography>
-                <Typography variant="h4" fontWeight={"bold"}>
+                <Typography
+                    sx={{ display: { xs: "none", md: "block" } }}
+                    variant="h4"
+                    fontWeight="bold"
+                >
                     Payment Check
                 </Typography>
             </Stack>
             <Stack
-                direction={"row"}
-                gap={"5rem"}
-                bgcolor={colors.secondary}
-                p={"2rem"}
-                justifyContent={"center"}
-                borderRadius={"1rem"}
+                direction={isMobile ? "column" : "row"}
+                gap={isMobile ? "1rem" : "5rem"}
+                p="2rem"
+                justifyContent="center"
+                borderRadius="1rem"
+                boxShadow="0px 4px 20px rgba(0,0,0,0.1)"
             >
                 <Box>
                     <img
-                        style={{ width: "350px", borderRadius: "1rem" }}
+                        style={{
+                            width: isMobile ? "100%" : "350px",
+                            borderRadius: "1rem",
+                        }}
                         src={img}
                         alt="Student Visual"
                     />
                 </Box>
                 <Box
-                    display={"flex"}
-                    flexDirection={"column"}
-                    justifyContent={"space-evenly"}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-evenly"
+                    width={isMobile ? "100%" : "auto"}
                 >
                     <Typography variant="h6">
                         IELTSZONE STUDENT:{" "}
                         <span style={{ fontWeight: "bold" }}>
-                            {studentData.ieltsZoneStudent === true
-                                ? "YES"
-                                : "NO"}
+                            {studentData.ieltsZoneStudent ? "YES" : "NO"}
                         </span>
                     </Typography>
                     <FormControl fullWidth>
@@ -122,8 +141,8 @@ const PaymentCheck = () => {
                             label="Status"
                             onChange={handleStatusChange}
                         >
-                            <MenuItem value={"REJECTED"}>REJECTED</MenuItem>
-                            <MenuItem value={"ACCEPTED"}>ACCEPTED</MenuItem>
+                            <MenuItem value="REJECTED">REJECTED</MenuItem>
+                            <MenuItem value="ACCEPTED">ACCEPTED</MenuItem>
                         </Select>
                         <TextField
                             fullWidth
@@ -137,12 +156,13 @@ const PaymentCheck = () => {
                         />
                     </FormControl>
                     <Stack
-                        direction={"row"}
+                        direction="row"
                         spacing={2}
                         mt={2}
-                        justifyContent={"end"}
+                        justifyContent="end"
                     >
                         <Button
+                            fullWidth
                             component={Link}
                             to={`/admin/exams/${examId}/participants/applied`}
                             sx={{
@@ -157,6 +177,7 @@ const PaymentCheck = () => {
                             Cancel
                         </Button>
                         <Button
+                            fullWidth
                             variant="contained"
                             type="button"
                             sx={{

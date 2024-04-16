@@ -57,11 +57,19 @@ const ExamCheck = () => {
 
     return (
         <Stack
-            width={"70%"}
             height={"100vh"}
             m={"auto"}
             p={"1em"}
             justifyContent={"center"}
+            sx={{
+                width: {
+                    xs: "100%",
+                    sm: "90%",
+                    md: "80%",
+                    lg: "70%",
+                    xl: "70%",
+                },
+            }}
         >
             <Box>
                 <Typography

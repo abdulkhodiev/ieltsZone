@@ -6,16 +6,21 @@ import {
     Box,
     Typography,
     Stack,
+    Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import LocationOn from "@mui/icons-material/LocationOn";
 import { colors } from "../../../constants/colors";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import {
     AddExam,
     EditExam,
     getExamById,
 } from "../../../utils/api/requests/add-exams";
+import Snackbar from "@mui/joy/Snackbar";
+import Input from "@mui/joy/Input";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
 
 const ExamCreation = () => {
     const { examId } = useParams();
@@ -28,6 +33,8 @@ const ExamCreation = () => {
     const [locationUrl, setLocationUrl] = useState("");
     const [details, setDetails] = useState("");
     const [speakingDates, setSpeakingDates] = useState([""]);
+    const [currency, setCurrency] = useState("dollar");
+    const [isError, setIsError] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -52,33 +59,30 @@ const ExamCreation = () => {
             navigate("/admin/exams");
         } catch (error) {
             console.error(error);
+            setIsError(true);
         }
     };
 
     useEffect(() => {
         const fetchExamDetails = async () => {
             if (examId) {
-                // Checks if there's an examId, indicating you're in "edit" mode
                 try {
                     const examDetails = await getExamById(examId);
-                    // Now populate your component's state with these details
                     setExamDateTime(examDetails.examDateTime);
                     setPrice(examDetails.price);
                     setNumberOfPlaces(examDetails.numberOfPlaces);
                     setLocation(examDetails.location);
                     setLocationUrl(examDetails.locationUrl);
                     setDetails(examDetails.details);
-                    // Ensure speakingDates is an array before setting it
                     setSpeakingDates(examDetails.speakingDates || [""]);
                 } catch (error) {
                     console.error("Failed to fetch exam details:", error);
-                    // Handle error (e.g., show a notification or set error state)
                 }
             }
         };
 
         fetchExamDetails();
-    }, [examId]); // The useEffect hook depends on examId, it runs when examId changes
+    }, [examId]);
 
     const handleSpeakingTimeChange = (index, value) => {
         const updatedSpeakingTimes = speakingDates.map((time, i) =>
@@ -103,7 +107,16 @@ const ExamCreation = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 minHeight: "100vh",
-                width: "70%",
+                padding: {
+                    xs: "3rem",
+                    sm: "2rem",
+                    md: "0rem",
+                },
+                width: {
+                    xs: "100%",
+                    sm: "90%",
+                    md: "70%",
+                },
             }}
         >
             <Typography
@@ -122,12 +135,29 @@ const ExamCreation = () => {
                 sx={{
                     mt: 1,
                     display: "flex",
-                    flexDirection: "row",
-                    gap: "2rem",
+                    flexDirection: {
+                        xs: "column",
+                        sm: "column",
+                        md: "row",
+                    },
+                    gap: {
+                        xs: 0,
+                        sm: 0,
+                        md: "2rem",
+                    },
+                    justifyContent: "center",
                     alignItems: "start",
                 }}
             >
-                <Box width={"60%"}>
+                <Box
+                    sx={{
+                        width: {
+                            xs: "100%",
+                            sm: "100%",
+                            md: "60%",
+                        },
+                    }}
+                >
                     <TextField
                         margin="normal"
                         required
@@ -142,26 +172,54 @@ const ExamCreation = () => {
                             shrink: true,
                         }}
                     />
-                    <TextField
-                        margin="normal"
-                        required
+                    <Input
+                        placeholder="Amount"
                         fullWidth
-                        id="price"
-                        label="Price"
-                        name="price"
+                        startDecorator={{ dollar: "UZS" }[currency]}
+                        endDecorator={
+                            <React.Fragment>
+                                <Divider orientation="vertical" />
+                                <Select
+                                    variant="plain"
+                                    value={currency}
+                                    onChange={(e) =>
+                                        setCurrency(e.target.value)
+                                    }
+                                    slotProps={{
+                                        listbox: {
+                                            variant: "outlined",
+                                        },
+                                    }}
+                                    sx={{
+                                        mr: -1.5,
+                                        "&:hover": { bgcolor: "transparent" },
+                                    }}
+                                >
+                                    <Option value="dollar">UZB so'm</Option>
+                                </Select>
+                            </React.Fragment>
+                        }
                         value={price}
+                        sx={{ width: "100%", height: "3.6rem", mt: "0.5rem" }}
                         onChange={(e) => setPrice(e.target.value)}
+                        type="number"
                     />
-                    <TextField
-                        margin="normal"
-                        required
+                    <Input
                         fullWidth
                         id="location"
-                        label="Location"
                         name="location"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
+                        placeholder="Exam location"
+                        startDecorator={
+                            <Button variant="soft" color="neutral">
+                                <LocationOn />
+                                UZBEKISTAN
+                            </Button>
+                        }
+                        sx={{ width: "100%", height: "3.6rem", mt: "1rem" }}
                     />
+
                     <TextField
                         margin="normal"
                         required
@@ -196,7 +254,7 @@ const ExamCreation = () => {
                         onChange={(e) => setDetails(e.target.value)}
                     />
                 </Box>
-                <Box width={"40%"}>
+                <Box sx={{ width: { xs: "100%", sm: "100%", md: "40%" } }}>
                     <Box sx={{ width: "100%" }} my={2}>
                         {speakingDates.map((time, index) => (
                             <Stack
@@ -226,6 +284,12 @@ const ExamCreation = () => {
                                     variant="contained"
                                     color="error"
                                     aria-label="delete"
+                                    sx={{
+                                        bgcolor: "red",
+                                        color: "white",
+                                        p: "1rem 1rem",
+                                        borderRadius: "0.6rem",
+                                    }}
                                 >
                                     <DeleteIcon />
                                 </Button>
@@ -234,44 +298,55 @@ const ExamCreation = () => {
                         <Button
                             onClick={addSpeakingTime}
                             variant="contained"
-                            color="primary"
+                            fullWidth
+                            sx={{
+                                fontWeight: "bold",
+
+                                bgcolor: "green",
+                                color: "white",
+                                fontSize: "0.7rem",
+                                borderRadius: "0.5rem",
+                                p: "0.7rem 1rem",
+                                ":hover": { bgcolor: colors.primary },
+                            }}
                         >
                             Add Speaking Time
                         </Button>
                     </Box>
                     <Stack
                         direction={"row"}
-                        justifyContent={"end"}
+                        justifyContent={"space-between"}
                         gap={"1rem"}
                     >
-                        <Link to="/admin/exams">
-                            <Button
-                                type="submit"
-                                fullWidth
-                                sx={{
-                                    fontWeight: "bold",
-                                    my: "1rem",
-                                    bgcolor: "red",
-                                    color: "white",
-                                    fontSize: "0.7rem",
-                                    borderRadius: "0.5rem",
-                                    p: "0.5rem 1rem",
-                                    ":hover": { bgcolor: colors.primary },
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                        </Link>
                         <Button
+                            onClick={() => navigate("/admin/exams")}
                             type="submit"
+                            fullWidth
                             sx={{
                                 fontWeight: "bold",
-                                my: "1rem",
-                                bgcolor: colors.primary,
+
+                                bgcolor: "red",
                                 color: "white",
                                 fontSize: "0.7rem",
                                 borderRadius: "0.5rem",
-                                p: "0.5rem 1rem",
+                                p: "0.7rem 1rem",
+
+                                ":hover": { bgcolor: colors.primary },
+                            }}
+                        >
+                            Cancel
+                        </Button>
+
+                        <Button
+                            fullWidth
+                            type="submit"
+                            sx={{
+                                fontWeight: "bold",
+                                bgcolor: colors.primary,
+                                color: "white",
+                                fontSize: "0.9rem",
+                                borderRadius: "0.5rem",
+                                p: "0.7rem 1rem",
                                 ":hover": { bgcolor: colors.primary },
                             }}
                         >
@@ -280,6 +355,15 @@ const ExamCreation = () => {
                     </Stack>
                 </Box>
             </Box>
+            <Snackbar
+                autoHideDuration={2000}
+                color="danger"
+                variant="solid"
+                size="lg"
+                open={isError}
+            >
+                Failed to create exam! Please try again!
+            </Snackbar>
         </Container>
     );
 };

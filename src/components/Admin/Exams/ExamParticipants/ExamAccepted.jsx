@@ -16,6 +16,7 @@ import {
     getAcceptedUsers,
     excelDownload,
 } from "../../../../utils/api/requests/accepted-user";
+// import DownloadExcel from "./DownloadExcel";
 
 const ExamAccepted = () => {
     const { examId, rowId } = useParams();
@@ -27,14 +28,16 @@ const ExamAccepted = () => {
         setRows(res);
     };
 
-    const excelExport = async () => {
-        const res = await excelDownload(examId);
-        const url = window.URL.createObjectURL(new Blob([res]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "accepted-users.xlsx");
-        document.body.appendChild(link);
-        link.click();
+    const csvDonwload = `http://localhost:8070/api/v1/registration/download-excel?examId=${examId}`;
+
+    const excelExport = (url) => {
+        const fileName = url.split("/").pop();
+        const aTag = document.createElement("a");
+        aTag.href = url;
+        aTag.setAttribute("download", fileName);
+        document.body.appendChild(aTag);
+        aTag.click();
+        aTag.remove();
     };
 
     useEffect(() => {
@@ -49,7 +52,7 @@ const ExamAccepted = () => {
     return (
         <>
             <Button
-                onClick={excelExport}
+                onClick={() => excelExport(csvDonwload)}
                 sx={{
                     my: "1rem",
                     ml: "auto",

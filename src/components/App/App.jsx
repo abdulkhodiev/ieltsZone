@@ -24,9 +24,10 @@ import {
     Login,
     Register,
 } from "../index";
-import "bootstrap/dist/css/bootstrap.css";
+
 import "./App.css";
 import UserLayout from "../User/UserLayout";
+import Accordion from "../UI/Accordion";
 
 function App() {
     return (
@@ -34,6 +35,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Main />} />
+                    <Route path="accordion" element={<Accordion />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
 

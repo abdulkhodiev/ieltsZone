@@ -44,7 +44,12 @@ const MyModal = ({ children, onSubmit }) => {
                         flexDirection: "column",
                         gap: "1rem",
                         padding: "2rem",
-                        width: "45%",
+                        width: {
+                            xs: "90%",
+                            sm: "70%",
+                            md: "50%",
+                            lg: "45%",
+                        },
 
                         bgcolor: "background.paper",
                         boxShadow: 24,

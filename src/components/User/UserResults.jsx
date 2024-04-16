@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Typography,
-    Stack,
-    Box,
-    Button,
-} from "@mui/material";
+import { Typography, Stack, Box, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { Link } from "react-router-dom";
 import { Filter9 } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import { getRegisteredExams } from "../../utils/api/requests/get-registered-exams";
+import Accordion from "../UI/Accordion";
 
 const UserResults = () => {
     const [exams, setExams] = useState([]);
@@ -38,10 +31,18 @@ const UserResults = () => {
     return (
         <Stack
             direction={"column"}
-            width={"75%"}
             justifyContent={"center"}
             alignItems={"center"}
             padding={"0.5rem"}
+            sx={{
+                width: {
+                    xs: "100%",
+                    sm: "95%",
+                    md: "90%",
+                    lg: "75%",
+                    xl: "75%",
+                },
+            }}
         >
             <Box
                 sx={{
@@ -54,88 +55,124 @@ const UserResults = () => {
                 {exams.map((exam) => (
                     <Accordion
                         key={exam.id}
-                        sx={{
-                            boxShadow: "none",
-                            borderRadius: "1rem",
-                            overflow: "hidden",
-                            ":before": { display: "none" },
-                        }}
+                        regionName={exam.location}
+                        price={exam.price}
+                        examTime={exam.examDateTime.slice(11, 16)}
+                        examDate={exam.formattedDate}
+                        details={exam.message}
                     >
-                        <AccordionSummary
-                            aria-controls={`panel1-content-${exam.id}`}
-                            id={`panel1-header-${exam.id}`}
+                        <Box
                             sx={{
-                                bgcolor: colors.secondary,
-                                borderTopRightRadius: "1rem",
-                                borderTopLeftRadius: "1rem",
+                                display: "flex",
+                                gap: "0.5rem",
+                                justifyContent: "end",
                             }}
                         >
-                            <Box width="100%" sx={{ borderRadius: "1rem" }}>
-                                <Stack
-                                    direction={"row"}
-                                    justifyContent="space-between"
-                                    sx={{ alignItems: "center", width: "100%" }}
-                                >
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.formattedDate}
-                                    </Typography>
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.examDateTime.slice(11, 16)}
-                                    </Typography>
-                                </Stack>
-                                <Stack
-                                    direction={"row"}
-                                    justifyContent="space-between"
-                                    sx={{ width: "100%" }}
-                                >
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.location}
-                                    </Typography>
-                                    <Typography sx={{ fontWeight: "bold" }}>
-                                        {exam.price} som
-                                    </Typography>
-                                </Stack>
-                            </Box>
-                        </AccordionSummary>
-                        <AccordionDetails
-                            sx={{
-                                bgcolor: colors.cardColor,
-                                borderBottomRightRadius: "1rem",
-                                borderBottomLeftRadius: "1rem",
-                            }}
-                        >
-                            <Typography>{exam.message} </Typography>
-                            <Box
+                            <Button
+                                component={Link}
+                                to={`/user/results/scores/${exam.examRegistrationId}`}
+                                variant="contained"
                                 sx={{
-                                    mt: "1rem",
-                                    display: "flex",
-                                    gap: "0.5rem",
-                                    justifyContent: "end",
+                                    bgcolor: colors.primary,
+                                    borderRadius: "0.7rem",
+                                    padding: {
+                                        xs: "0.3rem 0.8rem",
+                                        sm: "0.3rem 0.8rem",
+                                        md: "0.4rem 1rem",
+                                    },
+                                    fontSize: {
+                                        xs: "0.8rem",
+                                        sm: "0.8rem",
+                                        md: "1rem",
+                                    },
+                                    gap: "0.3rem",
                                 }}
                             >
-                                <Button
-                                    component={Link}
-                                    to={`/user/results/scores/${exam.examRegistrationId}`}
-                                    variant="contained"
-                                    sx={{
-                                        bgcolor: colors.primary,
-                                        borderRadius: "0.7rem",
-                                        gap: "0.5rem",
-
-                                        fontSize: "0.5rem",
-                                    }}
-                                >
-                                    <Filter9 sx={{ fontSize: "1.2rem" }} />
-                                    Band Score
-                                </Button>
-                            </Box>
-                        </AccordionDetails>
+                                <Filter9 sx={{ fontSize: "1.2rem" }} />
+                                Band Score
+                            </Button>
+                        </Box>
                     </Accordion>
+                    // <Accordion
+                    //     key={exam.id}
+                    //     sx={{
+                    //         boxShadow: "none",
+                    //         borderRadius: "1rem",
+                    //         overflow: "hidden",
+                    //         ":before": { display: "none" },
+                    //     }}
+                    // >
+                    //     <AccordionSummary
+                    //         aria-controls={`panel1-content-${exam.id}`}
+                    //         id={`panel1-header-${exam.id}`}
+                    //         sx={{
+                    //             bgcolor: colors.secondary,
+                    //             borderTopRightRadius: "1rem",
+                    //             borderTopLeftRadius: "1rem",
+                    //         }}
+                    //     >
+                    //         <Box width="100%" sx={{ borderRadius: "1rem" }}>
+                    //             <Stack
+                    //                 direction={"row"}
+                    //                 justifyContent="space-between"
+                    //                 sx={{ alignItems: "center", width: "100%" }}
+                    //             >
+                    //                 <Typography sx={{ fontWeight: "bold" }}>
+                    //                     {exam.formattedDate}
+                    //                 </Typography>
+                    //                 <Typography sx={{ fontWeight: "bold" }}>
+                    //                     {exam.examDateTime.slice(11, 16)}
+                    //                 </Typography>
+                    //             </Stack>
+                    //             <Stack
+                    //                 direction={"row"}
+                    //                 justifyContent="space-between"
+                    //                 sx={{ width: "100%" }}
+                    //             >
+                    //                 <Typography sx={{ fontWeight: "bold" }}>
+                    //                     {exam.location}
+                    //                 </Typography>
+                    //                 <Typography sx={{ fontWeight: "bold" }}>
+                    //                     {exam.price} som
+                    //                 </Typography>
+                    //             </Stack>
+                    //         </Box>
+                    //     </AccordionSummary>
+                    //     <AccordionDetails
+                    //         sx={{
+                    //             bgcolor: colors.cardColor,
+                    //             borderBottomRightRadius: "1rem",
+                    //             borderBottomLeftRadius: "1rem",
+                    //         }}
+                    //     >
+                    //         <Typography>{exam.message} </Typography>
+                    //         <Box
+                    //             sx={{
+                    //                 mt: "1rem",
+                    //                 display: "flex",
+                    //                 gap: "0.5rem",
+                    //                 justifyContent: "end",
+                    //             }}
+                    //         >
+                    //             <Button
+                    //                 component={Link}
+                    //                 to={`/user/results/scores/${exam.examRegistrationId}`}
+                    //                 variant="contained"
+                    //                 sx={{
+                    //                     bgcolor: colors.primary,
+                    //                     borderRadius: "0.7rem",
+                    //                     gap: "0.5rem",
+
+                    //                     fontSize: "0.5rem",
+                    //                 }}
+                    //             >
+                    //                 <Filter9 sx={{ fontSize: "1.2rem" }} />
+                    //                 Band Score
+                    //             </Button>
+                    //         </Box>
+                    //     </AccordionDetails>
+                    // </Accordion>
                 ))}
-                <Accordion sx={{ display: "none", width: "0", height: "0" }}>
-                    <AccordionSummary></AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                </Accordion>
             </Box>
         </Stack>
     );

@@ -16,7 +16,7 @@ const AdminCategory = () => {
             width={"max-content"}
             borderRadius={"1rem"}
             bgcolor={colors.secondary}
-            my={"2rem"}
+            my={"2.5rem"}
         >
             <Link to="/admin/mentors">
                 <Button

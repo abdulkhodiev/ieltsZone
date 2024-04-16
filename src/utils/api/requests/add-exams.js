@@ -41,7 +41,7 @@ export const getExamById = async (examId) => {
 export const getExams = async () => {
     try {
         const res = await $api.get("/exam");
-        return res.data || []; // Ensure always returning an array even if data is undefined.
+        return res.data || [];
     } catch (error) {
         console.error("Failed to fetch exams:", error);
         throw error;

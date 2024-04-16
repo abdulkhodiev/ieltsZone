@@ -17,7 +17,8 @@ const ExamCategory = () => {
             width={"max-content"}
             borderRadius={"1rem"}
             bgcolor={colors.secondary}
-            my={"2rem"}
+            mt={"2.5rem"}
+            mb={"1rem"}
         >
             <Button
                 component={Link}

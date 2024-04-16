@@ -9,11 +9,19 @@ const ExamParticipants = () => {
     return (
         <Stack
             direction={"column"}
-            width={"75%"}
             justifyContent={"center"}
             alignItems={"center"}
             padding={"0.5rem"}
             m={"auto"}
+            sx={{
+                width: {
+                    xs: "100%",
+                    sm: "90%",
+                    md: "90%",
+                    lg: "75%",
+                    xl: "75%",
+                },
+            }}
         >
             <ExamCategory />
             <Outlet />

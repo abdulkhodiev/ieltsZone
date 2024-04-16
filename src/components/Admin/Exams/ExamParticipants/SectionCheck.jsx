@@ -98,7 +98,6 @@ const SectionCheck = () => {
 
     return (
         <Box
-            width={"65%"}
             height={"100vh"}
             m={"auto"}
             p={"2rem"}
@@ -106,14 +105,36 @@ const SectionCheck = () => {
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
+            sx={{
+                width: {
+                    xs: "100%",
+                    md: "70%",
+                },
+            }}
         >
             <Stack spacing={4} width="100%">
                 <Stack
-                    direction={"row"}
-                    justifyContent={"space-between"}
                     alignItems="center"
+                    sx={{
+                        flexDirection: {
+                            xs: "column",
+                            md: "row",
+                        },
+                        justifyContent: {
+                            xs: "center",
+                            md: "space-between",
+                        },
+                        gap: {
+                            xs: "1rem",
+                            md: "0",
+                        },
+                    }}
                 >
-                    <Typography variant="h4" fontWeight={"bold"}>
+                    <Typography
+                        variant="h4"
+                        sx={{ textAlign: { xs: "center", md: "left" } }}
+                        fontWeight={"bold"}
+                    >
                         {userInfo.firstName} {userInfo.lastName}
                     </Typography>
                     <Typography

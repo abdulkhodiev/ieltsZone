@@ -49,7 +49,15 @@ const AdmainMentors = () => {
     return (
         <Stack
             direction={"column"}
-            width={"75%"}
+            sx={{
+                width: {
+                    xs: "100%",
+                    sm: "100%",
+                    md: "100%",
+                    lg: "75%",
+                    xl: "75%",
+                },
+            }}
             justifyContent={"center"}
             alignItems={"center"}
             padding={"0.5rem"}
