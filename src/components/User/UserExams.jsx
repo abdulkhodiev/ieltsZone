@@ -90,6 +90,7 @@ const UserExams = () => {
                                 component={Link}
                                 to={`/user/exams/apply/${exam.id}`}
                                 variant="contained"
+                                onClick={() => handleReserveExam(exam.id)}
                                 sx={{
                                     bgcolor: colors.primary,
                                     borderRadius: "0.7rem",
@@ -98,8 +99,10 @@ const UserExams = () => {
                                         md: "0.4rem 1rem",
                                     },
                                     fontSize: {
+                                        xs: "0.6rem",
                                         sm: "0.8rem",
-                                        md: "1rem",
+                                        md: "0.9rem",
+                                        lg: "0.9rem",
                                     },
                                     gap: "0.3rem",
                                 }}

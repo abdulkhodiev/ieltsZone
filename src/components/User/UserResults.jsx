@@ -81,9 +81,10 @@ const UserResults = () => {
                                         md: "0.4rem 1rem",
                                     },
                                     fontSize: {
-                                        xs: "0.8rem",
+                                        xs: "0.6rem",
                                         sm: "0.8rem",
-                                        md: "1rem",
+                                        md: "0.9rem",
+                                        lg: "0.9rem",
                                     },
                                     gap: "0.3rem",
                                 }}
@@ -93,85 +94,6 @@ const UserResults = () => {
                             </Button>
                         </Box>
                     </Accordion>
-                    // <Accordion
-                    //     key={exam.id}
-                    //     sx={{
-                    //         boxShadow: "none",
-                    //         borderRadius: "1rem",
-                    //         overflow: "hidden",
-                    //         ":before": { display: "none" },
-                    //     }}
-                    // >
-                    //     <AccordionSummary
-                    //         aria-controls={`panel1-content-${exam.id}`}
-                    //         id={`panel1-header-${exam.id}`}
-                    //         sx={{
-                    //             bgcolor: colors.secondary,
-                    //             borderTopRightRadius: "1rem",
-                    //             borderTopLeftRadius: "1rem",
-                    //         }}
-                    //     >
-                    //         <Box width="100%" sx={{ borderRadius: "1rem" }}>
-                    //             <Stack
-                    //                 direction={"row"}
-                    //                 justifyContent="space-between"
-                    //                 sx={{ alignItems: "center", width: "100%" }}
-                    //             >
-                    //                 <Typography sx={{ fontWeight: "bold" }}>
-                    //                     {exam.formattedDate}
-                    //                 </Typography>
-                    //                 <Typography sx={{ fontWeight: "bold" }}>
-                    //                     {exam.examDateTime.slice(11, 16)}
-                    //                 </Typography>
-                    //             </Stack>
-                    //             <Stack
-                    //                 direction={"row"}
-                    //                 justifyContent="space-between"
-                    //                 sx={{ width: "100%" }}
-                    //             >
-                    //                 <Typography sx={{ fontWeight: "bold" }}>
-                    //                     {exam.location}
-                    //                 </Typography>
-                    //                 <Typography sx={{ fontWeight: "bold" }}>
-                    //                     {exam.price} som
-                    //                 </Typography>
-                    //             </Stack>
-                    //         </Box>
-                    //     </AccordionSummary>
-                    //     <AccordionDetails
-                    //         sx={{
-                    //             bgcolor: colors.cardColor,
-                    //             borderBottomRightRadius: "1rem",
-                    //             borderBottomLeftRadius: "1rem",
-                    //         }}
-                    //     >
-                    //         <Typography>{exam.message} </Typography>
-                    //         <Box
-                    //             sx={{
-                    //                 mt: "1rem",
-                    //                 display: "flex",
-                    //                 gap: "0.5rem",
-                    //                 justifyContent: "end",
-                    //             }}
-                    //         >
-                    //             <Button
-                    //                 component={Link}
-                    //                 to={`/user/results/scores/${exam.examRegistrationId}`}
-                    //                 variant="contained"
-                    //                 sx={{
-                    //                     bgcolor: colors.primary,
-                    //                     borderRadius: "0.7rem",
-                    //                     gap: "0.5rem",
-
-                    //                     fontSize: "0.5rem",
-                    //                 }}
-                    //             >
-                    //                 <Filter9 sx={{ fontSize: "1.2rem" }} />
-                    //                 Band Score
-                    //             </Button>
-                    //         </Box>
-                    //     </AccordionDetails>
-                    // </Accordion>
                 ))}
             </Box>
         </Stack>

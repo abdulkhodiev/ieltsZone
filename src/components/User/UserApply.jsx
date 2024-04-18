@@ -14,7 +14,6 @@ import {
     Paper,
     CardMedia,
 } from "@mui/material";
-
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
     userInfo,
@@ -23,6 +22,7 @@ import {
 } from "../../utils/api/requests/user-apply";
 import { colors } from "../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import dayjs from "dayjs";
 
 const UserApply = () => {
     const { examId } = useParams();
@@ -54,7 +54,7 @@ const UserApply = () => {
         try {
             const userData = {
                 isStudent,
-                speakingDate: speakingDate, // Set the formatted speaking date
+                speakingDate: speakingDate,
                 paymentPictureId,
             };
             await userInfo(examId, userData);
@@ -170,7 +170,9 @@ const UserApply = () => {
                                             key={date}
                                             value={date}
                                             control={<Radio />}
-                                            label={date}
+                                            label={dayjs(date).format(
+                                                "HH:mm | DD MMM YYYY"
+                                            )}
                                         />
                                     ))}
                                 </RadioGroup>

@@ -295,7 +295,8 @@ const AdminExams = () => {
                                     fontSize: {
                                         xs: "0.6rem",
                                         sm: "0.8rem",
-                                        md: "1rem",
+                                        md: "0.9rem",
+                                        lg: "0.9rem",
                                     },
                                     gap: "0.3rem",
                                 }}
