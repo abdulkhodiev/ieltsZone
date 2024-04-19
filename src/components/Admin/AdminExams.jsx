@@ -159,6 +159,7 @@ const AdminExams = () => {
                         price={exam.price}
                         examTime={exam.examDateTime.slice(11, 16)}
                         examDate={exam.formattedDate}
+                        locationUrl={exam.locationUrl}
                         details={exam.details}
                     >
                         <Box

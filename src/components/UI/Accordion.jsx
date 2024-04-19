@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { colors } from "../../constants/colors";
+import LocationOn from "@mui/icons-material/LocationOn";
+import { Button } from "@mui/material";
 
 const Accordion = ({
     children,
@@ -9,6 +11,7 @@ const Accordion = ({
     examDate,
     examTime,
     details,
+    locationUrl,
 }) => {
     const [expanded, setExpanded] = useState(false);
     const [fontSize, setFontSize] = useState("1.2rem");
@@ -117,6 +120,25 @@ const Accordion = ({
             </div>
             <div style={contentStyle} className="content">
                 <div style={{ padding: "1rem" }}>
+                    <h4
+                        style={{
+                            marginBottom: "1rem",
+                            fontWeight: "normal",
+
+                            borderRadius: "0.6rem",
+                        }}
+                    >
+                        <Button
+                            colors="neutral"
+                            sx={{
+                                color: colors.primary,
+                            }}
+                        >
+                            <LocationOn />
+                        </Button>
+
+                        {locationUrl}
+                    </h4>
                     <p>{details}</p>
                 </div>
             </div>
