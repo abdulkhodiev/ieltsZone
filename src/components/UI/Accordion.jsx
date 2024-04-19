@@ -3,7 +3,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { colors } from "../../constants/colors";
 import LocationOn from "@mui/icons-material/LocationOn";
 import { Button } from "@mui/material";
-
+import { Link } from "react-router-dom";
 const Accordion = ({
     children,
     regionName,
@@ -120,25 +120,22 @@ const Accordion = ({
             </div>
             <div style={contentStyle} className="content">
                 <div style={{ padding: "1rem" }}>
-                    <h4
+                    <a
+                        href={locationUrl}
                         style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
                             marginBottom: "1rem",
-                            fontWeight: "normal",
-
+                            color: `${colors.primary}`,
+                            fontWeight: "bold",
                             borderRadius: "0.6rem",
                         }}
                     >
-                        <Button
-                            colors="neutral"
-                            sx={{
-                                color: colors.primary,
-                            }}
-                        >
-                            <LocationOn />
-                        </Button>
+                        <LocationOn />
+                        {regionName}
+                    </a>
 
-                        {locationUrl}
-                    </h4>
                     <p>{details}</p>
                 </div>
             </div>
