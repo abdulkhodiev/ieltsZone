@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
     Card,
     CardContent,
@@ -9,7 +9,7 @@ import {
     Alert,
 } from "@mui/material";
 import { postLogin } from "../../utils/api/requests/login";
-import { colors } from "../../constants/colors";
+import Context from "../../context/Context";
 import { MuiTelInput } from "mui-tel-input";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
@@ -27,8 +27,8 @@ const MyComponent = ({ value, onChange }) => {
     );
 };
 const Login = () => {
+    const { role, setRole } = useContext(Context);
     const navigate = useNavigate();
-
     const [credentials, setCredentials] = useState({
         phoneNumber: "",
         password: "",
@@ -54,21 +54,25 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const userData = await postLogin(
-            credentials.phoneNumber,
-            credentials.password
-        );
-        if (userData && userData.role) {
-            const { role } = userData;
-            if (role === "ADMIN") {
-                navigate("/admin/mentors");
-            } else if (role === "USER") {
-                navigate("/user/exams");
+        try {
+            const userData = await postLogin(
+                credentials.phoneNumber,
+                credentials.password
+            );
+
+            if (userData && userData.role) {
+                const { role } = userData;
+                if (role === "ADMIN") {
+                    navigate("/admin/mentors");
+                } else if (role === "USER") {
+                    navigate("/user/exams");
+                } else {
+                    navigate("/");
+                }
             } else {
-                navigate("/");
             }
-        } else {
-            console.error("Unexpected response structure:", userData);
+        } catch (error) {
+            setError(error.response.data.message);
         }
     };
 
@@ -150,6 +154,16 @@ const Login = () => {
                             Log In
                         </Button>
                     </form>
+                    <Typography variant="body2">
+                        I do not have an account?{" "}
+                        <Link
+                            component={RouterLink}
+                            to="/register"
+                            style={{ color: "#330140" }}
+                        >
+                            Sign Up
+                        </Link>
+                    </Typography>
                 </CardContent>
             </Card>
         </div>

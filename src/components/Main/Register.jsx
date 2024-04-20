@@ -68,7 +68,7 @@ const Register = () => {
             });
             navigate("/login");
         } catch (err) {
-            setError(err.message || "Failed to register.");
+            setError(err.response.data.message || "Failed to register.");
         }
     };
 

@@ -12,6 +12,7 @@ const Accordion = ({
     examTime,
     details,
     locationUrl,
+    fullRegionName,
 }) => {
     const [expanded, setExpanded] = useState(false);
     const [fontSize, setFontSize] = useState("1.2rem");
@@ -121,6 +122,7 @@ const Accordion = ({
             <div style={contentStyle} className="content">
                 <div style={{ padding: "1rem" }}>
                     <a
+                        target="_blank"
                         href={locationUrl}
                         style={{
                             display: "flex",
@@ -133,10 +135,10 @@ const Accordion = ({
                         }}
                     >
                         <LocationOn />
-                        {regionName}
+                        {fullRegionName}
                     </a>
 
-                    <p>{details}</p>
+                    <pre style={{ whiteSpace: "pre-wrap" }}>{details}</pre>
                 </div>
             </div>
             <div className="buttons" style={buttonStyle}>

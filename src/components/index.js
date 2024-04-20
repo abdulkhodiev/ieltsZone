@@ -26,3 +26,4 @@ export { default as UserSectionScore } from "./User/UserSectionScore.jsx";
 export { default as UserScoreCheck } from "./User/UserScoreCheck.jsx";
 export { default as Login } from "./Main/Login.jsx";
 export { default as Register } from "./Main/Register.jsx";
+export { default as NotFound } from "./Main/NotFound.jsx";

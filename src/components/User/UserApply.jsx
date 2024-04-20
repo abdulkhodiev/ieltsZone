@@ -19,6 +19,7 @@ import {
     userInfo,
     paymentPic,
     speakingDates,
+    cancelReservation,
 } from "../../utils/api/requests/user-apply";
 import { colors } from "../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -27,12 +28,10 @@ import dayjs from "dayjs";
 const UserApply = () => {
     const { examId } = useParams();
     const navigate = useNavigate();
-
     const [isStudent, setIsStudent] = useState(true);
     const [speakingDate, setSpeakingDate] = useState("");
     const [paymentPictureId, setPaymentPictureId] = useState(0);
     const [availableSpeakingTimes, setAvailableSpeakingTimes] = useState([]);
-    const [paymentScreenshot, setPaymentScreenshot] = useState(null);
     const [paymentImagePreview, setPaymentImagePreview] = useState(null);
 
     useEffect(() => {
@@ -59,11 +58,9 @@ const UserApply = () => {
             };
             await userInfo(examId, userData);
 
-            alert("Application submitted successfully!");
             navigate("/user/exams");
         } catch (error) {
             console.error("Error submitting application:", error);
-            alert("Failed to submit application. Please try again.");
         }
     };
 
@@ -77,6 +74,11 @@ const UserApply = () => {
         } catch (error) {
             console.error("Error uploading payment image:", error);
         }
+    };
+
+    const handleCancel = () => {
+        cancelReservation(examId);
+        navigate("/user/exams");
     };
     return (
         <Container
@@ -227,8 +229,7 @@ const UserApply = () => {
                                 justifyContent="center"
                             >
                                 <Button
-                                    component={Link}
-                                    to="/user/exams"
+                                    onClick={handleCancel}
                                     variant="contained"
                                     sx={{
                                         bgcolor: "red",

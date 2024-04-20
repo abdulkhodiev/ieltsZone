@@ -73,11 +73,13 @@ const UserExams = () => {
                 {exams.map((exam) => (
                     <Accordion
                         key={exam.id}
-                        regionName={exam.location}
+                        regionName={exam.location.split(",")[0]}
                         price={exam.price}
                         examTime={exam.examDateTime.slice(11, 16)}
                         examDate={exam.formattedDate}
                         details={exam.details}
+                        fullRegionName={exam.location}
+                        locationUrl={exam.locationUrl}
                     >
                         <Box
                             sx={{

@@ -11,15 +11,17 @@ import Menu from "@mui/icons-material/Menu";
 import ListItemButton from "@mui/joy/ListItemButton";
 import { Outlet, useNavigate } from "react-router-dom";
 import { colors } from "../../constants/colors";
-import { getExams } from "../../utils/api/requests/add-exams";
+import { getExams, getMe } from "../../utils/api/requests/add-exams";
 import { format } from "date-fns";
 import logo from "../../assets/logo.jpg";
 import { Box } from "@mui/material";
+import Cookies from "js-cookie";
 
 const AdminLayout = () => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [availableExams, setAvailableExams] = useState([]);
+    const [userInfo, setUserInfo] = useState({});
 
     const fetchExams = useCallback(async () => {
         try {
@@ -32,13 +34,26 @@ const AdminLayout = () => {
                     "MMMM do yyyy"
                 ),
             }));
-
+            fetchUserInfo();
             setAvailableExams(formattedExams);
         } catch (error) {
             console.error("Error fetching exams:", error);
         }
     }, []);
 
+    const fetchUserInfo = useCallback(async () => {
+        try {
+            const res = await getMe();
+            setUserInfo(res);
+        } catch (error) {
+            console.error("Error fetching user info:", error);
+        }
+    });
+
+    const LogOut = () => {
+        Cookies.remove("token", { path: "/" });
+        navigate("/");
+    };
     useEffect(() => {
         fetchExams();
     }, [fetchExams]);
@@ -168,18 +183,21 @@ const AdminLayout = () => {
                             <Stack
                                 direction="row"
                                 justifyContent="space-between"
+                                alignItems="center"
                                 useFlexGap
                                 spacing={1}
                             >
                                 <Button
                                     variant="outlined"
-                                    onClick={() => navigate("/")}
+                                    sx={{
+                                        border: `2px solid ${colors.primary}`,
+                                        color: colors.primary,
+                                    }}
+                                    onClick={LogOut}
                                 >
                                     Log Out
                                 </Button>
-                                <Button onClick={() => setOpen(false)}>
-                                    Close
-                                </Button>
+                                <DialogTitle>{userInfo.firstName}</DialogTitle>
                             </Stack>
                         </Sheet>
                     </Drawer>

@@ -19,22 +19,21 @@ export const AddExam = async (examData) => {
         details,
         speakingDates,
     });
-    return res.data; // Assuming you want to return the response data
-};
-
-export const EditExam = async (examId, examData) => {
-    const res = await $api.put(`/exam/${examId}`, examData); // Send examData as the request body
     return res.data;
 };
 
-// Assuming $api is an Axios instance already configured elsewhere in your project
+export const EditExam = async (examId, examData) => {
+    const res = await $api.put(`/exam/${examId}`, examData);
+    return res.data;
+};
+
 export const getExamById = async (examId) => {
     try {
         const response = await $api.get(`/exam/${examId}`);
-        return response.data; // This should be the exam details object
+        return response.data;
     } catch (error) {
         console.error("Fetching exam details failed:", error);
-        throw error; // Rethrowing the error so it can be handled or logged by the caller
+        throw error;
     }
 };
 
@@ -46,6 +45,11 @@ export const getExams = async () => {
         console.error("Failed to fetch exams:", error);
         throw error;
     }
+};
+
+export const getMe = async () => {
+    const res = await $api.get("auth/me");
+    return res.data;
 };
 
 export const deleteExams = async (examId) => {

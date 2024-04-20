@@ -34,3 +34,10 @@ export const speakingDates = async (examId, availabTime) => {
         throw error;
     }
 };
+
+export const cancelReservation = async (studentId) => {
+    const res = await $api.put(
+        `/registration/cancel-reservation?examId=${studentId}`
+    );
+    return res.data;
+};

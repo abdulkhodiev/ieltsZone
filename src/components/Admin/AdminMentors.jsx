@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     Table,
     Stack,
@@ -14,11 +14,9 @@ import {
 
 import { getAdmins } from "../../utils/api/requests/get-admins";
 import { AddAdminJs } from "../../utils/api/requests/add-admins";
-import axios from "axios";
+import Context from "../../context/Context";
 import MyModal from "../UI/MyModal";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
-import PersonIcon from "@mui/icons-material/Person";
 
 const AdmainMentors = () => {
     const [rows, setRows] = useState([]);

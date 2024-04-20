@@ -15,11 +15,12 @@ import { format } from "date-fns";
 import logo from "../../assets/logo.jpg";
 import { Box } from "@mui/material";
 import { getRegisteredExams } from "../../utils/api/requests/get-registered-exams";
-
+import { getMe } from "../../utils/api/requests/add-exams";
 const UserLayout = () => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [availableExams, setAvailableExams] = useState([]);
+    const [userInfo, setUserInfo] = useState({});
 
     const fetchExams = useCallback(async () => {
         try {
@@ -32,12 +33,26 @@ const UserLayout = () => {
                     "MMMM do yyyy"
                 ),
             }));
-
+            fetchUserInfo();
             setAvailableExams(formattedExams);
         } catch (error) {
             console.error("Error fetching exams:", error);
         }
     }, []);
+
+    const fetchUserInfo = useCallback(async () => {
+        try {
+            const res = await getMe();
+            setUserInfo(res);
+        } catch (error) {
+            console.error("Error fetching user info:", error);
+        }
+    });
+
+    const LogOut = () => {
+        Cookies.remove("token", { path: "/" });
+        navigate("/");
+    };
 
     useEffect(() => {
         fetchExams();
@@ -108,7 +123,8 @@ const UserLayout = () => {
                                     }}
                                     alt=""
                                 />{" "}
-                                IELTSZONE
+                                {userInfo.firstName}, {userInfo.lastName},{" "}
+                                {userInfo.role}
                             </DialogTitle>
                             <ModalClose />
                             <Divider />

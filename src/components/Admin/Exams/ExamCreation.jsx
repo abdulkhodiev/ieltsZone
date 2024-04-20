@@ -355,13 +355,7 @@ const ExamCreation = () => {
                     </Stack>
                 </Box>
             </Box>
-            <Snackbar
-                autoHideDuration={2000}
-                color="danger"
-                variant="solid"
-                size="lg"
-                open={isError}
-            >
+            <Snackbar color="danger" variant="solid" size="lg" open={isError}>
                 Failed to create exam! Please try again!
             </Snackbar>
         </Container>
