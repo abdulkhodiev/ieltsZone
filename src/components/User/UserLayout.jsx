@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import Drawer from "@mui/joy/Drawer";
 import Button from "@mui/joy/Button";
 import DialogTitle from "@mui/joy/DialogTitle";
@@ -16,11 +17,33 @@ import logo from "../../assets/logo.jpg";
 import { Box } from "@mui/material";
 import { getRegisteredExams } from "../../utils/api/requests/get-registered-exams";
 import { getMe } from "../../utils/api/requests/add-exams";
+import Cookies from "js-cookie";
 const UserLayout = () => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [availableExams, setAvailableExams] = useState([]);
     const [userInfo, setUserInfo] = useState({});
+    const location = useLocation();
+
+    const examsDynamicStyles = location.pathname.includes("user/exams")
+        ? {
+              bgcolor: colors.primary,
+              color: "white",
+              borderRadius: "0.6rem",
+          }
+        : {};
+
+    const resultsDynamicStyles = location.pathname.includes("user/results")
+        ? {
+              bgcolor: colors.primary,
+              color: "  white",
+              borderRadius: "0.6rem",
+              "&:hover": {
+                  bgcolor: colors.primary,
+                  color: "white",
+              },
+          }
+        : {};
 
     const fetchExams = useCallback(async () => {
         try {
@@ -123,8 +146,7 @@ const UserLayout = () => {
                                     }}
                                     alt=""
                                 />{" "}
-                                {userInfo.firstName}, {userInfo.lastName},{" "}
-                                {userInfo.role}
+                                IELTSZONE
                             </DialogTitle>
                             <ModalClose />
                             <Divider />
@@ -139,11 +161,25 @@ const UserLayout = () => {
                                 }}
                             >
                                 <ListItemButton
+                                    sx={{
+                                        ...examsDynamicStyles,
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                    }}
                                     onClick={() => navigate("/user/exams")}
                                 >
                                     Exams{" "}
                                 </ListItemButton>
                                 <ListItemButton
+                                    sx={{
+                                        ...resultsDynamicStyles,
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                    }}
                                     onClick={() => navigate("/user/results")}
                                 >
                                     Results
@@ -183,18 +219,21 @@ const UserLayout = () => {
                             <Stack
                                 direction="row"
                                 justifyContent="space-between"
+                                alignItems={"center"}
                                 useFlexGap
                                 spacing={1}
                             >
                                 <Button
                                     variant="outlined"
-                                    onClick={() => navigate("/")}
+                                    onClick={LogOut}
+                                    sx={{
+                                        border: `2px solid ${colors.primary}`,
+                                        color: colors.primary,
+                                    }}
                                 >
                                     Log Out
                                 </Button>
-                                <Button onClick={() => setOpen(false)}>
-                                    Close
-                                </Button>
+                                <DialogTitle>{userInfo.firstName}</DialogTitle>
                             </Stack>
                         </Sheet>
                     </Drawer>

@@ -6,6 +6,9 @@ import {
     getStudentInfo,
     getSectionResults,
 } from "../../utils/api/requests/exam-check-by-section";
+import UserCertificate from "../UI/UserCertificate";
+
+import dayjs from "dayjs";
 
 const UserScoreCheck = () => {
     const { examRegistrationId } = useParams();
@@ -20,6 +23,7 @@ const UserScoreCheck = () => {
 
     const [name, setName] = useState({ firstName: "", lastName: "" });
     const [sectionResults, setSectionResults] = useState([]);
+    const [examDate, setExamDate] = useState({});
 
     const fetchName = async () => {
         const data = await getStudentInfo(examRegistrationId);
@@ -29,6 +33,7 @@ const UserScoreCheck = () => {
     const fetchSectionResults = async () => {
         const data = await getSectionResults(examRegistrationId);
         setSectionResults(data.sectionResults);
+        setExamDate(data.examDate);
     };
 
     useEffect(() => {
@@ -70,7 +75,24 @@ const UserScoreCheck = () => {
                 },
             }}
         >
-            <Box>
+            <Stack
+                direction={{
+                    xs: "column",
+                    sm: "column",
+                    md: "row",
+                    lg: "row",
+                    xl: "row",
+                }}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                gap={{
+                    xs: "0rem",
+                    sm: "0rem",
+                    md: "2rem",
+                    lg: "2rem",
+                    xl: "2rem",
+                }}
+            >
                 <Typography
                     variant="h4"
                     fontWeight={"bold"}
@@ -79,7 +101,14 @@ const UserScoreCheck = () => {
                 >
                     {name.firstName} {name.lastName}
                 </Typography>
-            </Box>
+
+                <UserCertificate
+                    name={name}
+                    sectionResults={sectionResults}
+                    bandScore={bandScore}
+                    dateTime={dayjs(examDate).format("MMM DD, YYYY")}
+                />
+            </Stack>
 
             {sections.map((section) => (
                 <Box key={section}>

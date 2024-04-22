@@ -5,6 +5,10 @@
     font-family: "Poppins", sans-serif !important;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 .navbarLinks {
     text-decoration: none;
     font-weight: 500;

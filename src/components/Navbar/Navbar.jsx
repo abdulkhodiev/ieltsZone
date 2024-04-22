@@ -54,12 +54,39 @@ const Navbar = () => {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box
+            sx={{
+                flexGrow: 1,
+                position: "sticky",
+                top: "0",
+                zIndex: 999,
+                bgcolor: {
+                    xs: "none",
+                    sm: "white",
+                    md: "white",
+                    lg: "white",
+                },
+            }}
+        >
             <Stack
+                border={{
+                    xs: "2px solid black",
+                    sm: "none",
+                    md: "none",
+                    lg: "none",
+                }}
+                borderRadius={"1rem"}
+                my={{
+                    xs: "0.5rem",
+                    sm: "0rem",
+                    md: "0rem",
+                    lg: "0rem",
+                }}
                 id="home"
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
+                overflowY={"hidden"}
                 sx={{
                     height: {
                         xs: "10vh",
@@ -68,7 +95,19 @@ const Navbar = () => {
                         lg: "15vh",
                         xl: "15vh",
                     },
-                    padding: "0 10px",
+                    padding: {
+                        xs: "0.5rem",
+                        sm: "0.5rem",
+                        md: "0rem",
+                        lg: "0rem",
+                        xl: "0rem",
+                    },
+                    bgcolor: {
+                        xs: "white",
+                        sm: "none",
+                        md: "none",
+                        lg: "none",
+                    },
                 }}
             >
                 <IconButton
@@ -77,7 +116,7 @@ const Navbar = () => {
                     edge="start"
                     onClick={handleDrawerToggle}
                     sx={{
-                        mr: 2,
+                        ml: "0.1rem",
                         display: { sm: "none" },
                         bgcolor: colors.primary,
                         color: "white",
@@ -87,6 +126,25 @@ const Navbar = () => {
                 >
                     <MenuIcon />
                 </IconButton>
+
+                <Box
+                    sx={{
+                        display: {
+                            xs: "block",
+                            sm: "none",
+                            md: "none",
+                            lg: "none",
+                        },
+                    }}
+                >
+                    <Typography
+                        variant="h5"
+                        sx={{ color: `${colors.primary}`, fontWeight: "bold" }}
+                    >
+                        IELTSZONE
+                    </Typography>
+                </Box>
+
                 <Box
                     sx={{
                         display: { xs: "none", sm: "flex" },
@@ -100,18 +158,24 @@ const Navbar = () => {
                         width="100px"
                         style={{ borderRadius: "0.8rem" }}
                     />
-                    <Link
-                        to="#"
-                        style={{ textDecoration: "none", color: "inherit" }}
+                    <a
+                        href="#"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                        }}
                     >
                         <Typography variant="h6">Home</Typography>
-                    </Link>
-                    <Link
-                        to="#about"
-                        style={{ textDecoration: "none", color: "inherit" }}
+                    </a>
+                    <a
+                        href="#about"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                        }}
                     >
                         <Typography variant="h6">About Us</Typography>
-                    </Link>
+                    </a>
                 </Box>
                 <Box
                     sx={{

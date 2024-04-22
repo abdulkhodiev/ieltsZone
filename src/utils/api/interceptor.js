@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import axios from "axios";
 
-export const API_URL = "http://mclass.uz/api/v1/";
+export const API_URL = "http://localhost:8080/api/v1/";
 
 const options = {
     baseURL: API_URL,

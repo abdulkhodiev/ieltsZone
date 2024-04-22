@@ -21,7 +21,7 @@ const MainContact = () => {
                 py={{ xs: 5, sm: 5, md: 0 }}
             >
                 <Box
-                    width={{ xs: "100%", sm: "100%", md: "40%" }}
+                    width={{ xs: "100%", sm: "100%", md: "20%" }}
                     sx={{
                         display: "flex",
                         flexDirection: "column",
@@ -43,7 +43,7 @@ const MainContact = () => {
                         variant="body2"
                         fontSize={"0.7rem"}
                         color={colors.secondary}
-                        textAlign={{ xs: "center", sm: "center", md: "left" }}
+                        textAlign={"center"}
                     >
                         IELTSZONE is a specialized teaching center that prepares
                         individuals for the IELTS exam, with a focus on Mock
@@ -54,7 +54,7 @@ const MainContact = () => {
                     <Typography
                         color={colors.secondary}
                         variant="h6"
-                        style={{
+                        sx={{
                             border: `2px solid ${colors.secondary}`,
                             padding: "0.5rem",
                             borderRadius: "1rem",

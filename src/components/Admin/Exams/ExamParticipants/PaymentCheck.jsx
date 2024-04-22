@@ -83,6 +83,7 @@ const PaymentCheck = () => {
             <Stack
                 direction="row"
                 mt={"2rem"}
+                gap={"2rem"}
                 justifyContent="space-between"
                 pb="1rem"
             >

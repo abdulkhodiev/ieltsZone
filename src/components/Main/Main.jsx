@@ -8,7 +8,13 @@ import MainContact from "./MainContact";
 const Main = () => {
     return (
         <>
-            <Stack sx={{ mx: "auto", width: "90%" }}>
+            <Stack
+                sx={{
+                    mx: "auto",
+                    width: "90%",
+                    height: "100%",
+                }}
+            >
                 <Navbar />
                 <MainHeader />
                 <MainAbout />

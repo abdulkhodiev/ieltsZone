@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import Drawer from "@mui/joy/Drawer";
 import Button from "@mui/joy/Button";
 import DialogTitle from "@mui/joy/DialogTitle";
@@ -22,6 +23,27 @@ const AdminLayout = () => {
     const navigate = useNavigate();
     const [availableExams, setAvailableExams] = useState([]);
     const [userInfo, setUserInfo] = useState({});
+    const location = useLocation();
+
+    const mentorsDynamicStyles = location.pathname.includes("admin/mentors")
+        ? {
+              bgcolor: colors.primary,
+              color: "white",
+              borderRadius: "0.6rem",
+          }
+        : {};
+
+    const examsDynamicStyles = location.pathname.includes("admin/exams")
+        ? {
+              bgcolor: colors.primary,
+              color: "  white",
+              borderRadius: "0.6rem",
+              "&:hover": {
+                  bgcolor: colors.primary,
+                  color: "white",
+              },
+          }
+        : {};
 
     const fetchExams = useCallback(async () => {
         try {
@@ -139,11 +161,25 @@ const AdminLayout = () => {
                                 }}
                             >
                                 <ListItemButton
+                                    sx={{
+                                        ...mentorsDynamicStyles,
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                    }}
                                     onClick={() => navigate("/admin/mentors")}
                                 >
                                     Mentors
                                 </ListItemButton>
                                 <ListItemButton
+                                    sx={{
+                                        ...examsDynamicStyles,
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                    }}
                                     onClick={() => navigate("/admin/exams")}
                                 >
                                     Exams
