@@ -28,7 +28,7 @@ const ExamAccepted = () => {
         setRows(res);
     };
 
-    const csvDonwload = `http://localhost:8070/api/v1/registration/download-excel?examId=${examId}`;
+    const csvDonwload = `http://localhost:8080/api/v1/registration/download-excel?examId=${examId}`;
 
     const excelExport = (url) => {
         const fileName = url.split("/").pop();

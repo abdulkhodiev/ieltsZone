@@ -96,9 +96,7 @@ const AdminLayout = () => {
                 <React.Fragment>
                     <Button
                         variant="outlined"
-                        sx={{
-                            border: `2px solid ${colors.primary}`,
-                        }}
+     
                         color="neutral"
                         onClick={() => setOpen(true)}
                     >

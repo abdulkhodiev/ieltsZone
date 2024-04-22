@@ -8,11 +8,11 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getExamDetails } from "../../utils/api/requests/get-registered-exams";
 
 import { colors } from "../../constants/colors";
-import { max } from "date-fns";
+
 
 const UserSectionScore = () => {
     const { examRegistrationId, section } = useParams();
@@ -20,6 +20,7 @@ const UserSectionScore = () => {
     const [userInfo, setUserInfo] = useState({});
     const [sectionResult, setSectionResult] = useState({});
     const theme = useTheme();
+    const [img, setImg] = useState("https://media.istockphoto.com/id/1367679511/photo/ielts-wood-word-with-liight-bulb.jpg?b=1&s=612x612&w=0&k=20&c=odmK7XZcziYZma_77VGOfWnEVG8Qq8KaaJSN2P2iCi0=")
     const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
     const fetchUserInfo = async () => {
@@ -31,11 +32,21 @@ const UserSectionScore = () => {
                     result.sectionName.toUpperCase() === section.toUpperCase()
             )
         );
+  
     };
+
+
 
     useEffect(() => {
         fetchUserInfo();
     }, []);
+
+    useEffect(() => {
+        if (sectionResult.resultPictureUrl !== null && sectionResult.resultPictureUrl !== undefined) {
+            setImg(sectionResult.resultPictureUrl);
+        }
+    }, [sectionResult]);
+    
 
     return (
         <Box
@@ -98,8 +109,8 @@ const UserSectionScore = () => {
                             width: isMobile ? "100%" : "350px",
                             borderRadius: "1rem",
                         }}
-                        src={sectionResult.resultPictureUrl}
-                        alt="Loading..."
+                        src={img}
+                        alt="..."
                     />
                     <Stack
                         pl={isMobile ? 0 : "2rem"}
