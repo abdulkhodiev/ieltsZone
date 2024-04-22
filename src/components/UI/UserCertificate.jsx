@@ -12,13 +12,38 @@ const UserCertificate = ({ name, sectionResults, bandScore, dateTime }) => {
             const ctx = canvas.getContext("2d");
             const image = new Image();
 
+            const firstName = name.firstName;
+            const lastName = name.lastName;
+
+            const fullnameLength = firstName.length + lastName.length;
+
+            const getX = (fullnameLength) => {
+                if (fullnameLength > 10 && fullnameLength < 13) {
+                    return 480;
+                } else if (fullnameLength > 13 && fullnameLength < 15) {
+                    return 470;
+                } else if (fullnameLength > 15 && fullnameLength < 17) {
+                    return 460;
+                } else if (fullnameLength > 17 && fullnameLength < 20) {
+                    return 450;
+                } else if (fullnameLength > 20 && fullnameLength < 23) {
+                    return 440;
+                } else {
+                    return 430;
+                }
+            };
+
             image.onload = () => {
                 ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
                 ctx.fillStyle = "black";
                 ctx.font = "30px Arial";
 
-                ctx.fillText(name.firstName + " " + name.lastName, 520, 345); // Example position (center of width and specific height)
+                ctx.fillText(
+                    firstName + " " + lastName,
+                    getX(fullnameLength),
+                    345
+                );
 
                 sectionResults.forEach((result, index) => {
                     ctx.fillText(result.score, 200 + index * 152, 525);

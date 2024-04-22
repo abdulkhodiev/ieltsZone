@@ -1,8 +1,11 @@
 import React from "react";
 import { colors } from "../../constants/colors";
 import { Box, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const MainHeader = () => {
+    const navigate = useNavigate();
+
     return (
         <Box
             height={"80vh"}
@@ -75,6 +78,7 @@ const MainHeader = () => {
                 </Typography>
             </Box>
             <Button
+                onClick={() => navigate("/register")}
                 variant="contained"
                 sx={{
                     bgcolor: colors.primary,

@@ -58,6 +58,9 @@ const Register = () => {
         if (credentials.password !== credentials.confirmPassword) {
             setError("Passwords do not match.");
             return;
+        } else if (credentials.password.length < 8) {
+            setError("Password must be at least 8 characters long.");
+            return;
         }
         try {
             await register({
@@ -68,7 +71,12 @@ const Register = () => {
             });
             navigate("/login");
         } catch (err) {
-            setError(err.response.data.message || "Failed to register.");
+            setError(
+                err.response.data.password ||
+                    err.response.data.phoneNumber ||
+                    err.response.data ||
+                    "Failed to register."
+            );
         }
     };
 
