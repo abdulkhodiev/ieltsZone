@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Stack, Box, Button } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
+import Snackbar from "@mui/joy/Snackbar";
 import {
     getExams,
     reserveExamTemporariy,
@@ -12,6 +13,8 @@ import { colors } from "../../constants/colors";
 const UserExams = () => {
     const [exams, setExams] = useState([]);
     const navigate = useNavigate();
+    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const fetchExams = async () => {
         try {
@@ -34,11 +37,12 @@ const UserExams = () => {
 
     const handleReserveExam = async (examId) => {
         const response = await reserveExamTemporariy(examId);
-        if ((response.success = true)) {
+        console.log(response);
+        if (response.success == true) {
             navigate(`/user/exams/apply/${examId}`);
         } else {
-            console.warn();
-            ("No places left for this exam.");
+            setIsError(true);
+            setErrorMessage(response.message);
         }
     };
 
@@ -90,7 +94,6 @@ const UserExams = () => {
                         >
                             <Button
                                 component={Link}
-                                to={`/user/exams/apply/${exam.id}`}
                                 variant="contained"
                                 onClick={() => handleReserveExam(exam.id)}
                                 sx={{
@@ -116,6 +119,16 @@ const UserExams = () => {
                     </Accordion>
                 ))}
             </Box>
+            <Snackbar
+                color="danger"
+                variant="solid"
+                size="lg"
+                open={isError}
+                onClose={() => setIsError(false)}
+                autoHideDuration={2000}
+            >
+                {errorMessage}
+            </Snackbar>
         </Stack>
     );
 };

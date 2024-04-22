@@ -35,6 +35,7 @@ const ExamCreation = () => {
     const [speakingDates, setSpeakingDates] = useState([""]);
     const [currency, setCurrency] = useState("dollar");
     const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -60,6 +61,9 @@ const ExamCreation = () => {
         } catch (error) {
             console.error(error);
             setIsError(true);
+            setErrorMessage(
+                error.response.data.price || error.response.data.location
+            );
         }
     };
 
@@ -175,6 +179,7 @@ const ExamCreation = () => {
                     <Input
                         placeholder="Amount"
                         fullWidth
+                        required
                         startDecorator={{ dollar: "UZS" }[currency]}
                         endDecorator={
                             <React.Fragment>
@@ -208,6 +213,7 @@ const ExamCreation = () => {
                         fullWidth
                         id="location"
                         name="location"
+                        required
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         placeholder="Exam location"
@@ -355,8 +361,15 @@ const ExamCreation = () => {
                     </Stack>
                 </Box>
             </Box>
-            <Snackbar color="danger" variant="solid" size="lg" open={isError}>
-                Failed to create exam! Please try again!
+            <Snackbar
+                color="danger"
+                variant="solid"
+                size="lg"
+                open={isError}
+                onClose={() => setIsError(false)}
+                autoHideDuration={2000}
+            >
+                {errorMessage}
             </Snackbar>
         </Container>
     );

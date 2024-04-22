@@ -134,7 +134,11 @@ const UserApply = () => {
                                     sx={{ justifyContent: "center" }}
                                     value={isStudent}
                                     onChange={(e) =>
-                                        setIsStudent(e.target.value === "yes")
+                                        setIsStudent(
+                                            e.target.value === "true"
+                                                ? true
+                                                : (prevState) => !prevState
+                                        )
                                     }
                                 >
                                     <FormControlLabel

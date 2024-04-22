@@ -3,6 +3,7 @@ import { Stack, Box, Typography, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import logo from "../../assets/logo.jpg";
 import { Instagram, Facebook, Telegram } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const MainContact = () => {
     return (
@@ -82,24 +83,24 @@ const MainContact = () => {
                         >
                             About Us
                         </a>
-                        <a
+                        <Link
                             style={{
                                 color: colors.secondary,
                                 textDecoration: "none",
                             }}
-                            href="#"
+                            to="/register"
                         >
                             Sign Up
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             style={{
                                 color: colors.secondary,
                                 textDecoration: "none",
                             }}
-                            href="#"
+                            to="/login"
                         >
                             Log In
-                        </a>
+                        </Link>
                     </Stack>
                 </Stack>
                 <Box>
