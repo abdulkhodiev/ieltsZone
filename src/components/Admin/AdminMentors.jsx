@@ -1,104 +1,57 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
-    Table,
     Stack,
+    Box,
+    TextField,
+    Alert,
+    Table,
     TableBody,
     TableCell,
     TableContainer,
     TableRow,
     TableHead,
     Paper,
-    Box,
-    TextField,
 } from "@mui/material";
 
 import { getAdmins } from "../../utils/api/requests/get-admins";
-import { AddAdminJs } from "../../utils/api/requests/add-admins";
-import Context from "../../context/Context";
 import MyModal from "../UI/MyModal";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 
-const AdmainMentors = () => {
+const AdminMentors = () => {
     const [rows, setRows] = useState([]);
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [password, setPassword] = useState("");
 
-    const addAdmin = () => {
-        setFirstName("");
-        setLastName("");
-        setPhoneNumber("");
-        setPassword("");
-        AddAdminJs(firstName, lastName, phoneNumber, password, "ADMIN").then(
-            () => {
-                getAdmins().then((admins) => {
-                    setRows(admins);
-                    console.log(admins);
-                });
-            }
-        );
+    const refreshAdmins = async () => {
+        try {
+            const admins = await getAdmins();
+            setRows(admins);
+        } catch (error) {
+            setError("Failed to fetch admins");
+        }
     };
 
     useEffect(() => {
-        getAdmins().then((admins) => setRows(admins));
+        refreshAdmins();
     }, []);
 
     return (
         <Stack
-            direction={"column"}
+            direction="column"
             sx={{
-                width: {
-                    xs: "100%",
-                    sm: "100%",
-                    md: "100%",
-                    lg: "75%",
-                    xl: "75%",
-                },
+                width: { xs: "100%", lg: "75%" },
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "0.5rem",
             }}
-            justifyContent={"center"}
-            alignItems={"center"}
-            padding={"0.5rem"}
         >
             <Box sx={{ width: "100%" }}>
-                <MyModal onSubmit={addAdmin}>
-                    <TextField
-                        label="Name"
-                        variant="outlined"
-                        required
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    <TextField
-                        label="Last Name"
-                        variant="outlined"
-                        required
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
-                    <TextField
-                        label="Phone Number"
-                        variant="outlined"
-                        required
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                    <TextField
-                        label="Password"
-                        variant="outlined"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        type="password"
-                    />
-                </MyModal>
+                <MyModal refreshAdmins={refreshAdmins} />
                 <TableContainer
                     component={Paper}
                     sx={{
                         boxShadow: "none",
                         margin: 0,
                         padding: 0,
-                        border: `1px solid #EEEEEE`,
+                        border: "1px solid #EEEEEE",
                         borderRadius: "1rem",
                     }}
                 >
@@ -132,4 +85,4 @@ const AdmainMentors = () => {
     );
 };
 
-export default AdmainMentors;
+export default AdminMentors;

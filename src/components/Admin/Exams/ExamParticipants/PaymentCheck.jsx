@@ -46,7 +46,9 @@ const PaymentCheck = () => {
                     lastName: res.student.lastName,
                     ieltsZoneStudent: res.isStudent,
                 });
-                setImage(res.paymentPictureUrl);
+                if (res.paymentPictureUrl !== null) {
+                    setImage(res.paymentPictureUrl);
+                }
             } catch (error) {
                 setError("Failed to fetch payment check data.");
                 console.error("Error fetching payment check:", error);

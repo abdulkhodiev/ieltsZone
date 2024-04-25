@@ -67,7 +67,6 @@ const AdminExams = () => {
                     formattedDate: formatDate(exam.examDateTime),
                 }))
             );
-            // Initialize refs for each accordion
             response.forEach((exam) => {
                 refs.current[exam.id] = React.createRef();
             });

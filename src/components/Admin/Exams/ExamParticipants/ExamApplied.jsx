@@ -26,6 +26,23 @@ const ExamApplied = () => {
         fetchData();
     }, [examId]);
 
+    function statusColor(status) {
+        console.log(status);
+
+        switch (status) {
+            case "ACCEPTED":
+                return "green";
+            case "REJECTED":
+                return "red";
+            case "MARKED":
+                return "blue";
+            case "NEW":
+                return "orange";
+            default:
+                return "black";
+        }
+    }
+
     const handleRowClick = (row) => {
         navigate(`/admin/exams/${examId}/participants/applied/${row.id}`, {
             state: {
@@ -75,10 +92,7 @@ const ExamApplied = () => {
                             <TableCell>{row.user.phoneNumber}</TableCell>
                             <TableCell
                                 sx={{
-                                    color:
-                                        row.status === "ACCEPTED"
-                                            ? "green"
-                                            : "red",
+                                    color: statusColor(row.status),
                                     fontWeight: "bold",
                                 }}
                             >

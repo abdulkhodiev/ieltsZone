@@ -198,7 +198,7 @@ const SectionCheck = () => {
                                         fontSize="medium"
                                         sx={{ marginRight: "0.5rem" }}
                                     />
-                                    Upload Payment Screenshot
+                                    Upload Exam Paper
                                 </IconButton>
                             </label>
                         </Grid>

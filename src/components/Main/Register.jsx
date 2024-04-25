@@ -74,7 +74,7 @@ const Register = () => {
             setError(
                 err.response.data.password ||
                     err.response.data.phoneNumber ||
-                    err.response.data ||
+                    err.response.data.message ||
                     "Failed to register."
             );
         }
