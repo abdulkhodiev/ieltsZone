@@ -27,8 +27,6 @@ const ExamApplied = () => {
     }, [examId]);
 
     function statusColor(status) {
-        console.log(status);
-
         switch (status) {
             case "ACCEPTED":
                 return "green";

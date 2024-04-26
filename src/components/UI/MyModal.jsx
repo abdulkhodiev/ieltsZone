@@ -17,12 +17,13 @@ const MyModal = ({ refreshAdmins }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const cleanedPhoneNumber = phoneNumber.replace(/\s+/g, "");
         try {
             await AddAdminJs(
                 firstName,
                 lastName,
-                phoneNumber,
-                password,
+                cleanedPhoneNumber,
+                password.replace(/\s+/g, ""),
                 "ADMIN"
             );
             refreshAdmins();
