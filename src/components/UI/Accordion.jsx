@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { colors } from "../../constants/colors";
 import LocationOn from "@mui/icons-material/LocationOn";
-import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
 const Accordion = ({
     children,
     regionName,
@@ -150,7 +148,7 @@ const Accordion = ({
                             fontSize,
                         }}
                     >
-                        {price} so'm
+                        {price} so&lsquo;m
                     </span>
                 </div>
                 <div>{children}</div>

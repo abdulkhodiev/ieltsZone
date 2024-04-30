@@ -55,7 +55,7 @@ const ExamApplied = () => {
             component={Paper}
             sx={{
                 boxShadow: "none",
-                margin: 0,
+                marginTop: "1.2rem",
                 padding: 0,
                 border: `1px solid #EEEEEE`,
                 borderRadius: "1rem",

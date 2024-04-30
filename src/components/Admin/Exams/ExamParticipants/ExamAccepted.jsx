@@ -12,11 +12,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../../../constants/colors";
-import {
-    getAcceptedUsers,
-    excelDownload,
-} from "../../../../utils/api/requests/accepted-user";
-// import DownloadExcel from "./DownloadExcel";
+import { getAcceptedUsers } from "../../../../utils/api/requests/accepted-user";
 
 const ExamAccepted = () => {
     const { examId, rowId } = useParams();
@@ -43,6 +39,21 @@ const ExamAccepted = () => {
     useEffect(() => {
         fetchAcceptedUsers();
     }, [examId]);
+
+    function statusColor(status) {
+        switch (status) {
+            case "ACCEPTED":
+                return "green";
+            case "REJECTED":
+                return "red";
+            case "MARKED":
+                return "blue";
+            case "NEW":
+                return "orange";
+            default:
+                return "black";
+        }
+    }
 
     const handleRowClick = (rowId, participant) => {
         navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`, {
@@ -90,9 +101,9 @@ const ExamAccepted = () => {
                             <TableRow
                                 key={index}
                                 sx={{
-                                    cursor: "pointer", // Change cursor on hover
+                                    cursor: "pointer",
                                     "&:hover": {
-                                        backgroundColor: "rgba(0, 0, 0, 0.04)", // Optional: hover background color
+                                        backgroundColor: "rgba(0, 0, 0, 0.04)",
                                     },
                                 }}
                                 onClick={() =>
@@ -108,10 +119,7 @@ const ExamAccepted = () => {
                                 <TableCell>{row.user.phoneNumber}</TableCell>
                                 <TableCell
                                     sx={{
-                                        color:
-                                            row.status === "ACCEPTED"
-                                                ? "green"
-                                                : "inherit",
+                                        color: statusColor(row.status),
                                         fontWeight: "bold",
                                     }}
                                 >

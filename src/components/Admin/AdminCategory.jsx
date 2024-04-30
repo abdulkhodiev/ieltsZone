@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { Link, useLocation } from "react-router-dom";
@@ -17,6 +16,12 @@ const AdminCategory = () => {
             borderRadius={"1rem"}
             bgcolor={colors.secondary}
             my={"2.5rem"}
+            display={{
+                xs: "flex",
+                sm: "flex",
+                md: "flex",
+                lg: "none",
+            }}
         >
             <Link to="/admin/mentors">
                 <Button

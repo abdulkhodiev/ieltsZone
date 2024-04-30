@@ -3,7 +3,6 @@ import { $api } from "../interceptor";
 export const getAppliedUsers = async (examId) => {
     try {
         const res = await $api.get(`/registration/${examId}/all`);
-        console.log(res);
         return res.data;
     } catch (error) {
         console.error("Error fetching applied users:", error);

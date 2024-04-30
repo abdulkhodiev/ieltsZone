@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     Stack,
     Box,
-    TextField,
-    Alert,
     Table,
     TableBody,
     TableCell,
@@ -21,12 +19,8 @@ const AdminMentors = () => {
     const [rows, setRows] = useState([]);
 
     const refreshAdmins = async () => {
-        try {
-            const admins = await getAdmins();
-            setRows(admins);
-        } catch (error) {
-            setError("Failed to fetch admins");
-        }
+        const admins = await getAdmins();
+        setRows(admins);
     };
 
     useEffect(() => {
@@ -37,7 +31,7 @@ const AdminMentors = () => {
         <Stack
             direction="column"
             sx={{
-                width: { xs: "100%", lg: "75%" },
+                width: { xs: "100%", lg: "90%" },
                 justifyContent: "center",
                 alignItems: "center",
                 padding: "0.5rem",
@@ -59,11 +53,20 @@ const AdminMentors = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>#</TableCell>
-                                <TableCell>Name</TableCell>
+                                <TableCell>First Name</TableCell>
                                 <TableCell>Last Name</TableCell>
-                                <TableCell>Phone</TableCell>
-                                <TableCell>
-                                    Role <VerifiedUserIcon />
+                                <TableCell>Phone Number</TableCell>
+                                <TableCell
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                    }}
+                                >
+                                    Role{" "}
+                                    <VerifiedUserIcon
+                                        sx={{ fontSize: "1rem !important" }}
+                                    />
                                 </TableCell>
                             </TableRow>
                         </TableHead>

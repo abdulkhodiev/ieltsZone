@@ -11,7 +11,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import LocationOn from "@mui/icons-material/LocationOn";
 import { colors } from "../../../constants/colors";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     AddExam,
     EditExam,
@@ -21,6 +21,7 @@ import Snackbar from "@mui/joy/Snackbar";
 import Input from "@mui/joy/Input";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
+import { TextInput } from "../../UI/customMask";
 
 const ExamCreation = () => {
     const { examId } = useParams();
@@ -36,9 +37,14 @@ const ExamCreation = () => {
     const [currency, setCurrency] = useState("dollar");
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [cardNumber, setCardNumber] = useState("");
+    const [cardHolderName, setCardHolderName] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        const trimmedCardNumber = cardNumber.replace(/\s/g, "");
+
         const examData = {
             examDateTime,
             price,
@@ -47,19 +53,20 @@ const ExamCreation = () => {
             locationUrl,
             details,
             speakingDates,
+            trimmedCardNumber,
+            cardHolderName,
         };
 
         try {
             if (examId) {
                 await EditExam(examId, examData);
             } else {
-                console.log("Sending Exam Data:", examData);
                 await AddExam(examData);
+                console.log(examData);
             }
 
             navigate("/admin/exams");
         } catch (error) {
-            console.error(error);
             setIsError(true);
             setErrorMessage(
                 error.response.data.price || error.response.data.location
@@ -110,17 +117,8 @@ const ExamCreation = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: "100vh",
-                padding: {
-                    xs: "3rem",
-                    sm: "2rem",
-                    md: "0rem",
-                },
-                width: {
-                    xs: "100%",
-                    sm: "90%",
-                    md: "70%",
-                },
+                p: "1rem",
+                width: "100%",
             }}
         >
             <Typography
@@ -162,53 +160,76 @@ const ExamCreation = () => {
                         },
                     }}
                 >
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="dateTime"
-                        label="Date Time"
-                        name="dateTime"
-                        type="datetime-local"
-                        value={examDateTime}
-                        onChange={(e) => setExamDateTime(e.target.value)}
-                        InputLabelProps={{
-                            shrink: true,
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: {
+                                xs: "column",
+                                sm: "column",
+                                md: "row",
+                            },
+                            alignItems: "center",
+                            gap: {
+                                xs: 0,
+                                sm: 0,
+                                md: "1rem",
+                            },
                         }}
-                    />
-                    <Input
-                        placeholder="Amount"
-                        fullWidth
-                        required
-                        startDecorator={{ dollar: "UZS" }[currency]}
-                        endDecorator={
-                            <React.Fragment>
-                                <Divider orientation="vertical" />
-                                <Select
-                                    variant="plain"
-                                    value={currency}
-                                    onChange={(e) =>
-                                        setCurrency(e.target.value)
-                                    }
-                                    slotProps={{
-                                        listbox: {
-                                            variant: "outlined",
-                                        },
-                                    }}
-                                    sx={{
-                                        mr: -1.5,
-                                        "&:hover": { bgcolor: "transparent" },
-                                    }}
-                                >
-                                    <Option value="dollar">UZB so'm</Option>
-                                </Select>
-                            </React.Fragment>
-                        }
-                        value={price}
-                        sx={{ width: "100%", height: "3.6rem", mt: "0.5rem" }}
-                        onChange={(e) => setPrice(e.target.value)}
-                        type="number"
-                    />
+                    >
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="dateTime"
+                            label="Date Time"
+                            name="dateTime"
+                            type="datetime-local"
+                            value={examDateTime}
+                            onChange={(e) => setExamDateTime(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        <Input
+                            placeholder="Amount"
+                            fullWidth
+                            required
+                            startDecorator={{ dollar: "UZS" }[currency]}
+                            endDecorator={
+                                <React.Fragment>
+                                    <Divider orientation="vertical" />
+                                    <Select
+                                        variant="plain"
+                                        value={currency}
+                                        onChange={(e) =>
+                                            setCurrency(e.target.value)
+                                        }
+                                        slotProps={{
+                                            listbox: {
+                                                variant: "outlined",
+                                            },
+                                        }}
+                                        sx={{
+                                            mr: -1.5,
+                                            "&:hover": {
+                                                bgcolor: "transparent",
+                                            },
+                                        }}
+                                    >
+                                        <Option value="dollar">UZB so'm</Option>
+                                    </Select>
+                                </React.Fragment>
+                            }
+                            value={price}
+                            sx={{
+                                width: "100%",
+                                height: "3.6rem",
+                                mt: "0.5rem",
+                            }}
+                            onChange={(e) => setPrice(e.target.value)}
+                            type="number"
+                        />
+                    </Box>
                     <Input
                         fullWidth
                         id="location"
@@ -223,9 +244,8 @@ const ExamCreation = () => {
                                 UZBEKISTAN
                             </Button>
                         }
-                        sx={{ width: "100%", height: "3.6rem", mt: "1rem" }}
+                        sx={{ width: "100%", height: "3.6rem", mt: "1.1rem" }}
                     />
-
                     <TextField
                         margin="normal"
                         required
@@ -236,6 +256,7 @@ const ExamCreation = () => {
                         value={locationUrl}
                         onChange={(e) => setLocationUrl(e.target.value)}
                     />
+
                     <TextField
                         margin="normal"
                         required
@@ -247,6 +268,42 @@ const ExamCreation = () => {
                         value={numberOfPlaces}
                         onChange={(e) => setNumberOfPlaces(e.target.value)}
                     />
+                    <Box
+                        sx={{
+                            display: {
+                                xs: "block",
+                                sm: "block",
+                                md: "flex",
+                                lg: "flex",
+                            },
+                            alignItems: "center",
+                            gap: "1rem",
+                        }}
+                    >
+                        <TextField
+                            margin="normal"
+                            label="Card Number"
+                            value={cardNumber}
+                            onChange={(e) => setCardNumber(e.target.value)}
+                            name="cardNumber"
+                            required
+                            fullWidth
+                            InputProps={{
+                                inputComponent: TextInput,
+                            }}
+                        />
+
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            value={cardHolderName}
+                            onChange={(e) => setCardHolderName(e.target.value)}
+                            variant="outlined"
+                            label="Card Holder Name"
+                            placeholder="John Smith"
+                        />
+                    </Box>
                     <TextField
                         margin="normal"
                         required

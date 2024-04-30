@@ -1,43 +1,30 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import { useState, createContext, useEffect } from "react";
+import { getMe, getExams } from "../utils/api/requests/add-exams";
 
-const Context = createContext({
-    role: "",
-    setRole: () => {},
-});
+export const DataContext = createContext();
 
-export const ContextProvider = ({ children }) => {
-    const [role, setRole] = useState("");
-    const [scores, setScores] = useState({
-        listening: "",
-        reading: "",
-        writing: "",
-        speaking: "",
-        BandScore: 0,
-    });
+export const DataProvider = ({ children }) => {
+    const [userData, setUserData] = useState({});
+    const [availableExams, setAvailableExams] = useState([]);
+
+    const userInfo = async () => {
+        const userData = await getMe();
+        setUserData(userData);
+    };
+
+    const getExamInfo = async () => {
+        const examInfo = await getExams();
+        setAvailableExams(examInfo);
+    };
 
     useEffect(() => {
-        const { listening, reading, writing, speaking } = scores;
-
-        const total = [listening, reading, writing, speaking].reduce(
-            (acc, current) => acc + parseFloat(current || 0),
-            0
-        );
-        const BandScore =
-            scores.listening &&
-            scores.reading &&
-            scores.writing &&
-            scores.speaking
-                ? total / 4
-                : 0;
-
-        setScores((prevScores) => ({ ...prevScores, BandScore }));
-    }, [scores.listening, scores.reading, scores.writing, scores.speaking]);
+        userInfo();
+        getExamInfo();
+    }, []);
 
     return (
-        <Context.Provider value={{ role, setRole, scores, setScores }}>
+        <DataContext.Provider value={{ userData, availableExams }}>
             {children}
-        </Context.Provider>
+        </DataContext.Provider>
     );
 };
-
-export default Context;

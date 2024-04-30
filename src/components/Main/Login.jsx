@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import {
     Card,
     CardContent,
@@ -9,25 +9,11 @@ import {
     Alert,
 } from "@mui/material";
 import { postLogin } from "../../utils/api/requests/login";
-import Context from "../../context/Context";
-import { MuiTelInput } from "mui-tel-input";
+
+import MyTelInput from "../UI/MyTelInput";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-const MyComponent = ({ value, onChange }) => {
-    return (
-        <MuiTelInput
-            style={{ marginBottom: "1rem" }}
-            onlyCountries={["UZ"]}
-            defaultCountry="UZ"
-            fullWidth
-            required
-            value={value}
-            onChange={onChange}
-        />
-    );
-};
 const Login = () => {
-    const { role, setRole } = useContext(Context);
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
         phoneNumber: "",
@@ -117,7 +103,7 @@ const Login = () => {
                         </Alert>
                     )}
                     <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-                        <MyComponent
+                        <MyTelInput
                             value={credentials.phoneNumber}
                             onChange={(newValue) =>
                                 handleChange({
@@ -138,6 +124,9 @@ const Login = () => {
                             fullWidth
                             required
                             style={{ marginBottom: "1rem" }}
+                            inputProps={{
+                                minLength: 8,
+                            }}
                         />
                         <Button
                             type="submit"

@@ -1,11 +1,13 @@
-import React from "react";
-import { Container, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { Navbar } from "../index";
 import MainHeader from "./MainHeader";
 import MainAbout from "./MainAbout";
 import MainContact from "./MainContact";
+import Cookies from "js-cookie";
 
 const Main = () => {
+    const role = Cookies.get("role");
+
     return (
         <>
             <Stack
@@ -15,7 +17,7 @@ const Main = () => {
                     height: "100%",
                 }}
             >
-                <Navbar />
+                <Navbar role={role} />
                 <MainHeader />
                 <MainAbout />
             </Stack>

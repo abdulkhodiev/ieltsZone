@@ -96,7 +96,6 @@ const UserLayout = () => {
                 <React.Fragment>
                     <Button
                         variant="outlined"
-     
                         color="neutral"
                         onClick={() => setOpen(true)}
                     >
@@ -199,7 +198,7 @@ const UserLayout = () => {
                                 <List>
                                     {availableExams.map((exam) => (
                                         <ListItemButton
-                                            key={exam.id}
+                                            key={exam.examRegistrationId}
                                             onClick={() =>
                                                 navigate(
                                                     `/user/results/scores/${exam.examRegistrationId}`

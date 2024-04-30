@@ -10,9 +10,9 @@ export const getStudentInfo = async (registrationId) => {
     }
 };
 
-export const putSectionSecore = async (id, data) => {
+export const putSectionScore = async (id, data) => {
     try {
-        const res = await $api.put(`/result/${id}`, data);
+        const res = await $api.put(`/exam-result/${id}`, data);
         return res.data;
     } catch (error) {
         console.error("Error updating payment check:", error);

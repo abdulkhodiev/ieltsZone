@@ -16,8 +16,15 @@ import { Link } from "react-router-dom";
 import { MyButton } from "../index";
 import logo from "../../assets/editedLogo.jpg";
 import { colors } from "../../constants/colors";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
+import LoginIcon from "@mui/icons-material/Login";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import CloseIcon from "@mui/icons-material/Close";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
-const Navbar = () => {
+const Navbar = ({ role }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -26,9 +33,26 @@ const Navbar = () => {
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-            <Typography variant="h6" sx={{ my: 2 }}>
-                Menu
-            </Typography>
+            <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                pl={2}
+            >
+                <Typography variant="h6" sx={{ my: 2 }}>
+                    Menu
+                </Typography>
+                <Button
+                    padding="0 !important"
+                    onClick={handleDrawerToggle}
+                    border={"none"}
+                >
+                    <CloseIcon
+                        sx={{ color: colors.primary, padding: "0 !important" }}
+                    />
+                </Button>
+            </Stack>
+
             <List
                 component="nav"
                 sx={{
@@ -38,16 +62,99 @@ const Navbar = () => {
                 }}
             >
                 <ListItem button component="a" href="#">
-                    <ListItemText primary="Home" />
+                    <ListItemIcon>
+                        <HomeIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Home
+                            </Typography>
+                        }
+                    />
                 </ListItem>
                 <ListItem button component="a" href="#about">
-                    <ListItemText primary="About Us" />
+                    <ListItemIcon>
+                        <PeopleIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                About Us
+                            </Typography>
+                        }
+                    />
+                    {role === "ADMIN" ||
+                        (role === "" && (
+                            <ListItem button component={Link} to="/admin/exams">
+                                <ListItemIcon>
+                                    <AssignmentIcon
+                                        sx={{ color: colors.primary }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={
+                                        <Typography
+                                            variant="subtitle1"
+                                            sx={{
+                                                color: colors.primary,
+                                                fontWeight: "500",
+                                            }}
+                                        >
+                                            Exams
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+                        ))}
                 </ListItem>
                 <ListItem button component={Link} to="/register">
-                    <ListItemText primary="Sign Up" />
+                    <ListItemIcon>
+                        <HowToRegIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Sign Up
+                            </Typography>
+                        }
+                    />
                 </ListItem>
                 <ListItem component={Link} to="/login">
-                    <ListItemText primary="Log In" />
+                    <ListItemIcon>
+                        <LoginIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Log In
+                            </Typography>
+                        }
+                    />
                 </ListItem>
             </List>
         </Box>
@@ -86,7 +193,6 @@ const Navbar = () => {
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
-                overflowY={"hidden"}
                 sx={{
                     height: {
                         xs: "10vh",
@@ -95,7 +201,7 @@ const Navbar = () => {
                         lg: "15vh",
                         xl: "15vh",
                     },
-                    padding: {
+                    px: {
                         xs: "0.5rem",
                         sm: "0.5rem",
                         md: "0rem",

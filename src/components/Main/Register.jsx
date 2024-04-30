@@ -7,24 +7,13 @@ import {
     Typography,
     Link,
     Alert,
+    InputAdornment,
 } from "@mui/material";
-import { MuiTelInput } from "mui-tel-input";
+
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { register } from "../../utils/api/requests/register";
-
-const MyComponent = ({ value, onChange }) => {
-    return (
-        <MuiTelInput
-            style={{ marginBottom: "1rem" }}
-            onlyCountries={["UZ"]}
-            defaultCountry="UZ"
-            fullWidth
-            required
-            value={value}
-            onChange={onChange}
-        />
-    );
-};
+import MyTelInput from "../UI/MyTelInput";
+import KeyIcon from "@mui/icons-material/Key";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -141,7 +130,7 @@ const Register = () => {
                             required
                             style={{ marginBottom: "1rem" }}
                         />
-                        <MyComponent
+                        <MyTelInput
                             value={credentials.phoneNumber}
                             onChange={(newValue) =>
                                 handleChange({
@@ -162,6 +151,17 @@ const Register = () => {
                             fullWidth
                             required
                             style={{ marginBottom: "1rem" }}
+                            placeholder="Password must be at least 8 characters long."
+                            inputProps={{
+                                minLength: 8,
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <KeyIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <TextField
                             label="Confirm Password"
@@ -172,7 +172,18 @@ const Register = () => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            placeholder="Passwords must match."
                             style={{ marginBottom: "1rem" }}
+                            inputProps={{
+                                minLength: 8,
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <KeyIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Button
                             type="submit"

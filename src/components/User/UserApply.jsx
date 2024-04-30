@@ -24,7 +24,7 @@ import {
 import { colors } from "../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import dayjs from "dayjs";
-
+import qrCode from "../../assets/qrcode.jpg";
 const UserApply = () => {
     const { examId } = useParams();
     const navigate = useNavigate();
@@ -33,6 +33,8 @@ const UserApply = () => {
     const [paymentPictureId, setPaymentPictureId] = useState(0);
     const [availableSpeakingTimes, setAvailableSpeakingTimes] = useState([]);
     const [paymentImagePreview, setPaymentImagePreview] = useState(null);
+    const [cardNumber, setCardNumber] = useState("7777 7777 7777 7777");
+    const [cardHolderName, setCardHolderName] = useState("John Smith");
 
     useEffect(() => {
         fetchAvailableTimes();
@@ -84,6 +86,7 @@ const UserApply = () => {
         <Container
             maxWidth="md"
             sx={{
+                my: "1rem",
                 minHeight: "100vh",
                 display: "flex",
                 justifyContent: "center",
@@ -95,7 +98,6 @@ const UserApply = () => {
                 sx={{
                     padding: "2rem",
                     width: "100%",
-                    maxWidth: "600px",
                     borderRadius: "1rem",
                     display: "flex",
                     flexDirection: "column",
@@ -116,147 +118,191 @@ const UserApply = () => {
                 <form onSubmit={handleSubmit}>
                     <Grid
                         container
-                        spacing={3}
-                        justifyContent="center"
-                        alignItems="center"
+                        spacing={2}
+                        alignItems="baseline"
+                        display="flex"
                     >
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <FormControl required component="fieldset">
-                                <FormLabel
-                                    component="legend"
-                                    sx={{ fontWeight: "bold" }}
-                                >
-                                    Are you an IELTSZONE student?
-                                </FormLabel>
-                                <RadioGroup
-                                    required
-                                    row
-                                    sx={{ justifyContent: "center" }}
-                                    value={isStudent}
-                                    onChange={(e) =>
-                                        setIsStudent(
-                                            e.target.value === "true"
-                                                ? true
-                                                : (prevState) => !prevState
-                                        )
-                                    }
-                                >
-                                    <FormControlLabel
-                                        value={true}
-                                        control={<Radio />}
-                                        label="Yes"
-                                    />
-                                    <FormControlLabel
-                                        value={false}
-                                        control={<Radio />}
-                                        label="No"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <FormControl required component="fieldset">
-                                <FormLabel
-                                    component="legend"
-                                    sx={{ fontWeight: "bold" }}
-                                >
-                                    Available Speaking Times
-                                </FormLabel>
-                                <RadioGroup
-                                    sx={{ justifyContent: "center" }}
-                                    row
-                                    value={speakingDate}
-                                    onChange={(e) =>
-                                        setSpeakingDate(e.target.value)
-                                    }
-                                >
-                                    {availableSpeakingTimes.map((date) => (
+                        <Grid item xs={12} md={6}>
+                            <Grid item xs={12} sx={{ textAlign: "center" }}>
+                                <FormControl required component="fieldset">
+                                    <FormLabel
+                                        component="legend"
+                                        sx={{ fontWeight: "bold" }}
+                                    >
+                                        Are you an IELTSZONE student?
+                                    </FormLabel>
+                                    <RadioGroup
+                                        required
+                                        row
+                                        sx={{ justifyContent: "center" }}
+                                        value={isStudent}
+                                        onChange={(e) =>
+                                            setIsStudent(
+                                                e.target.value === "true"
+                                                    ? true
+                                                    : (prevState) => !prevState
+                                            )
+                                        }
+                                    >
                                         <FormControlLabel
-                                            required
-                                            key={date}
-                                            value={date}
+                                            value={true}
                                             control={<Radio />}
-                                            label={dayjs(date).format(
-                                                "HH:mm | DD MMM YYYY"
-                                            )}
+                                            label="Yes"
                                         />
-                                    ))}
-                                </RadioGroup>
-                            </FormControl>
+                                        <FormControlLabel
+                                            value={false}
+                                            control={<Radio />}
+                                            label="No"
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sx={{ textAlign: "center" }}>
+                                <FormControl required component="fieldset">
+                                    <FormLabel
+                                        component="legend"
+                                        sx={{ fontWeight: "bold" }}
+                                    >
+                                        Available Speaking Times
+                                    </FormLabel>
+                                    <RadioGroup
+                                        sx={{ justifyContent: "center" }}
+                                        row
+                                        value={speakingDate}
+                                        onChange={(e) =>
+                                            setSpeakingDate(e.target.value)
+                                        }
+                                    >
+                                        {availableSpeakingTimes.map((date) => (
+                                            <FormControlLabel
+                                                required
+                                                key={date}
+                                                value={date}
+                                                control={<Radio />}
+                                                label={dayjs(date).format(
+                                                    "HH:mm | DD MMM YYYY"
+                                                )}
+                                            />
+                                        ))}
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <img
+                                    src={qrCode}
+                                    style={{ width: "50%" }}
+                                    alt=""
+                                />
+                                <img
+                                    src={qrCode}
+                                    style={{ width: "50%" }}
+                                    alt=""
+                                />
+                            </Grid>
+                            <Grid item xs={12} sx={{ textAlign: "center" }}>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Card Number: {cardNumber}
+                                </Typography>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Card Holder Name: {cardHolderName}
+                                </Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <input
-                                style={{ display: "none" }}
-                                id="payment-screenshot"
-                                type="file"
-                                onChange={handlePaymentScreenshotChange}
-                            />
-                            <label htmlFor="payment-screenshot">
-                                <IconButton
-                                    component="span"
-                                    sx={{
-                                        border: `2px solid ${colors.primary}`,
-                                        borderRadius: "1rem",
-                                        color: colors.primary,
-                                        width: "100%",
-                                        padding: "0.5rem 1rem",
-                                        ":hover": {
+                        <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            display="flex"
+                            flexDirection="column"
+                            gap={2}
+                        >
+                            <Grid item xs={12} sx={{ textAlign: "center" }}>
+                                <input
+                                    style={{ display: "none" }}
+                                    id="payment-screenshot"
+                                    type="file"
+                                    onChange={handlePaymentScreenshotChange}
+                                />
+                                <label htmlFor="payment-screenshot">
+                                    <IconButton
+                                        component="span"
+                                        sx={{
+                                            border: `2px solid ${colors.primary}`,
+                                            borderRadius: "1rem",
+                                            color: colors.primary,
+                                            width: "100%",
+
+                                            fontSize: "1rem",
+                                            padding: "0.5rem 1rem",
+                                            ":hover": {
+                                                bgcolor: colors.primary,
+                                                color: "white",
+                                            },
+                                        }}
+                                        aria-label="upload picture"
+                                    >
+                                        <CloudUploadIcon
+                                            fontSize="medium"
+                                            sx={{ marginRight: "0.5rem" }}
+                                        />
+                                        Upload Payment Screenshot
+                                    </IconButton>
+                                </label>
+                            </Grid>
+                            <Grid item xs={12}>
+                                {paymentImagePreview && (
+                                    <CardMedia
+                                        component="img"
+                                        sx={{ borderRadius: "1rem" }}
+                                        image={paymentImagePreview}
+                                        alt="Payment Screenshot"
+                                    />
+                                )}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    justifyContent="center"
+                                >
+                                    <Button
+                                        onClick={handleCancel}
+                                        variant="contained"
+                                        fullWidth
+                                        sx={{
+                                            bgcolor: "red",
+                                            color: "white",
+                                            "&:hover": { bgcolor: "red" },
+                                            borderRadius: "0.6rem",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        fullWidth
+                                        sx={{
                                             bgcolor: colors.primary,
                                             color: "white",
-                                        },
-                                    }}
-                                    aria-label="upload picture"
-                                >
-                                    <CloudUploadIcon
-                                        fontSize="medium"
-                                        sx={{ marginRight: "0.5rem" }}
-                                    />
-                                    Upload Payment Screenshot
-                                </IconButton>
-                            </label>
-                        </Grid>
-                        <Grid item xs={12}>
-                            {paymentImagePreview && (
-                                <CardMedia
-                                    component="img"
-                                    sx={{ borderRadius: "1rem" }}
-                                    height="160"
-                                    image={paymentImagePreview}
-                                    alt="Payment Screenshot"
-                                />
-                            )}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                justifyContent="center"
-                            >
-                                <Button
-                                    onClick={handleCancel}
-                                    variant="contained"
-                                    sx={{
-                                        bgcolor: "red",
-                                        color: "white",
-                                        "&:hover": { bgcolor: "red" },
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{
-                                        bgcolor: colors.primary,
-                                        color: "white",
-                                        "&:hover": {
-                                            bgcolor: colors.primary,
-                                        },
-                                    }}
-                                >
-                                    Submit
-                                </Button>
-                            </Stack>
+                                            "&:hover": {
+                                                bgcolor: colors.primary,
+                                            },
+                                            fontWeight: "bold",
+                                            borderRadius: "0.6rem",
+                                        }}
+                                    >
+                                        Submit
+                                    </Button>
+                                </Stack>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </form>

@@ -126,7 +126,7 @@ const AdminExams = () => {
             alignItems="center"
             padding="0.5rem"
             sx={{
-                width: { xs: "100%", sm: "90%", md: "75%" },
+                width: { xs: "100%", lg: "90%" },
             }}
         >
             <Box
@@ -199,6 +199,7 @@ const AdminExams = () => {
                                             bgcolor: "#074173",
                                             color: "white",
                                         },
+                                        zIndex: 1,
                                     }}
                                     onClick={() => handleToggle(exam.id)}
                                 >
@@ -209,6 +210,7 @@ const AdminExams = () => {
                             <Popper
                                 open={buttonOpen && activeId === exam.id}
                                 anchorEl={refs.current[exam.id].current}
+                                sx={{ zIndex: 99 }}
                                 transition
                                 disablePortal
                             >

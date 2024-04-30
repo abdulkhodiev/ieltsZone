@@ -1,11 +1,25 @@
 import React, { useState } from "react";
-import { Button, Modal, Box, Alert, TextField } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Stack,
+    Alert,
+    InputAdornment,
+    Button,
+} from "@mui/material";
+
+import Modal from "@mui/joy/Modal";
+import ModalDialog from "@mui/joy/ModalDialog";
+import DialogTitle from "@mui/joy/DialogTitle";
+import DialogContent from "@mui/joy/DialogContent";
+import ModalClose from "@mui/joy/ModalClose";
+import KeyIcon from "@mui/icons-material/Key";
 import { colors } from "../../constants/colors";
 import { AddAdminJs } from "../../utils/api/requests/add-admins";
+import MyTelInput from "./MyTelInput";
 
 const MyModal = ({ refreshAdmins }) => {
     const [open, setOpen] = useState(false);
-
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -15,24 +29,30 @@ const MyModal = ({ refreshAdmins }) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    const modalStyle = {
+        transition: "all 0.5s ease-out",
+        opacity: open ? 1 : 0,
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const cleanedPhoneNumber = phoneNumber.replace(/\s+/g, "");
         try {
+            const cleanedPhoneNumber = phoneNumber.replace(/\s+/g, "");
+            const trimmedPassword = password.trim();
+
             await AddAdminJs(
                 firstName,
                 lastName,
                 cleanedPhoneNumber,
-                password.replace(/\s+/g, ""),
+                trimmedPassword,
                 "ADMIN"
             );
             refreshAdmins();
+            handleClose();
             setFirstName("");
             setLastName("");
             setPhoneNumber("");
             setPassword("");
-            setError("");
-            handleClose();
         } catch (error) {
             setError(
                 error.response?.data.message ||
@@ -40,12 +60,11 @@ const MyModal = ({ refreshAdmins }) => {
                     error.response?.data.phoneNumber ||
                     "Failed to add admin"
             );
-            console.log(error);
         }
     };
 
     return (
-        <Box>
+        <React.Fragment>
             <Button
                 sx={{
                     my: "1rem",
@@ -60,83 +79,128 @@ const MyModal = ({ refreshAdmins }) => {
                 + Add User
             </Button>
             <Modal
-                error={error}
                 open={open}
-                onClose={() => {
-                    setError("");
-                    handleClose();
-                }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+                sx={modalStyle}
             >
-                <Box
-                    className="addAdminModal"
+                <ModalDialog
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "1rem",
-                        padding: "2rem",
-                        width: { xs: "90%", sm: "70%", md: "50%", lg: "45%" },
-                        bgcolor: "background.paper",
-                        boxShadow: 24,
-                        p: 4,
+                        width: {
+                            xs: "100%",
+                            sm: "100%",
+                            md: "60%",
+                            lg: "40%",
+                            xl: "40%",
+                        },
                     }}
                 >
-                    <form className="addAdminForm" onSubmit={handleSubmit}>
-                        {error && (
-                            <Alert
-                                severity="error"
-                                style={{ width: "100%", marginBottom: "1rem" }}
+                    <DialogTitle
+                        sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
+                    >
+                        Add Admin Information
+                    </DialogTitle>
+                    <ModalClose onClick={handleClose} />
+                    <DialogContent sx={({ gap: 2 }, { paddingTop: "1rem" })}>
+                        <form onSubmit={handleSubmit}>
+                            <Box
+                                noValidate
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: 2,
+                                }}
                             >
-                                {error}
-                            </Alert>
-                        )}
-                        <TextField
-                            label="Name"
-                            variant="outlined"
-                            required
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                        />
-                        <TextField
-                            label="Last Name"
-                            variant="outlined"
-                            required
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                        />
-                        <TextField
-                            label="Phone Number"
-                            variant="outlined"
-                            required
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                        <TextField
-                            label="Password"
-                            variant="outlined"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            type="password"
-                        />
-                        <Button
-                            sx={{
-                                my: "1rem",
-                                bgcolor: colors.primary,
-                                color: "white",
-                                borderRadius: "0.7rem",
-                                ":hover": { bgcolor: colors.primary },
-                            }}
-                            variant="contained"
-                            type="submit"
-                        >
-                            Add Admin
-                        </Button>
-                    </form>
-                </Box>
+                                {error && (
+                                    <Alert
+                                        severity="error"
+                                        sx={{ width: "100%" }}
+                                    >
+                                        {error}
+                                    </Alert>
+                                )}
+                                <TextField
+                                    label="First Name"
+                                    variant="outlined"
+                                    required
+                                    value={firstName}
+                                    onChange={(e) =>
+                                        setFirstName(e.target.value)
+                                    }
+                                />
+                                <TextField
+                                    label="Last Name"
+                                    variant="outlined"
+                                    required
+                                    value={lastName}
+                                    onChange={(e) =>
+                                        setLastName(e.target.value)
+                                    }
+                                />
+                                <MyTelInput
+                                    value={phoneNumber}
+                                    onChange={setPhoneNumber}
+                                    required
+                                />
+                                <TextField
+                                    label="Password"
+                                    variant="outlined"
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
+                                    helperText="Password must be at least 8 characters long"
+                                    inputProps={{ minLength: 8 }}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <KeyIcon />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                                <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    justifyContent="space-between"
+                                >
+                                    <Button
+                                        sx={{
+                                            bgcolor: "red",
+                                            color: "white",
+                                            borderRadius: "0.7rem",
+                                        }}
+                                        fullWidth
+                                        onClick={handleClose}
+                                        variant="contained"
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                            borderRadius: "0.7rem",
+                                            ":hover": {
+                                                bgcolor: colors.primary,
+                                            },
+                                        }}
+                                        fullWidth
+                                        variant="contained"
+                                        type="submit"
+                                    >
+                                        Add Admin
+                                    </Button>
+                                </Stack>
+                            </Box>
+                        </form>
+                    </DialogContent>
+                </ModalDialog>
             </Modal>
-        </Box>
+        </React.Fragment>
     );
 };
 

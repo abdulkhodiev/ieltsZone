@@ -1,100 +1,100 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-    Stack,
-    Box,
-    Typography,
-    Button,
-    TextField,
-    Grid,
-    IconButton,
-    Paper,
-    CardMedia,
-} from "@mui/material";
-import { colors } from "../../../../constants/colors";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import Context from "../../../../context/Context";
-import {
-    getSectionResults,
-    putSectionSecore,
-    examPicture,
-} from "../../../../utils/api/requests/exam-check-by-section";
+// import React, { useState, useEffect, useContext } from "react";
+// import {
+//     Stack,
+//     Box,
+//     Typography,
+//     Button,
+//     TextField,
+//     Grid,
+//     IconButton,
+//     Paper,
+//     CardMedia,
+// } from "@mui/material";
+// import { colors } from "../../../../constants/colors";
+// import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+// import { Link, useParams, useNavigate } from "react-router-dom";
+// import Context from "../../../../context/Context";
+// import {
+//     getSectionResults,
+//     putSectionScore,
+//     examPicture,
+// } from "../../../../utils/api/requests/exam-check-by-section";
 
 const SectionCheck = () => {
-    const { examId, rowId, section } = useParams();
-    const navigate = useNavigate();
-    const { scores, setScores } = useContext(Context);
-    const [userInfo, setUserInfo] = useState({});
-    const [examImg, setExamImg] = useState(null);
-    const [formData, setFormData] = useState({
-        score: scores[section] || "",
-        details: "",
-    });
-    const [pictureId, setPictureId] = useState(0);
-    const [sectionResults, setSectionResults] = useState([]);
+    // const { examId, rowId, section } = useParams();
+    // const navigate = useNavigate();
+    // const { scores, setScores } = useContext(Context);
+    // const [userInfo, setUserInfo] = useState({});
+    // const [examImg, setExamImg] = useState(null);
+    // const [formData, setFormData] = useState({
+    //     score: scores[section] || "",
+    //     details: "",
+    // });
+    // const [pictureId, setPictureId] = useState(0);
+    // const [sectionResults, setSectionResults] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await getSectionResults(rowId);
-                setUserInfo(data.user);
-                setSectionResults(data.sectionResults);
-            } catch (error) {
-                console.error("Error fetching section results:", error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const data = await getSectionResults(rowId);
+    //             setUserInfo(data.user);
+    //             setSectionResults(data.sectionResults);
+    //         } catch (error) {
+    //             console.error("Error fetching section results:", error);
+    //         }
+    //     };
 
-        fetchData();
-    }, [rowId]);
+    //     fetchData();
+    // }, [rowId]);
 
-    const handleExamImg = async (event) => {
-        const file = event.target.files[0];
-        setExamImg(URL.createObjectURL(file));
+    // const handleExamImg = async (event) => {
+    //     const file = event.target.files[0];
+    //     setExamImg(URL.createObjectURL(file));
 
-        try {
-            const pictureRes = await examPicture(file);
-            setPictureId(pictureRes);
-        } catch (error) {
-            console.error("Error uploading payment image:", error);
-        }
-    };
+    //     try {
+    //         const pictureRes = await examPicture(file);
+    //         setPictureId(pictureRes);
+    //     } catch (error) {
+    //         console.error("Error uploading payment image:", error);
+    //     }
+    // };
 
-    const displaySectionName =
-        section.charAt(0).toUpperCase() + section.slice(1);
+    // const displaySectionName =
+    //     section.charAt(0).toUpperCase() + section.slice(1);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
+    // const handleChange = (event) => {
+    //     const { name, value } = event.target;
+    //     setFormData((prevState) => ({
+    //         ...prevState,
+    //         [name]: value,
+    //     }));
+    // };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
 
-        const sectionResult = sectionResults.find(
-            (result) =>
-                result.sectionName.toUpperCase() === section.toUpperCase()
-        );
+    //     const sectionResult = sectionResults.find(
+    //         (result) =>
+    //             result.sectionName.toUpperCase() === section.toUpperCase()
+    //     );
 
-        if (!sectionResult) {
-            console.error(
-                "Section result not found for the given section:",
-                section
-            );
-            return;
-        }
+    //     if (!sectionResult) {
+    //         console.error(
+    //             "Section result not found for the given section:",
+    //             section
+    //         );
+    //         return;
+    //     }
 
-        const data = {
-            score: parseFloat(formData.score),
-            feedback: formData.details,
-            sectionResultPictureId: pictureId,
-        };
-        await putSectionSecore(sectionResult.id, data);
+    //     const data = {
+    //         score: parseFloat(formData.score),
+    //         feedback: formData.details,
+    //         sectionResultPictureId: pictureId,
+    //     };
+    //     await putSectionScore(sectionResult.id, data);
 
-        navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`);
-    };
+    //     navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`);
+    // };
 
     return (
         <Box
@@ -112,7 +112,7 @@ const SectionCheck = () => {
                 },
             }}
         >
-            <Stack spacing={4} width="100%">
+            {/* <Stack spacing={4} width="100%">
                 <Stack
                     alignItems="center"
                     sx={{
@@ -252,7 +252,7 @@ const SectionCheck = () => {
                         </Stack>
                     </Stack>
                 </form>
-            </Stack>
+            </Stack> */}
         </Box>
     );
 };
