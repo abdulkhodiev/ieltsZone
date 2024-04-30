@@ -8,8 +8,15 @@ const AdminMain = () => {
             direction={"column"}
             alignItems={"center"}
             display={"flex"}
+            mx={"auto"}
             sx={{
-                width: "100%",
+                width: {
+                    xs: "100%",
+                    sm: "95%",
+                    md: "75%",
+                    lg: "100%",
+                    xl: "100%",
+                },
             }}
         >
             <AdminCategory />

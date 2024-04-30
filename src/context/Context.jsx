@@ -1,5 +1,6 @@
 import { useState, createContext, useEffect } from "react";
 import { getMe, getExams } from "../utils/api/requests/add-exams";
+import { format } from "date-fns";
 
 export const DataContext = createContext();
 
@@ -13,8 +14,13 @@ export const DataProvider = ({ children }) => {
     };
 
     const getExamInfo = async () => {
-        const examInfo = await getExams();
-        setAvailableExams(examInfo);
+        const res = await getExams();
+
+        const formattedExams = res.map((exam) => ({
+            ...exam,
+            examDateTime: format(new Date(exam.examDateTime), "MMMM do yyyy"),
+        }));
+        setAvailableExams(formattedExams);
     };
 
     useEffect(() => {

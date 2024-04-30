@@ -1,4 +1,3 @@
-import { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Button from "@mui/joy/Button";
 import DialogTitle from "@mui/joy/DialogTitle";
@@ -9,16 +8,15 @@ import Sheet from "@mui/joy/Sheet";
 import ListItemButton from "@mui/joy/ListItemButton";
 import { useNavigate } from "react-router-dom";
 import { colors } from "../../constants/colors";
-import { getExams, getMe } from "../../utils/api/requests/add-exams";
-import { format } from "date-fns";
 import logo from "../../assets/logo.jpg";
 import Cookies from "js-cookie";
+import { useContext } from "react";
+import { DataContext } from "../../context/Context";
 
 const Navigation = () => {
     const navigate = useNavigate();
-    const [availableExams, setAvailableExams] = useState([]);
-    const [userInfo, setUserInfo] = useState({});
     const location = useLocation();
+    const { userData, availableExams } = useContext(DataContext);
 
     const mentorsDynamicStyles = location.pathname.includes("admin/mentors")
         ? {
@@ -66,40 +64,10 @@ const Navigation = () => {
           }
         : {};
 
-    const fetchExams = useCallback(async () => {
-        try {
-            const res = await getExams();
-
-            const formattedExams = res.map((exam) => ({
-                ...exam,
-                examDateTime: format(
-                    new Date(exam.examDateTime),
-                    "MMMM do yyyy"
-                ),
-            }));
-            fetchUserInfo();
-            setAvailableExams(formattedExams);
-        } catch (error) {
-            console.error("Error fetching exams:", error);
-        }
-    }, []);
-
-    const fetchUserInfo = async () => {
-        try {
-            const res = await getMe();
-            setUserInfo(res);
-        } catch (error) {
-            console.error("Error fetching user info:", error);
-        }
-    };
-
     const LogOut = () => {
         Cookies.remove("token", { path: "/" });
         navigate("/");
     };
-    useEffect(() => {
-        fetchExams();
-    }, [fetchExams]);
 
     return (
         <Sheet
@@ -247,12 +215,29 @@ const Navigation = () => {
                     sx={{
                         border: `2px solid ${colors.primary}`,
                         color: colors.primary,
+                        width: {
+                            xs: "auto",
+                            sm: "auto",
+                            md: "auto",
+                            lg: "100%",
+                        },
                     }}
                     onClick={LogOut}
                 >
                     Log Out
                 </Button>
-                <DialogTitle>{userInfo.firstName}</DialogTitle>
+                <DialogTitle
+                    sx={{
+                        display: {
+                            xs: "flex",
+                            sm: "flex",
+                            md: "flex",
+                            lg: "none",
+                        },
+                    }}
+                >
+                    {userData.firstName}
+                </DialogTitle>
             </Stack>
         </Sheet>
     );
