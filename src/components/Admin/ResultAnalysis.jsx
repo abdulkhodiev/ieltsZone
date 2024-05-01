@@ -3,9 +3,14 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
 	Box,
 	Collapse,
+	FormControl,
 	IconButton,
+	InputLabel,
+	MenuItem,
 	Paper,
+	Select,
 	Stack,
+	Switch,
 	Table,
 	TableBody,
 	TableCell,
@@ -19,10 +24,11 @@ import { getScores } from "../../utils/api/requests/get-scores";
 
 const ResultAnalysis = () => {
 	const [scores, setScores] = useState();
+	const [markIeltsZoneStudents, setMarkIeltsZoneStudents] = useState();
 
-	const fetchScores = async () => {
+	const fetchScores = async (params) => {
 		try {
-			const res = await getScores();
+			const res = await getScores(params);
 			setScores(res.data);
 		} catch (err) {
 			console.error(err);
@@ -48,6 +54,22 @@ const ResultAnalysis = () => {
 			}}
 		>
 			<Box sx={{ width: "100%" }}>
+				<Switch
+					checked={markIeltsZoneStudents}
+					onChange={() => setMarkIeltsZoneStudents((prev) => !prev)}
+				/>
+				<FormControl fullWidth>
+					<InputLabel id='demo-simple-select-label'>Age</InputLabel>
+					<Select
+						labelId='demo-simple-select-label'
+						id='demo-simple-select'
+						label='Age'
+						onChange={(e) => fetchScores({ sort: e.target.value })}
+					>
+						<MenuItem value={"lowest"}>Lowest</MenuItem>
+						<MenuItem value={"highest"}>Highest</MenuItem>
+					</Select>
+				</FormControl>
 				<TableContainer
 					component={Paper}
 					sx={{
@@ -62,7 +84,6 @@ const ResultAnalysis = () => {
 						<TableHead>
 							<TableRow>
 								<TableCell />
-								<TableCell>#</TableCell>
 								<TableCell align='right'>Listening</TableCell>
 								<TableCell align='right'>Reading</TableCell>
 								<TableCell align='right'>Writing</TableCell>
@@ -71,7 +92,13 @@ const ResultAnalysis = () => {
 						</TableHead>
 						<TableBody>
 							{scores.map((row) => (
-								<Row key={row.name} row={row} />
+								<Row
+									key={row.name}
+									row={row}
+									markIeltsZoneStudents={
+										markIeltsZoneStudents
+									}
+								/>
 							))}
 						</TableBody>
 					</Table>
@@ -82,7 +109,7 @@ const ResultAnalysis = () => {
 };
 
 function Row(props) {
-	const { row } = props;
+	const { row, markIeltsZoneStudents } = props;
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -90,9 +117,10 @@ function Row(props) {
 			<TableRow
 				key={row.studentId}
 				sx={{
-					backgroundColor: row.isIeltsZoneStudent
-						? "#dcffe6"
-						: "#fff",
+					backgroundColor:
+						row.isIeltsZoneStudent && markIeltsZoneStudents
+							? "#dcffe6"
+							: "#fff",
 					"&:last-child td, &:last-child th": {
 						border: 0,
 					},
@@ -111,7 +139,6 @@ function Row(props) {
 						)}
 					</IconButton>
 				</TableCell>
-				<TableCell>{row.studentId}</TableCell>
 				<TableCell align='right' component='th' scope='row'>
 					{row.listening}
 				</TableCell>
