@@ -48,7 +48,7 @@ export const getExams = async () => {
 };
 
 export const getMe = async () => {
-    const res = await $api.get("auth/me");
+    const res = await $api.get("users/me");
     return res.data;
 };
 

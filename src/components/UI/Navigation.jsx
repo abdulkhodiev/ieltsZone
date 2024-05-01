@@ -66,6 +66,7 @@ const Navigation = () => {
 
     const LogOut = () => {
         Cookies.remove("token", { path: "/" });
+        Cookies.remove("role", { path: "/" });
         navigate("/");
     };
 

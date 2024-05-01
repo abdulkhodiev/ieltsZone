@@ -1,8 +1,10 @@
 import { $api } from "../interceptor";
 
-export const getStudentInfo = async (registrationId) => {
+export const getExamResults = async (registrationId) => {
     try {
-        const res = await $api.get(`/registration/${registrationId}`);
+        const res = await $api.get(
+            `/exam-result/exam-registration/${registrationId}`
+        );
         return res.data;
     } catch (error) {
         console.error("Error fetching applied users:", error);
@@ -10,12 +12,22 @@ export const getStudentInfo = async (registrationId) => {
     }
 };
 
-export const putSectionScore = async (id, data) => {
+export const putSectionScores = async (id, data) => {
     try {
         const res = await $api.put(`/exam-result/${id}`, data);
         return res.data;
     } catch (error) {
         console.error("Error updating payment check:", error);
+        throw error;
+    }
+};
+
+export const getStudentInfo = async (registrationId) => {
+    try {
+        const res = await $api.get(`/registration/${registrationId}`);
+        return res.data;
+    } catch (error) {
+        console.error("Error fetching applied users:", error);
         throw error;
     }
 };

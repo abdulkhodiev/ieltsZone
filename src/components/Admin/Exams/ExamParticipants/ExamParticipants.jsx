@@ -1,7 +1,6 @@
-import React from "react";
 import { Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { ExamCategory, ExamApplied, ExamAccepted } from "../../../index";
+import { ExamCategory } from "../../../index";
 import { useParams } from "react-router-dom";
 
 const ExamParticipants = () => {

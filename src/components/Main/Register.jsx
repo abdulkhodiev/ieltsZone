@@ -58,7 +58,7 @@ const Register = () => {
                 phoneNumber: credentials.phoneNumber,
                 password: credentials.password,
             });
-            navigate("/login");
+            navigate("/sms");
         } catch (err) {
             setError(
                 err.response.data.password ||

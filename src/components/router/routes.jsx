@@ -27,106 +27,108 @@ import UserLayout from "../User/UserLayout";
 import UserResults from "../User/UserResults";
 import UserScoreCheck from "../User/UserScoreCheck";
 import UserSectionScore from "../User/UserSectionScore";
+import OTP from "../Main/sms";
 
 export const router = createBrowserRouter([
-	{
-		element: <Layout />,
+    {
+        element: <Layout />,
 
-		children: [
-			{ index: true, element: <Main /> },
-			{ path: "login", element: <Login /> },
-			{ path: "register", element: <Register /> },
-			{ path: "not-found", element: <NotFound /> },
-			{
-				path: "admin",
-				element: (
-					<ProtectedRoute>
-						<AdminLayout />
-					</ProtectedRoute>
-				),
-				children: [
-					{
-						path: "",
-						element: <AdminMain />,
-						children: [
-							{
-								index: true,
-								path: "mentors",
-								element: <AdminMentors />,
-							},
-							{ path: "exams", element: <AdminExams /> },
-							{
-								path: "result-analysis",
-								element: <ResultAnalysis />,
-							},
-						],
-					},
+        children: [
+            { index: true, element: <Main /> },
+            { path: "login", element: <Login /> },
+            { path: "register", element: <Register /> },
+            { path: "sms", element: <OTP /> },
+            { path: "not-found", element: <NotFound /> },
+            {
+                path: "admin",
+                element: (
+                    <ProtectedRoute>
+                        <AdminLayout />
+                    </ProtectedRoute>
+                ),
+                children: [
+                    {
+                        path: "",
+                        element: <AdminMain />,
+                        children: [
+                            {
+                                index: true,
+                                path: "mentors",
+                                element: <AdminMentors />,
+                            },
+                            { path: "exams", element: <AdminExams /> },
+                            {
+                                path: "result-analysis",
+                                element: <ResultAnalysis />,
+                            },
+                        ],
+                    },
 
-					{ path: "exams/create", element: <ExamCreation /> },
-					{ path: "exams/:examId/edit", element: <ExamCreation /> },
-					{
-						path: "exams/:examId/participants",
-						element: <ExamParticipantsLayout />,
-						children: [
-							{
-								path: "",
-								element: <ExamParticipants />,
-								children: [
-									{
-										path: "applied",
-										element: <ExamApplied />,
-									},
-									{
-										path: "accepted",
-										element: <ExamAccepted />,
-									},
-								],
-							},
+                    { path: "exams/create", element: <ExamCreation /> },
+                    { path: "exams/:examId/edit", element: <ExamCreation /> },
+                    {
+                        path: "exams/:examId/participants",
+                        element: <ExamParticipantsLayout />,
+                        children: [
+                            {
+                                path: "",
+                                element: <ExamParticipants />,
+                                children: [
+                                    {
+                                        path: "applied",
+                                        element: <ExamApplied />,
+                                    },
+                                    {
+                                        path: "accepted",
+                                        element: <ExamAccepted />,
+                                    },
+                                ],
+                            },
 
-							{
-								path: "applied/:rowId",
-								element: <PaymentCheck />,
-							},
-							{ path: "accepted/:rowId", element: <ExamCheck /> },
-							{
-								path: "accepted/:rowId/:section",
-								element: <SectionCheck />,
-							},
-						],
-					},
-				],
-			},
-			{
-				path: "user",
-				element: <UserLayout />,
-				children: [
-					{
-						path: "",
-						element: <UserMain />,
-						children: [
-							{
-								index: true,
-								path: "exams",
-								element: <UserExams />,
-							},
-							{ path: "results", element: <UserResults /> },
-						],
-					},
+                            {
+                                path: "applied/:rowId",
+                                element: <PaymentCheck />,
+                            },
+                            { path: "accepted/:rowId", element: <ExamCheck /> },
+                            {
+                                path: "accepted/:rowId/:section",
+                                element: <SectionCheck />,
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                path: "user",
+                element: <UserLayout />,
+                children: [
+                    {
+                        path: "",
+                        element: <UserMain />,
+                        children: [
+                            {
+                                index: true,
+                                path: "exams",
+                                element: <UserExams />,
+                            },
+                            { path: "results", element: <UserResults /> },
+                        ],
+                    },
 
-					{ path: "exams/apply/:examId", element: <UserApply /> },
-					{
-						path: "results/scores/:examRegistrationId",
-						element: <UserScoreCheck />,
-					},
-					{
-						path: "results/scores/:examRegistrationId/:section",
-						element: <UserSectionScore />,
-					},
-				],
-			},
-			{ path: "*", element: <NotFound /> },
-		],
-	},
+                    { path: "exams/apply/:examId", element: <UserApply /> },
+                    {
+                        path: "results/scores/:examRegistrationId",
+                        element: <UserScoreCheck />,
+                    },
+                    {
+                        path: "results/scores/:examRegistrationId/:section",
+                        element: <UserSectionScore />,
+                    },
+                ],
+            },
+            { path: "*", element: <NotFound /> },
+        ],
+    },
 ]);
 
 export default router;
