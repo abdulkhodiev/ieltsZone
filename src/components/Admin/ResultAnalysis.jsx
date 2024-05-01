@@ -14,48 +14,29 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
-import { useState } from "react";
-
-const data = [
-	{
-		studentId: 1,
-		listeningScore: 5.5,
-		readingScore: 5.0,
-		writingScore: 5.0,
-		speakingScore: 5.0,
-		overallAcore: 6.0,
-		isIeltsZoneStudent: true,
-	},
-	{
-		studentId: 2,
-		listeningScore: 5.5,
-		readingScore: 5.0,
-		writingScore: 5.0,
-		speakingScore: 5.0,
-		overallAcore: 6.0,
-		isIeltsZoneStudent: false,
-	},
-	{
-		studentId: 3,
-		listeningScore: 5.5,
-		readingScore: 5.0,
-		writingScore: 5.0,
-		speakingScore: 5.0,
-		overallAcore: 6.0,
-		isIeltsZoneStudent: true,
-	},
-	{
-		studentId: 4,
-		listeningScore: 5.5,
-		readingScore: 5.0,
-		writingScore: 5.0,
-		speakingScore: 5.0,
-		overallAcore: 6.0,
-		isIeltsZoneStudent: false,
-	},
-];
+import { useEffect, useState } from "react";
+import { getScores } from "../../utils/api/requests/get-scores";
 
 const ResultAnalysis = () => {
+	const [scores, setScores] = useState();
+
+	const fetchScores = async () => {
+		try {
+			const res = await getScores();
+			setScores(res.data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		fetchScores();
+	}, []);
+
+	if (!scores) {
+		return null;
+	}
+
 	return (
 		<Stack
 			direction='column'
@@ -89,7 +70,7 @@ const ResultAnalysis = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{data.map((row) => (
+							{scores.map((row) => (
 								<Row key={row.name} row={row} />
 							))}
 						</TableBody>
@@ -132,11 +113,11 @@ function Row(props) {
 				</TableCell>
 				<TableCell>{row.studentId}</TableCell>
 				<TableCell align='right' component='th' scope='row'>
-					{row.listeningScore}
+					{row.listening}
 				</TableCell>
-				<TableCell align='right'>{row.readingScore}</TableCell>
-				<TableCell align='right'>{row.writingScore}</TableCell>
-				<TableCell align='right'>{row.speakingScore}</TableCell>
+				<TableCell align='right'>{row.reading}</TableCell>
+				<TableCell align='right'>{row.writing}</TableCell>
+				<TableCell align='right'>{row.speaking}</TableCell>
 			</TableRow>
 			<TableRow>
 				<TableCell

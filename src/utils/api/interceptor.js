@@ -30,7 +30,9 @@ $api.interceptors.response.use(
 		if (error.response.status === 401) {
 			Cookies.remove("token");
 			Cookies.remove("role");
-			window.location.href = "/login";
+			if (window.location.pathname !== "/login") {
+				window.location.href = "/login";
+			}
 		}
 		throw error;
 	}
