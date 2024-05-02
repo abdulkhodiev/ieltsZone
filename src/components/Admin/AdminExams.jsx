@@ -120,70 +120,179 @@ const AdminExams = () => {
     };
 
     return (
-        <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            padding="0.5rem"
-            sx={{
-                width: { xs: "100%", lg: "90%" },
-            }}
-        >
-            <Box
+        <Grow in={true} style={{ transformOrigin: "0 0 0" }} timeout={500}>
+            <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                padding="0.5rem"
                 sx={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
+                    width: { xs: "100%", lg: "90%" },
                 }}
             >
-                <Link to="/admin/exams/create">
-                    <Button
-                        sx={{
-                            my: "1rem",
-                            bgcolor: colors.primary,
-                            color: "white",
-                            borderRadius: "0.7rem",
-                            ":hover": { bgcolor: colors.primary },
-                        }}
-                        variant="contained"
-                    >
-                        + Add Exam
-                    </Button>
-                </Link>
-                {exams.map((exam) => (
-                    <Accordion
-                        key={exam.id}
-                        regionName={exam.location.split(",")[0]}
-                        price={exam.price}
-                        examTime={exam.examDateTime.slice(11, 16)}
-                        examDate={exam.formattedDate}
-                        locationUrl={exam.locationUrl}
-                        details={exam.details}
-                        fullRegionName={exam.location}
-                    >
-                        <Box
+                <Box
+                    sx={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1rem",
+                    }}
+                >
+                    <Link to="/admin/exams/create">
+                        <Button
                             sx={{
-                                display: "flex",
-                                gap: "0.5rem",
-                                justifyContent: "end",
+                                my: "1rem",
+                                bgcolor: colors.primary,
+                                color: "white",
+                                borderRadius: "0.7rem",
+                                ":hover": { bgcolor: colors.primary },
                             }}
+                            variant="contained"
                         >
-                            <ButtonGroup
-                                variant="contained"
-                                ref={refs.current[exam.id]}
-                                aria-label="split button"
+                            + Add Exam
+                        </Button>
+                    </Link>
+                    {exams.map((exam) => (
+                        <Accordion
+                            key={exam.id}
+                            regionName={exam.location.split(",")[0]}
+                            price={exam.price}
+                            examTime={exam.examDateTime.slice(11, 16)}
+                            examDate={exam.formattedDate}
+                            locationUrl={exam.locationUrl}
+                            details={exam.details}
+                            fullRegionName={exam.location}
+                        >
+                            <Box
                                 sx={{
-                                    borderRadius: "0.6rem",
-                                    overflow: "hidden",
-                                    bgcolor: "white",
+                                    display: "flex",
+                                    gap: "0.5rem",
+                                    justifyContent: "end",
                                 }}
                             >
-                                <Button
+                                <ButtonGroup
+                                    variant="contained"
+                                    ref={refs.current[exam.id]}
+                                    aria-label="split button"
                                     sx={{
-                                        bgcolor: "#074173",
-                                        color: "white",
-                                        border: "none !important",
+                                        borderRadius: "0.6rem",
+                                        overflow: "hidden",
+                                        bgcolor: "white",
+                                    }}
+                                >
+                                    <Button
+                                        sx={{
+                                            bgcolor: "#074173",
+                                            color: "white",
+                                            border: "none !important",
+                                            padding: {
+                                                xs: "0.2rem 0.5rem",
+                                                sm: "0.3rem 0.8rem",
+                                                md: "0.4rem 1rem",
+                                            },
+                                            fontSize: {
+                                                xs: "0.6rem",
+                                                sm: "0.8rem",
+                                                md: "1rem",
+                                            },
+
+                                            ":hover": {
+                                                bgcolor: "#074173",
+                                                color: "white",
+                                            },
+                                            zIndex: 1,
+                                        }}
+                                        onClick={() => handleToggle(exam.id)}
+                                    >
+                                        ACTIONS
+                                        <ArrowDropDown />
+                                    </Button>
+                                </ButtonGroup>
+                                <Popper
+                                    open={buttonOpen && activeId === exam.id}
+                                    anchorEl={refs.current[exam.id].current}
+                                    sx={{ zIndex: 99 }}
+                                    transition
+                                    disablePortal
+                                >
+                                    {({ TransitionProps, placement }) => (
+                                        <Grow
+                                            {...TransitionProps}
+                                            style={{
+                                                transformOrigin:
+                                                    placement === "bottom"
+                                                        ? "center top"
+                                                        : "center bottom",
+                                            }}
+                                        >
+                                            <Paper>
+                                                <ClickAwayListener
+                                                    onClickAway={
+                                                        handleButtonClose
+                                                    }
+                                                >
+                                                    <MenuList
+                                                        id="split-button-menu"
+                                                        autoFocusItem
+                                                    >
+                                                        <MenuItem
+                                                            onClick={() =>
+                                                                getExamInformation(
+                                                                    exam.id
+                                                                )
+                                                            }
+                                                            sx={{
+                                                                display: "flex",
+                                                                gap: "0.5rem",
+                                                                alignItems:
+                                                                    "center",
+                                                            }}
+                                                        >
+                                                            <Info /> Info
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    exam.id
+                                                                )
+                                                            }
+                                                            sx={{
+                                                                display: "flex",
+                                                                gap: "0.5rem",
+                                                                alignItems:
+                                                                    "center",
+                                                            }}
+                                                        >
+                                                            <Delete /> Delete
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/admin/exams/${exam.id}/edit`
+                                                                )
+                                                            }
+                                                            sx={{
+                                                                display: "flex",
+                                                                gap: "0.5rem",
+                                                                alignItems:
+                                                                    "center",
+                                                            }}
+                                                        >
+                                                            <Edit /> Edit
+                                                        </MenuItem>
+                                                    </MenuList>
+                                                </ClickAwayListener>
+                                            </Paper>
+                                        </Grow>
+                                    )}
+                                </Popper>
+                                <Button
+                                    component={Link}
+                                    to={`/admin/exams/${exam.id}/participants/applied`}
+                                    variant="contained"
+                                    sx={{
+                                        bgcolor: colors.primary,
+                                        borderRadius: "0.7rem",
                                         padding: {
                                             xs: "0.2rem 0.5rem",
                                             sm: "0.3rem 0.8rem",
@@ -192,158 +301,53 @@ const AdminExams = () => {
                                         fontSize: {
                                             xs: "0.6rem",
                                             sm: "0.8rem",
-                                            md: "1rem",
+                                            md: "0.9rem",
+                                            lg: "0.9rem",
                                         },
-
-                                        ":hover": {
-                                            bgcolor: "#074173",
-                                            color: "white",
-                                        },
-                                        zIndex: 1,
+                                        gap: "0.3rem",
                                     }}
-                                    onClick={() => handleToggle(exam.id)}
                                 >
-                                    ACTIONS
-                                    <ArrowDropDown />
+                                    <PeopleAlt sx={{ fontSize: "1.2rem" }} />{" "}
+                                    Participants
                                 </Button>
-                            </ButtonGroup>
-                            <Popper
-                                open={buttonOpen && activeId === exam.id}
-                                anchorEl={refs.current[exam.id].current}
-                                sx={{ zIndex: 99 }}
-                                transition
-                                disablePortal
-                            >
-                                {({ TransitionProps, placement }) => (
-                                    <Grow
-                                        {...TransitionProps}
-                                        style={{
-                                            transformOrigin:
-                                                placement === "bottom"
-                                                    ? "center top"
-                                                    : "center bottom",
-                                        }}
-                                    >
-                                        <Paper>
-                                            <ClickAwayListener
-                                                onClickAway={handleButtonClose}
-                                            >
-                                                <MenuList
-                                                    id="split-button-menu"
-                                                    autoFocusItem
-                                                >
-                                                    <MenuItem
-                                                        onClick={() =>
-                                                            getExamInformation(
-                                                                exam.id
-                                                            )
-                                                        }
-                                                        sx={{
-                                                            display: "flex",
-                                                            gap: "0.5rem",
-                                                            alignItems:
-                                                                "center",
-                                                        }}
-                                                    >
-                                                        <Info /> Info
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                exam.id
-                                                            )
-                                                        }
-                                                        sx={{
-                                                            display: "flex",
-                                                            gap: "0.5rem",
-                                                            alignItems:
-                                                                "center",
-                                                        }}
-                                                    >
-                                                        <Delete /> Delete
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/admin/exams/${exam.id}/edit`
-                                                            )
-                                                        }
-                                                        sx={{
-                                                            display: "flex",
-                                                            gap: "0.5rem",
-                                                            alignItems:
-                                                                "center",
-                                                        }}
-                                                    >
-                                                        <Edit /> Edit
-                                                    </MenuItem>
-                                                </MenuList>
-                                            </ClickAwayListener>
-                                        </Paper>
-                                    </Grow>
-                                )}
-                            </Popper>
-                            <Button
-                                component={Link}
-                                to={`/admin/exams/${exam.id}/participants/applied`}
-                                variant="contained"
-                                sx={{
-                                    bgcolor: colors.primary,
-                                    borderRadius: "0.7rem",
-                                    padding: {
-                                        xs: "0.2rem 0.5rem",
-                                        sm: "0.3rem 0.8rem",
-                                        md: "0.4rem 1rem",
-                                    },
-                                    fontSize: {
-                                        xs: "0.6rem",
-                                        sm: "0.8rem",
-                                        md: "0.9rem",
-                                        lg: "0.9rem",
-                                    },
-                                    gap: "0.3rem",
-                                }}
-                            >
-                                <PeopleAlt sx={{ fontSize: "1.2rem" }} />{" "}
-                                Participants
-                            </Button>
-                        </Box>
-                        <Modal
-                            open={open && activeId === exam.id}
-                            onClose={handleClose}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
-                        >
-                            <Box sx={style}>
-                                <Typography
-                                    id="modal-modal-title"
-                                    variant="h6"
-                                    component="h2"
-                                >
-                                    Exam Information
-                                </Typography>
-                                <Typography id="modal-modal-description">
-                                    Created by:{" "}
-                                    <strong>{examInfo.createdBy}</strong>
-                                </Typography>
-                                <Typography id="modal-modal-description">
-                                    Created on:{" "}
-                                    <strong>{examInfo.createdDate}</strong>
-                                </Typography>
-                                <Typography id="modal-modal-description">
-                                    Updated by:{" "}
-                                    <strong>{examInfo.updatedBy}</strong>
-                                </Typography>
-                                <Typography id="modal-modal-description">
-                                    Updated on:{" "}
-                                    <strong>{examInfo.updatedAt}</strong>
-                                </Typography>
                             </Box>
-                        </Modal>
-                    </Accordion>
-                ))}
-            </Box>
-        </Stack>
+                            <Modal
+                                open={open && activeId === exam.id}
+                                onClose={handleClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={style}>
+                                    <Typography
+                                        id="modal-modal-title"
+                                        variant="h6"
+                                        component="h2"
+                                    >
+                                        Exam Information
+                                    </Typography>
+                                    <Typography id="modal-modal-description">
+                                        Created by:{" "}
+                                        <strong>{examInfo.createdBy}</strong>
+                                    </Typography>
+                                    <Typography id="modal-modal-description">
+                                        Created on:{" "}
+                                        <strong>{examInfo.createdDate}</strong>
+                                    </Typography>
+                                    <Typography id="modal-modal-description">
+                                        Updated by:{" "}
+                                        <strong>{examInfo.updatedBy}</strong>
+                                    </Typography>
+                                    <Typography id="modal-modal-description">
+                                        Updated on:{" "}
+                                        <strong>{examInfo.updatedAt}</strong>
+                                    </Typography>
+                                </Box>
+                            </Modal>
+                        </Accordion>
+                    ))}
+                </Box>
+            </Stack>
+        </Grow>
     );
 };
 

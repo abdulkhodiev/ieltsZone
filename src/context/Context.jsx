@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import { getMe, getExams } from "../utils/api/requests/add-exams";
 import { format } from "date-fns";
+import Cookies from "js-cookie";
 
 export const DataContext = createContext();
 
@@ -24,8 +25,10 @@ export const DataProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        userInfo();
-        getExamInfo();
+        if (Cookies.get("token")) {
+            userInfo();
+            getExamInfo();
+        }
     }, []);
 
     return (

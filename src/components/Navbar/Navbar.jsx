@@ -23,6 +23,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import CloseIcon from "@mui/icons-material/Close";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import AbcIcon from "@mui/icons-material/Abc";
 
 const Navbar = ({ role }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -75,6 +76,24 @@ const Navbar = ({ role }) => {
                                 }}
                             >
                                 Home
+                            </Typography>
+                        }
+                    />
+                </ListItem>
+                <ListItem button component="a" href="#">
+                    <ListItemIcon>
+                        <AbcIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Examiners
                             </Typography>
                         }
                     />
@@ -167,12 +186,6 @@ const Navbar = ({ role }) => {
                 position: "sticky",
                 top: "0",
                 zIndex: 999,
-                bgcolor: {
-                    xs: "none",
-                    sm: "white",
-                    md: "white",
-                    lg: "white",
-                },
             }}
         >
             <Stack
@@ -207,12 +220,6 @@ const Navbar = ({ role }) => {
                         md: "0rem",
                         lg: "0rem",
                         xl: "0rem",
-                    },
-                    bgcolor: {
-                        xs: "white",
-                        sm: "none",
-                        md: "none",
-                        lg: "none",
                     },
                 }}
             >
@@ -272,6 +279,15 @@ const Navbar = ({ role }) => {
                         }}
                     >
                         <Typography variant="h6">Home</Typography>
+                    </a>
+                    <a
+                        href="#niners"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                        }}
+                    >
+                        <Typography variant="h6">Examiners</Typography>
                     </a>
                     <a
                         href="#about"

@@ -17,7 +17,7 @@ const MainContact = () => {
                 }}
                 gap={5}
                 alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
-                width={"90%"}
+                width={"1280px"}
                 m={"auto"}
                 py={{ xs: 5, sm: 5, md: 0 }}
             >
