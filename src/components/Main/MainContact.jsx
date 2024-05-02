@@ -7,17 +7,20 @@ import { Link } from "react-router-dom";
 
 const MainContact = () => {
     return (
-        <Stack minHeight={"40vh"} sx={{ bgcolor: colors.primary }}>
+        <Stack
+            minHeight={"40vh"}
+            width={"100%"}
+            sx={{ bgcolor: colors.primary }}
+        >
             <Stack
                 direction={{ xs: "column", sm: "column", md: "row" }}
                 justifyContent={{
                     xs: "center",
                     sm: "center",
-                    md: "space-between",
+                    md: "space-around",
                 }}
                 gap={5}
                 alignItems={{ xs: "center", sm: "center", md: "flex-start" }}
-                width={"1280px"}
                 m={"auto"}
                 py={{ xs: 5, sm: 5, md: 0 }}
             >
@@ -45,6 +48,7 @@ const MainContact = () => {
                         fontSize={"0.7rem"}
                         color={colors.secondary}
                         textAlign={"center"}
+                        width={{ xs: "70%", sm: "70%", md: "100%" }}
                     >
                         IELTSZONE is a specialized teaching center that prepares
                         individuals for the IELTS exam, with a focus on Mock

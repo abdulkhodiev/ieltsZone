@@ -28,6 +28,7 @@ import UserResults from "../User/UserResults";
 import UserScoreCheck from "../User/UserScoreCheck";
 import UserSectionScore from "../User/UserSectionScore";
 import OTP from "../Main/sms";
+import ForgetPassword from "../Main/ForgetPassword";
 
 export const router = createBrowserRouter([
     {
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
             { path: "login", element: <Login /> },
             { path: "register", element: <Register /> },
             { path: "sms", element: <OTP /> },
+            { path: "forget-password", element: <ForgetPassword /> },
             { path: "not-found", element: <NotFound /> },
             {
                 path: "admin",

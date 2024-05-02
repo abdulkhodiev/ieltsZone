@@ -5,9 +5,12 @@ import { Box, styled } from "@mui/system";
 import { Typography } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { verify } from "../../utils/api/requests/verify";
+import { useNavigate } from "react-router-dom";
+import { Alert } from "@mui/material";
 
-function OTP({ separator, length, value, onChange }) {
+function OTP({ separator, length, value, onChange, setError }) {
     const inputRefs = React.useRef(new Array(length).fill(null));
+    const location = useNavigate();
 
     const focusInput = (targetIndex) => {
         const targetInput = inputRefs.current[targetIndex];
@@ -66,7 +69,7 @@ function OTP({ separator, length, value, onChange }) {
             otpArray[currentIndex] = newValue;
             const newOtp = otpArray.join("");
             if (newOtp.length === length) {
-                verifyOtp(newOtp); // Trigger OTP verification
+                verifyOtp(newOtp);
             }
             return newOtp;
         });
@@ -80,8 +83,11 @@ function OTP({ separator, length, value, onChange }) {
         try {
             await verify(otp);
             console.log("OTP Verified:", otp);
+            location("/login");
         } catch (err) {
             console.error("Verification Error:", err);
+            console.log("$", err);
+            setError(err.response.data.message || "Invalid Code");
         }
     };
 
@@ -105,7 +111,7 @@ function OTP({ separator, length, value, onChange }) {
                                 onClick: (event) => handleClick(event, index),
                                 onPaste: (event) => handlePaste(event, index),
                                 value: value[index] ?? "",
-                                type: "tel", // Optimize for numeric input
+                                type: "tel",
                             },
                         }}
                     />
@@ -125,6 +131,8 @@ OTP.propTypes = {
 
 export default function OTPInput() {
     const [otp, setOtp] = React.useState("");
+    const [error, setError] = React.useState("");
+    console.log(error);
 
     return (
         <div
@@ -157,7 +165,7 @@ export default function OTPInput() {
                 <Typography variant="subtitle1" sx={{ color: colors.primary }}>
                     <h1>Enter message:</h1>
                 </Typography>
-
+                {error && <Alert severity="error">{error}</Alert>}
                 <Box
                     sx={{
                         display: "flex",
@@ -171,6 +179,7 @@ export default function OTPInput() {
                         onChange={setOtp}
                         length={6}
                         type="number"
+                        setError={setError}
                     />
                     <Typography variant="body2" alii>
                         You have 5 minutes

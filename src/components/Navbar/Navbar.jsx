@@ -23,7 +23,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import CloseIcon from "@mui/icons-material/Close";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import AbcIcon from "@mui/icons-material/Abc";
+import Groups2Icon from "@mui/icons-material/Groups2";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 const Navbar = ({ role }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -80,24 +81,7 @@ const Navbar = ({ role }) => {
                         }
                     />
                 </ListItem>
-                <ListItem button component="a" href="#">
-                    <ListItemIcon>
-                        <AbcIcon sx={{ color: colors.primary }} />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary={
-                            <Typography
-                                variant="subtitle1"
-                                sx={{
-                                    color: colors.primary,
-                                    fontWeight: "500",
-                                }}
-                            >
-                                Examiners
-                            </Typography>
-                        }
-                    />
-                </ListItem>
+
                 <ListItem button component="a" href="#about">
                     <ListItemIcon>
                         <PeopleIcon sx={{ color: colors.primary }} />
@@ -138,6 +122,42 @@ const Navbar = ({ role }) => {
                                 />
                             </ListItem>
                         ))}
+                </ListItem>
+                <ListItem button component="a" href="#niners">
+                    <ListItemIcon>
+                        <Groups2Icon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Examiners
+                            </Typography>
+                        }
+                    />
+                </ListItem>
+                <ListItem button component="a" href="#facilities">
+                    <ListItemIcon>
+                        <AccountBalanceIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Facilities
+                            </Typography>
+                        }
+                    />
                 </ListItem>
                 <ListItem button component={Link} to="/register">
                     <ListItemIcon>
@@ -185,42 +205,23 @@ const Navbar = ({ role }) => {
                 flexGrow: 1,
                 position: "sticky",
                 top: "0",
+                background: "rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                backdropFilter: "blur(5px)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                px: "1rem",
+                my: "1rem",
+                borderRadius: "1rem",
                 zIndex: 999,
             }}
         >
             <Stack
-                border={{
-                    xs: "2px solid black",
-                    sm: "none",
-                    md: "none",
-                    lg: "none",
-                }}
-                borderRadius={"1rem"}
-                my={{
-                    xs: "0.5rem",
-                    sm: "0rem",
-                    md: "0rem",
-                    lg: "0rem",
-                }}
                 id="home"
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
                 sx={{
-                    height: {
-                        xs: "10vh",
-                        sm: "10vh",
-                        md: "15vh",
-                        lg: "15vh",
-                        xl: "15vh",
-                    },
-                    px: {
-                        xs: "0.5rem",
-                        sm: "0.5rem",
-                        md: "0rem",
-                        lg: "0rem",
-                        xl: "0rem",
-                    },
+                    height: "10vh",
                 }}
             >
                 <IconButton
@@ -244,7 +245,7 @@ const Navbar = ({ role }) => {
                     sx={{
                         display: {
                             xs: "block",
-                            sm: "none",
+                            sm: "block",
                             md: "none",
                             lg: "none",
                         },
@@ -260,8 +261,13 @@ const Navbar = ({ role }) => {
 
                 <Box
                     sx={{
-                        display: { xs: "none", sm: "flex" },
-                        gap: "1rem",
+                        display: {
+                            xs: "none",
+                            sm: "none",
+                            md: "flex",
+                            lg: "flex",
+                        },
+                        gap: "2rem",
                         alignItems: "center",
                     }}
                 >
@@ -280,6 +286,16 @@ const Navbar = ({ role }) => {
                     >
                         <Typography variant="h6">Home</Typography>
                     </a>
+
+                    <a
+                        href="#about"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                        }}
+                    >
+                        <Typography variant="h6">About Us</Typography>
+                    </a>
                     <a
                         href="#niners"
                         style={{
@@ -290,13 +306,13 @@ const Navbar = ({ role }) => {
                         <Typography variant="h6">Examiners</Typography>
                     </a>
                     <a
-                        href="#about"
+                        href="#facilities"
                         style={{
                             textDecoration: "none",
                             color: "inherit",
                         }}
                     >
-                        <Typography variant="h6">About Us</Typography>
+                        <Typography variant="h6">Facilities</Typography>
                     </a>
                 </Box>
                 <Box
@@ -331,7 +347,12 @@ const Navbar = ({ role }) => {
                     keepMounted: true,
                 }}
                 sx={{
-                    display: { xs: "block", sm: "none" },
+                    display: {
+                        xs: "block",
+                        sm: "block",
+                        md: "block",
+                        lg: "none",
+                    },
                     "& .MuiDrawer-paper": {
                         boxSizing: "border-box",
                         width: 240,

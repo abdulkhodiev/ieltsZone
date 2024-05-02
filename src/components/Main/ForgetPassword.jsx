@@ -1,23 +1,22 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import {
     Card,
     CardContent,
     TextField,
     Button,
     Typography,
-    Link,
     Alert,
 } from "@mui/material";
-import { postLogin } from "../../utils/api/requests/login";
-
 import MyTelInput from "../UI/MyTelInput";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { forgetPassword } from "../../utils/api/requests/forgetPassword";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const ForgetPassword = () => {
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
         phoneNumber: "",
         password: "",
+        confirmPassword: "",
     });
     const [error, setError] = useState("");
 
@@ -37,25 +36,18 @@ const Login = () => {
         }
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (credentials.password !== credentials.confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        } else if (credentials.password.length < 8) {
+            setError("Password must be at least 8 characters long.");
+            return;
+        }
         try {
-            const userData = await postLogin(
-                credentials.phoneNumber,
-                credentials.password
-            );
-
-            if (userData && userData.role) {
-                const { role } = userData;
-                if (role === "ADMIN") {
-                    navigate("/admin/mentors");
-                } else if (role === "USER") {
-                    navigate("/user/exams");
-                } else {
-                    navigate("/");
-                }
-            }
+            await forgetPassword(credentials.password, credentials.phoneNumber);
+            navigate("/sms");
         } catch (error) {
             setError(error.response.data.message);
         }
@@ -91,7 +83,7 @@ const Login = () => {
                     }}
                 >
                     <Typography variant="h5" style={{ marginBottom: "2rem" }}>
-                        Log In
+                        Forget Password?
                     </Typography>
                     {error && (
                         <Alert
@@ -114,11 +106,25 @@ const Login = () => {
                             }
                         />
                         <TextField
-                            label="Password"
+                            label="New Password"
                             variant="outlined"
                             type="password"
                             name="password"
                             value={credentials.password}
+                            onChange={handleChange}
+                            fullWidth
+                            required
+                            style={{ marginBottom: "1rem" }}
+                            inputProps={{
+                                minLength: 8,
+                            }}
+                        />
+                        <TextField
+                            label="Confirm New Password"
+                            variant="outlined"
+                            type="password"
+                            name="confirmPassword"
+                            value={credentials.confirmPassword}
                             onChange={handleChange}
                             fullWidth
                             required
@@ -139,26 +145,13 @@ const Login = () => {
                                 marginBottom: "1rem",
                             }}
                         >
-                            Log In
+                            Submit
                         </Button>
                     </form>
-                    <Typography variant="body2">
-                        I do not have an account?{" "}
-                        <Link
-                            component={RouterLink}
-                            to="/register"
-                            style={{ color: "#330140" }}
-                        >
-                            Sign Up
-                        </Link>
-                    </Typography>
-                    {error && (
-                        <Link to="/forget-password">Forgot Password?</Link>
-                    )}
                 </CardContent>
             </Card>
         </div>
     );
 };
 
-export default Login;
+export default ForgetPassword;

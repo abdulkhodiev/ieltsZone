@@ -27,10 +27,15 @@ const MainHeader = () => {
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "start",
+                    alignItems: {
+                        xs: "center",
+                        sm: "center",
+                        md: "flex-start",
+                        lg: "flex-start",
+                    },
                     height: "100%",
                     justifyContent: "center",
-                    gap: "1rem",
+                    gap: "2rem",
                 }}
             >
                 <Typography
@@ -59,7 +64,12 @@ const MainHeader = () => {
                             lg: "4rem",
                         },
                         fontWeight: "bold",
-
+                        textAlign: {
+                            xs: "center",
+                            sm: "center",
+                            md: "left",
+                            lg: "left",
+                        },
                         color: colors.primary,
                     }}
                 >
@@ -67,8 +77,11 @@ const MainHeader = () => {
                 </Typography>
                 <Typography
                     variant="subtitle1"
-                    sx={{
-                        fontSize: {},
+                    textAlign={{
+                        xs: "center",
+                        sm: "center",
+                        md: "left",
+                        lg: "left",
                     }}
                     py={2}
                 >
@@ -126,7 +139,16 @@ const MainHeader = () => {
                     </Button>
                 </Stack>
             </Box>
-            <Box>
+            <Box
+                sx={{
+                    display: {
+                        xs: "none",
+                        sm: "none",
+                        md: "none ",
+                        lg: "block",
+                    },
+                }}
+            >
                 <img
                     src={lady}
                     style={{
