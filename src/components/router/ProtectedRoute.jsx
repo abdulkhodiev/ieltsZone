@@ -1,15 +1,14 @@
-import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-    const role = Cookies.get("role");
+	const role = Cookies.get("role");
 
-    if (role !== "ADMIN") {
-        return <Navigate to="/not-found" replace />;
-    }
+	if (role !== "ADMIN") {
+		return <Navigate to='/not-found' replace />;
+	}
 
-    return children;
+	return children;
 };
 
 export default ProtectedRoute;

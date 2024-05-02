@@ -2,6 +2,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
 	Box,
+	Chip,
 	Collapse,
 	FormControl,
 	IconButton,
@@ -10,7 +11,6 @@ import {
 	Paper,
 	Select,
 	Stack,
-	Switch,
 	Table,
 	TableBody,
 	TableCell,
@@ -21,7 +21,44 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getScores } from "../../utils/api/requests/get-scores";
-
+// const data = [
+// 	{
+// 		studentId: 1,
+// 		listening: 5.5,
+// 		reading: 5.0,
+// 		writing: 5.0,
+// 		speaking: 5.0,
+// 		overallScore: 6.0,
+// 		isIeltsZoneStudent: true,
+// 	},
+// 	{
+// 		studentId: 2,
+// 		listening: 5.5,
+// 		reading: 5.0,
+// 		writing: 5.0,
+// 		speaking: 5.0,
+// 		overallScore: 6.0,
+// 		isIeltsZoneStudent: false,
+// 	},
+// 	{
+// 		studentId: 3,
+// 		listening: 5.5,
+// 		reading: 5.0,
+// 		writing: 5.0,
+// 		speaking: 5.0,
+// 		overallScore: 6.0,
+// 		isIeltsZoneStudent: true,
+// 	},
+// 	{
+// 		studentId: 4,
+// 		listening: 5.5,
+// 		reading: 5.0,
+// 		writing: 5.0,
+// 		speaking: 5.0,
+// 		overallScore: 6.0,
+// 		isIeltsZoneStudent: false,
+// 	},
+// ];
 const ResultAnalysis = () => {
 	const [scores, setScores] = useState();
 	const [markIeltsZoneStudents, setMarkIeltsZoneStudents] = useState();
@@ -49,17 +86,18 @@ const ResultAnalysis = () => {
 			sx={{
 				width: { xs: "100%", lg: "90%" },
 				justifyContent: "center",
-				alignItems: "center",
 				padding: "1.5rem 0.5rem",
 			}}
 		>
-			<Box sx={{ width: "100%" }}>
-				<Switch
-					checked={markIeltsZoneStudents}
-					onChange={() => setMarkIeltsZoneStudents((prev) => !prev)}
-				/>
-				<FormControl fullWidth>
-					<InputLabel id='demo-simple-select-label'>Age</InputLabel>
+			<Stack
+				direction={"row"}
+				justifyContent={"start"}
+				alignItems={"center"}
+				marginBottom={"1rem"}
+				gap={"1rem"}
+			>
+				<FormControl fullWidth sx={{ width: 120 }}>
+					<InputLabel id='demo-simple-select-label'>Sort</InputLabel>
 					<Select
 						labelId='demo-simple-select-label'
 						id='demo-simple-select'
@@ -70,40 +108,48 @@ const ResultAnalysis = () => {
 						<MenuItem value={"highest"}>Highest</MenuItem>
 					</Select>
 				</FormControl>
-				<TableContainer
-					component={Paper}
-					sx={{
-						boxShadow: "none",
-						margin: 0,
-						padding: 0,
-						border: "1px solid #EEEEEE",
-						borderRadius: "1rem",
-					}}
-				>
-					<Table aria-label='simple table'>
-						<TableHead>
-							<TableRow>
-								<TableCell />
-								<TableCell align='right'>Listening</TableCell>
-								<TableCell align='right'>Reading</TableCell>
-								<TableCell align='right'>Writing</TableCell>
-								<TableCell align='right'>Speaking</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{scores.map((row) => (
-								<Row
-									key={row.name}
-									row={row}
-									markIeltsZoneStudents={
-										markIeltsZoneStudents
-									}
-								/>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Box>
+				<Chip
+					label='IeltsZone Students'
+					variant={markIeltsZoneStudents ? "filled" : "outlined"}
+					checked={markIeltsZoneStudents}
+					onClick={() => setMarkIeltsZoneStudents((prev) => !prev)}
+				/>
+				{/* <Switch
+					checked={markIeltsZoneStudents}
+					onChange={() => setMarkIeltsZoneStudents((prev) => !prev)}
+				/> */}
+			</Stack>
+			<TableContainer
+				component={Paper}
+				sx={{
+					boxShadow: "none",
+					margin: 0,
+					padding: 0,
+					border: "1px solid #EEEEEE",
+					borderRadius: "1rem",
+				}}
+			>
+				<Table aria-label='simple table'>
+					<TableHead>
+						<TableRow>
+							<TableCell />
+							<TableCell align='right'>Listening</TableCell>
+							<TableCell align='right'>Reading</TableCell>
+							<TableCell align='right'>Writing</TableCell>
+							<TableCell align='right'>Speaking</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{scores.map((row) => (
+							<Row
+								key={row.name}
+								row={row}
+								markIeltsZoneStudents={markIeltsZoneStudents}
+							/>
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
 		</Stack>
 	);
 };
