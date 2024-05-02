@@ -30,6 +30,8 @@ import UserSectionScore from "../User/UserSectionScore";
 import OTP from "../Main/sms";
 import ForgetPassword from "../Main/ForgetPassword";
 
+import { DataProvider } from "../../context/Context";
+
 export const router = createBrowserRouter([
     {
         element: <Layout />,
@@ -44,9 +46,11 @@ export const router = createBrowserRouter([
             {
                 path: "admin",
                 element: (
-                    <ProtectedRoute>
-                        <AdminLayout />
-                    </ProtectedRoute>
+                    <DataProvider>
+                        <ProtectedRoute>
+                            <AdminLayout />
+                        </ProtectedRoute>
+                    </DataProvider>
                 ),
                 children: [
                     {
