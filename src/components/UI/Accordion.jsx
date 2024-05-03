@@ -90,7 +90,6 @@ const Accordion = ({
         <div className="accordion" style={accordionStyle}>
             <div className="title" style={titleStyle} onClick={handleOpen}>
                 <div
-                    className="title-text"
                     style={{
                         display: "flex",
                         alignItems: "center",
@@ -98,7 +97,7 @@ const Accordion = ({
                         color: colors.primary,
                     }}
                 >
-                    <button className="title-button" style={buttonItemStyle}>
+                    <button style={buttonItemStyle}>
                         <KeyboardArrowRightIcon
                             style={{
                                 transform: expanded
@@ -109,15 +108,17 @@ const Accordion = ({
                             }}
                         />
                     </button>
-                    <h3 style={{ fontSize }}>{regionName}</h3>
+                    <h3 className="mb-0 fw-bold" style={{ fontSize }}>
+                        {regionName}
+                    </h3>
                 </div>
-                <div className="title-text-right">
-                    <h4 style={{ fontSize }}>
+                <div>
+                    <h4 className="mb-0 fw-bold" style={{ fontSize }}>
                         {examTime}, {examDate}
                     </h4>
                 </div>
             </div>
-            <div style={contentStyle} className="content">
+            <div style={contentStyle}>
                 <div style={{ padding: "1rem" }}>
                     <a
                         target="_blank"
@@ -139,7 +140,7 @@ const Accordion = ({
                     <pre style={{ whiteSpace: "pre-wrap" }}>{details}</pre>
                 </div>
             </div>
-            <div className="buttons" style={buttonStyle}>
+            <div style={buttonStyle}>
                 <div>
                     <span
                         style={{
