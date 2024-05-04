@@ -65,6 +65,15 @@ export const deleteExams = async (examId) => {
     }
 };
 
+export const deleteFeedbackFolders = async (examId) => {
+    try {
+        await $api.delete(`/exam-result/old-files?examId=${examId}`);
+    } catch (error) {
+        console.error("Error deleting feedback folders:", error);
+        throw error;
+    }
+};
+
 export const reserveExamTemporariy = async (examId) => {
     try {
         const response = await $api.post(

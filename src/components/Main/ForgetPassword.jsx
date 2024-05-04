@@ -52,6 +52,7 @@ const ForgetPassword = () => {
         };
         try {
             await forgetPassword(payload);
+            navigate("/reset-password");
         } catch (error) {
             setError(error.response.data.message);
         }
