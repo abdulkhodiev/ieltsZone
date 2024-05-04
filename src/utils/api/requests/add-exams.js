@@ -9,6 +9,8 @@ export const AddExam = async (examData) => {
         locationUrl,
         details,
         speakingDates,
+        cardNumber,
+        cardHolderName,
     } = examData;
     const res = await $api.post("/exam", {
         examDateTime,
@@ -18,6 +20,8 @@ export const AddExam = async (examData) => {
         locationUrl,
         details,
         speakingDates,
+        cardNumber,
+        cardHolderName,
     });
     return res.data;
 };

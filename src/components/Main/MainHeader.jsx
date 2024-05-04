@@ -2,7 +2,7 @@ import { colors } from "../../constants/colors";
 import { Box, Typography, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import lady from "../../assets/ielts-coaching.png";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import PromoModal from "../UI/promoModal";
 
 const MainHeader = () => {
     const navigate = useNavigate();
@@ -115,28 +115,7 @@ const MainHeader = () => {
                     >
                         📜 Register For Mock IELTS
                     </Button>
-                    <Button
-                        onClick={() => navigate("/register")}
-                        variant="contained"
-                        sx={{
-                            bgcolor: "#DF6951",
-                            ":hover": { bgcolor: "#DF6951" },
-                            borderRadius: "1rem",
-                            fontWeight: "bold",
-                            color: "white",
-                            textTransform: "none",
-                            fontSize: {
-                                xs: "0.8rem",
-                                sm: "1rem",
-                                md: "1.2rem",
-                                lg: "1.2rem",
-                            },
-                            padding: "0.8rem 1.5rem",
-                        }}
-                    >
-                        <PlayCircleIcon sx={{ marginRight: "0.5rem" }} /> Promo
-                        Video
-                    </Button>
+                    <PromoModal />
                 </Stack>
             </Box>
             <Box

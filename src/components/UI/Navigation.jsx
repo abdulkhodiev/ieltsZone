@@ -38,7 +38,7 @@ const Navigation = () => {
           }
         : {};
     const resultsDynamicStyles = location.pathname.includes(
-        "admin/results-analysis"
+        "admin/result-analysis"
     )
         ? {
               bgcolor: colors.primary,

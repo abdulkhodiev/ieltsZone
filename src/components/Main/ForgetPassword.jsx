@@ -45,9 +45,13 @@ const ForgetPassword = () => {
             setError("Password must be at least 8 characters long.");
             return;
         }
+
+        const payload = {
+            password: credentials.password,
+            phoneNumber: credentials.phoneNumber,
+        };
         try {
-            await forgetPassword(credentials.password, credentials.phoneNumber);
-            navigate("/sms");
+            await forgetPassword(payload);
         } catch (error) {
             setError(error.response.data.message);
         }
@@ -67,11 +71,12 @@ const ForgetPassword = () => {
                     minWidth: 275,
                     maxWidth: {
                         xs: "90%",
-                        sm: "75%",
-                        md: "50%",
-                        lg: "50%",
+                        sm: "65%",
+                        md: "40%",
+                        lg: "40%",
                     },
                     boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.2)",
+                    borderRadius: "1rem",
                 }}
             >
                 <CardContent

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     Box,
     Stack,
@@ -9,7 +9,6 @@ import {
     List,
     ListItem,
     ListItemText,
-    ListItemButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
@@ -22,12 +21,16 @@ import PeopleIcon from "@mui/icons-material/People";
 import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import CloseIcon from "@mui/icons-material/Close";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import Groups2Icon from "@mui/icons-material/Groups2";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import Cookies from "js-cookie";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
-const Navbar = ({ role }) => {
+const Navbar = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    const token = Cookies.get("token");
+    const role = Cookies.get("role");
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -99,29 +102,6 @@ const Navbar = ({ role }) => {
                             </Typography>
                         }
                     />
-                    {role === "ADMIN" ||
-                        (role === "" && (
-                            <ListItem button component={Link} to="/admin/exams">
-                                <ListItemIcon>
-                                    <AssignmentIcon
-                                        sx={{ color: colors.primary }}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={
-                                        <Typography
-                                            variant="subtitle1"
-                                            sx={{
-                                                color: colors.primary,
-                                                fontWeight: "500",
-                                            }}
-                                        >
-                                            Exams
-                                        </Typography>
-                                    }
-                                />
-                            </ListItem>
-                        ))}
                 </ListItem>
                 <ListItem button component="a" href="#niners">
                     <ListItemIcon>
@@ -159,42 +139,90 @@ const Navbar = ({ role }) => {
                         }
                     />
                 </ListItem>
-                <ListItem button component={Link} to="/register">
-                    <ListItemIcon>
-                        <HowToRegIcon sx={{ color: colors.primary }} />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary={
-                            <Typography
-                                variant="subtitle1"
-                                sx={{
-                                    color: colors.primary,
-                                    fontWeight: "500",
-                                }}
-                            >
-                                Sign Up
-                            </Typography>
-                        }
-                    />
-                </ListItem>
-                <ListItem component={Link} to="/login">
-                    <ListItemIcon>
-                        <LoginIcon sx={{ color: colors.primary }} />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary={
-                            <Typography
-                                variant="subtitle1"
-                                sx={{
-                                    color: colors.primary,
-                                    fontWeight: "500",
-                                }}
-                            >
-                                Log In
-                            </Typography>
-                        }
-                    />
-                </ListItem>
+                {token ? (
+                    role === "ADMIN" ? (
+                        <ListItem button component={Link} to="/admin/mentors">
+                            <ListItemIcon>
+                                <MeetingRoomIcon
+                                    sx={{ color: colors.primary }}
+                                />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: colors.primary,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        Enter
+                                    </Typography>
+                                }
+                            />
+                        </ListItem>
+                    ) : (
+                        <ListItem button component={Link} to="/user/exams">
+                            <ListItemIcon>
+                                <MeetingRoomIcon
+                                    sx={{ color: colors.primary }}
+                                />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: colors.primary,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        Enter
+                                    </Typography>
+                                }
+                            />
+                        </ListItem>
+                    )
+                ) : (
+                    <>
+                        <ListItem button component={Link} to="/register">
+                            <ListItemIcon>
+                                <HowToRegIcon sx={{ color: colors.primary }} />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: colors.primary,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        Sign Up
+                                    </Typography>
+                                }
+                            />
+                        </ListItem>
+                        <ListItem button component={Link} to="/login">
+                            <ListItemIcon>
+                                <LoginIcon sx={{ color: colors.primary }} />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: colors.primary,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        Log In
+                                    </Typography>
+                                }
+                            />
+                        </ListItem>
+                    </>
+                )}
             </List>
         </Box>
     );
@@ -231,7 +259,7 @@ const Navbar = ({ role }) => {
                     onClick={handleDrawerToggle}
                     sx={{
                         ml: "0.1rem",
-                        display: { sm: "none" },
+                        display: { sm: "flex", md: "none", lg: "none" },
                         bgcolor: colors.primary,
                         color: "white",
                         borderRadius: "0.6rem",
@@ -261,6 +289,22 @@ const Navbar = ({ role }) => {
 
                 <Box
                     sx={{
+                        display: { sm: "flex", md: "none", lg: "none" },
+                        bgcolor: colors.primary,
+                        color: "white",
+                        borderRadius: "0.6rem",
+                    }}
+                >
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        width="70px"
+                        style={{ borderRadius: "0.8rem" }}
+                    />
+                </Box>
+
+                <Box
+                    sx={{
                         display: {
                             xs: "none",
                             sm: "none",
@@ -277,6 +321,20 @@ const Navbar = ({ role }) => {
                         width="100px"
                         style={{ borderRadius: "0.8rem" }}
                     />
+                </Box>
+
+                <Box
+                    sx={{
+                        display: {
+                            xs: "none",
+                            sm: "none",
+                            md: "flex",
+                            lg: "flex",
+                        },
+                        gap: "3rem",
+                        alignItems: "center",
+                    }}
+                >
                     <a
                         href="#"
                         style={{
@@ -315,29 +373,39 @@ const Navbar = ({ role }) => {
                         <Typography variant="h6">Facilities</Typography>
                     </a>
                 </Box>
-                <Box
-                    sx={{
-                        display: { sm: "none" },
-                        bgcolor: colors.primary,
-                        color: "white",
-                        borderRadius: "0.6rem",
-                    }}
-                >
-                    <img
-                        src={logo}
-                        alt="Logo"
-                        width="70px"
-                        style={{ borderRadius: "0.8rem" }}
-                    />
-                </Box>
-                <Box sx={{ display: { xs: "none", sm: "flex" }, gap: "1rem" }}>
-                    <Link to="/register">
-                        <MyButton>Sign Up</MyButton>
-                    </Link>
-                    <Link to="/login">
-                        <MyButton>Log In</MyButton>
-                    </Link>
-                </Box>
+
+                {token ? (
+                    <Box
+                        sx={{
+                            display: { xs: "none", md: "flex" },
+                            gap: "1rem",
+                        }}
+                    >
+                        {role === "ADMIN" ? (
+                            <Link to="/admin/mentors">
+                                <MyButton>ENTER</MyButton>
+                            </Link>
+                        ) : (
+                            <Link to="/user/exams">
+                                <MyButton>ENTER</MyButton>
+                            </Link>
+                        )}
+                    </Box>
+                ) : (
+                    <Box
+                        sx={{
+                            display: { xs: "none", md: "flex" },
+                            gap: "1rem",
+                        }}
+                    >
+                        <Link to="/register">
+                            <MyButton>Sign Up</MyButton>
+                        </Link>
+                        <Link to="/login">
+                            <MyButton>Log In</MyButton>
+                        </Link>
+                    </Box>
+                )}
             </Stack>
             <Drawer
                 variant="temporary"

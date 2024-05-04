@@ -19,6 +19,7 @@ import {
     getAppliedUserPaymentCheck,
     updatePaymentCheck,
 } from "../../../../utils/api/requests/applied-users";
+import TransitionsModal from "../../../UI/ContentPreviewModal";
 
 const PaymentCheck = () => {
     const { examId, rowId } = useParams();
@@ -30,8 +31,9 @@ const PaymentCheck = () => {
         firstName: "Loading",
         lastName: "",
         ieltsZoneStudent: false,
-        status: "REJECTED",
+        status: "",
         message: "",
+        phoneNumber: "",
     });
     const [img, setImage] = useState(
         "https://images.pexels.com/photos/5428826/pexels-photo-5428826.jpeg?auto=compress&cs=tinysrgb&w=600"
@@ -46,6 +48,7 @@ const PaymentCheck = () => {
                     firstName: res.student.firstName,
                     lastName: res.student.lastName,
                     ieltsZoneStudent: res.isStudent,
+                    phoneNumber: res.student.phoneNumber,
                 });
                 if (res.paymentPictureUrl !== null) {
                     setImage(res.paymentPictureUrl);
@@ -115,13 +118,12 @@ const PaymentCheck = () => {
                     boxShadow="0px 4px 20px rgba(0,0,0,0.1)"
                 >
                     <Box>
-                        <img
-                            style={{
-                                width: isMobile ? "100%" : "350px",
-                                borderRadius: "1rem",
-                            }}
-                            src={img}
-                            alt="Student Visual"
+                        <TransitionsModal
+                            isMobile={isMobile}
+                            img={img}
+                            setImage={setImage}
+                            examId={examId}
+                            rowId={rowId}
                         />
                     </Box>
                     <Box
@@ -130,11 +132,15 @@ const PaymentCheck = () => {
                         justifyContent="space-evenly"
                         width={isMobile ? "100%" : "auto"}
                     >
-                        <Typography variant="h6">
+                        <Typography variant="h6" sx={{ mb: "1rem" }}>
                             IELTSZONE STUDENT:{" "}
                             <span style={{ fontWeight: "bold" }}>
                                 {studentData.ieltsZoneStudent ? "YES" : "NO"}
                             </span>
+                        </Typography>
+                        <Typography variant="h6" sx={{ mb: "1rem" }}>
+                            Phone Number: {studentData.phoneNumber}
+                            <span style={{ fontWeight: "bold" }}></span>
                         </Typography>
                         <FormControl fullWidth>
                             <InputLabel id="status-label">Status</InputLabel>

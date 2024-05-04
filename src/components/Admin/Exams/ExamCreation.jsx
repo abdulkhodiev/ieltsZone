@@ -44,8 +44,12 @@ const ExamCreation = () => {
         event.preventDefault();
 
         const trimmedCardNumber = cardNumber.replace(/\s/g, "");
+        console.log("Submitting with card number:", trimmedCardNumber);
+        console.log("Card Holder Name:", cardHolderName);
 
         const examData = {
+            cardNumber: trimmedCardNumber,
+            cardHolderName,
             examDateTime,
             price,
             numberOfPlaces,
@@ -53,9 +57,9 @@ const ExamCreation = () => {
             locationUrl,
             details,
             speakingDates,
-            trimmedCardNumber,
-            cardHolderName,
         };
+
+        console.log("Exam Data:", examData);
 
         try {
             if (examId) {
@@ -86,6 +90,8 @@ const ExamCreation = () => {
                     setLocationUrl(examDetails.locationUrl);
                     setDetails(examDetails.details);
                     setSpeakingDates(examDetails.speakingDates || [""]);
+                    setCardNumber(examDetails.cardNumber || "");
+                    setCardHolderName(examDetails.cardHolderName || "");
                 } catch (error) {
                     console.error("Failed to fetch exam details:", error);
                 }
@@ -284,7 +290,13 @@ const ExamCreation = () => {
                             margin="normal"
                             label="Card Number"
                             value={cardNumber}
-                            onChange={(e) => setCardNumber(e.target.value)}
+                            onChange={(e) => {
+                                console.log(
+                                    "Card Number onChange:",
+                                    e.target.value
+                                ); // Debug log
+                                setCardNumber(e.target.value);
+                            }}
                             name="cardNumber"
                             required
                             fullWidth
@@ -298,7 +310,13 @@ const ExamCreation = () => {
                             required
                             fullWidth
                             value={cardHolderName}
-                            onChange={(e) => setCardHolderName(e.target.value)}
+                            onChange={(e) => {
+                                console.log(
+                                    "Card Holder Name onChange:",
+                                    e.target.value
+                                );
+                                setCardHolderName(e.target.value);
+                            }}
                             variant="outlined"
                             label="Card Holder Name"
                             placeholder="John Smith"

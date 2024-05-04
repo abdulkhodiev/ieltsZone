@@ -1,4 +1,3 @@
-import { AdminCategory } from "../index";
 import { Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
@@ -19,7 +18,6 @@ const AdminMain = () => {
                 },
             }}
         >
-            <AdminCategory />
             <Outlet />
         </Stack>
     );

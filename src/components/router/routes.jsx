@@ -126,10 +126,6 @@ export const router = createBrowserRouter([
                         path: "results/scores/:examRegistrationId",
                         element: <UserScoreCheck />,
                     },
-                    {
-                        path: "results/scores/:examRegistrationId/:section",
-                        element: <UserSectionScore />,
-                    },
                 ],
             },
             { path: "*", element: <NotFound /> },
