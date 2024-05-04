@@ -16,6 +16,7 @@ import {
     putSectionScores,
     postFeedbackFolder,
 } from "../../../../utils/api/requests/exam-check-by-section";
+import Snackbar from "@mui/joy/Snackbar";
 
 const ExamCheck = () => {
     const { rowId } = useParams();
@@ -30,6 +31,8 @@ const ExamCheck = () => {
         speaking: "",
     });
     const [feedbackResponse, setFeedbackResponse] = useState("");
+    const [error, setError] = useState("");
+    const [message, setMessage] = useState("");
 
     const getUserScore = async () => {
         const res = await getExamResults(rowId);
@@ -86,12 +89,13 @@ const ExamCheck = () => {
 
             try {
                 await putSectionScores(userInfo.id, payload);
+                setMessage("Submission successful!");
+                setFeedbackFile(null);
             } catch (error) {
-                console.error("Failed to submit scores with feedback", error);
-                alert("Submission failed!");
+                setError(error.response.data.detail);
             }
         } else {
-            alert("Please upload the feedback folder before submitting.");
+            await putSectionScores(userInfo.id, sections);
         }
     };
 
@@ -272,6 +276,26 @@ const ExamCheck = () => {
                         Submit
                     </Button>
                 </Stack>
+                <Snackbar
+                    autoHideDuration={3000}
+                    color="danger"
+                    size="lg"
+                    open={error}
+                    onClose={() => setError("")}
+                    variant="solid"
+                >
+                    {error}
+                </Snackbar>
+                <Snackbar
+                    autoHideDuration={3000}
+                    color="success"
+                    open={message}
+                    onClose={() => setMessage("")}
+                    size="lg"
+                    variant="solid"
+                >
+                    {message}
+                </Snackbar>
             </Box>
         </Grow>
     );
