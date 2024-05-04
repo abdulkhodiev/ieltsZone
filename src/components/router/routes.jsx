@@ -126,20 +126,16 @@ export const router = createBrowserRouter([
 						],
 					},
 
-					{ path: "exams/apply/:examId", element: <UserApply /> },
-					{
-						path: "results/scores/:examRegistrationId",
-						element: <UserScoreCheck />,
-					},
-					{
-						path: "results/scores/:examRegistrationId/:section",
-						element: <UserSectionScore />,
-					},
-				],
-			},
-			{ path: "*", element: <NotFound /> },
-		],
-	},
+                    { path: "exams/apply/:examId", element: <UserApply /> },
+                    {
+                        path: "results/scores/:examRegistrationId",
+                        element: <UserScoreCheck />,
+                    },
+                ],
+            },
+            { path: "*", element: <NotFound /> },
+        ],
+    },
 ]);
 
 export default router;

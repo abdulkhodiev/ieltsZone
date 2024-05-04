@@ -15,6 +15,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../../../constants/colors";
 import { getAcceptedUsers } from "../../../../utils/api/requests/accepted-user";
+import dayjs from "dayjs";
 
 const ExamAccepted = () => {
     const { examId, rowId } = useParams();
@@ -97,6 +98,7 @@ const ExamAccepted = () => {
                                 <TableCell>Name</TableCell>
                                 <TableCell>Last Name</TableCell>
                                 <TableCell>Phone</TableCell>
+                                <TableCell>Speaking Date</TableCell>
                                 <TableCell>Status</TableCell>
                             </TableRow>
                         </TableHead>
@@ -124,6 +126,11 @@ const ExamAccepted = () => {
                                     <TableCell>{row.user.lastName}</TableCell>
                                     <TableCell>
                                         {row.user.phoneNumber}
+                                    </TableCell>
+                                    <TableCell>
+                                        {dayjs(row.speakingDateTime).format(
+                                            "HH:mm | DD MMM YYYY"
+                                        ) || "Not Chosen"}
                                     </TableCell>
                                     <TableCell
                                         sx={{

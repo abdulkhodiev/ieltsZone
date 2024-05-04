@@ -1,193 +1,167 @@
-import React, { useState, useEffect } from "react";
-import { Stack, Box, Typography, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Stack, Card, Typography, Button, Grow } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
-import { Link, useParams } from "react-router-dom";
 import {
-    getStudentInfo,
-    getSectionResults,
+    getExamResults,
+    getFeedbackFolder,
 } from "../../utils/api/requests/exam-check-by-section";
-import UserCertificate from "../UI/UserCertificate";
-
-import dayjs from "dayjs";
 
 const UserScoreCheck = () => {
     const { examRegistrationId } = useParams();
 
-    const sections = [
-        "listening",
-        "reading",
-        "writing",
-        "speaking",
-        "Band Score",
-    ];
+    const [userInfo, setUserInfo] = useState({});
+    const [sections, setSections] = useState({
+        listening: "",
+        reading: "",
+        writing: "",
+        speaking: "",
+    });
 
-    const [name, setName] = useState({ firstName: "", lastName: "" });
-    const [sectionResults, setSectionResults] = useState([]);
-    const [examDate, setExamDate] = useState({});
-
-    const fetchName = async () => {
-        const data = await getStudentInfo(examRegistrationId);
-        setName(data.student);
-    };
-
-    const fetchSectionResults = async () => {
-        const data = await getSectionResults(examRegistrationId);
-        setSectionResults(data.sectionResults);
-        setExamDate(data.examDate);
+    const getUserScore = async () => {
+        try {
+            const res = await getExamResults(examRegistrationId);
+            setUserInfo(res);
+            setSections({
+                listening: res.listening || "",
+                reading: res.reading || "",
+                writing: res.writing || "",
+                speaking: res.speaking || "",
+            });
+        } catch (error) {
+            console.error("Failed to fetch exam results:", error);
+        }
     };
 
     useEffect(() => {
-        fetchName();
-        fetchSectionResults();
+        getUserScore();
     }, [examRegistrationId]);
 
-    const calculateBandScore = () => {
-        let totalScore = 0;
-        sections.forEach((section) => {
-            if (section !== "Band Score") {
-                const result = sectionResults.find(
-                    (result) => result.sectionName.toLowerCase() === section
-                );
-                if (result && result.score !== null) {
-                    totalScore += result.score;
-                }
-            }
-        });
-        const bandScore = Math.round((totalScore / 4) * 2) / 2;
-        return bandScore;
+    const id = userInfo.feedbackFileId;
+
+    const fileUrl = `http://localhost:8080/api/v1/file-storage/download-file?id=${id}`;
+
+    const handleDownload = (fileUrl) => {
+        const fileName = fileUrl.split("/").pop();
+        const aTag = document.createElement("a");
+        aTag.href = fileUrl;
+        aTag.setAttribute("download", fileName);
+        document.body.appendChild(aTag);
+        aTag.click();
+        aTag.remove();
     };
 
-    const bandScore = calculateBandScore();
+    const calculateBandScore = () => {
+        const totalScore = Object.values(sections).reduce(
+            (acc, section) => acc + (section ? parseFloat(section) : 0),
+            0
+        );
+        return (
+            Math.round((totalScore / Object.keys(sections).length) * 2) / 2
+        ).toFixed(1);
+    };
 
     return (
-        <Stack
-            height={"100vh"}
-            m={"auto"}
-            p={"1em"}
-            justifyContent={"center"}
-            sx={{
-                width: {
-                    xs: "100%",
-                    sm: "95%",
-                    md: "90%",
-                    lg: "75%",
-                    xl: "75%",
-                },
-            }}
-        >
-            <Stack
-                direction={{
-                    xs: "column",
-                    sm: "column",
-                    md: "row",
-                    lg: "row",
-                    xl: "row",
-                }}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                gap={{
-                    xs: "0rem",
-                    sm: "0rem",
-                    md: "2rem",
-                    lg: "2rem",
-                    xl: "2rem",
-                }}
+        <Grow in={true} style={{ transformOrigin: "0 0 0" }} timeout={500}>
+            <Box
+                display="flex"
+                flexDirection="column"
+                m="auto"
+                justifyContent="center"
+                py={15}
+                px={3}
+                gap={5}
+                width={{ xs: "100%", md: "max-content" }}
             >
-                <Typography
-                    variant="h4"
-                    fontWeight={"bold"}
-                    py={"1rem"}
-                    textAlign={"center"}
+                <Stack
+                    direction={{
+                        xs: "column",
+                        md: "row",
+                    }}
+                    alignItems="center"
+                    justifyContent="center"
                 >
-                    {name.firstName} {name.lastName}
-                </Typography>
-
-                <UserCertificate
-                    name={name}
-                    sectionResults={sectionResults}
-                    bandScore={bandScore}
-                    dateTime={dayjs(examDate).format("MMM DD, YYYY")}
-                />
-            </Stack>
-
-            {sections.map((section) => (
-                <Box key={section}>
                     <Typography
-                        variant="h6"
-                        textAlign={section === "Band Score" ? "right" : "left"}
-                        fontWeight={"bold"}
-                        py={"0.5rem"}
+                        variant="h4"
+                        fontWeight="bold"
+                        mb={{
+                            xs: 2,
+                            md: 4,
+                        }}
+                        color={colors.primary}
+                        textAlign="center"
                     >
-                        {section === "Band Score"
-                            ? "Band Score"
-                            : section.charAt(0).toUpperCase() +
-                              section.slice(1)}
+                        Band Score: {calculateBandScore()}
                     </Typography>
-                    <Stack
-                        direction={"row"}
-                        justifyContent={
-                            section === "Band Score"
-                                ? "flex-end"
-                                : "space-between"
-                        }
-                        alignItems={"center"}
-                        bgcolor={
-                            section === "Band Score"
-                                ? colors.cardColor
-                                : colors.secondary
-                        }
-                        ml={section === "Band Score" ? "auto" : "0"}
-                        width={
-                            section === "Band Score" ? "max-content" : "100%"
-                        }
-                        p={section === "Band Score" ? "0.5rem 2rem" : "0.5rem"}
-                        borderRadius={"1rem"}
-                    >
-                        <Typography
-                            variant={"h6"}
-                            textAlign={"left"}
-                            fontWeight={section === "Band Score" ? "bold" : ""}
+                </Stack>
+
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    flexWrap="wrap"
+                    gap={{
+                        xs: "2rem",
+                    }}
+                >
+                    {Object.keys(sections).map((section) => (
+                        <Card
+                            key={section}
+                            sx={{
+                                width: "8rem",
+                                height: "8rem",
+                                display: "flex",
+                                justifyContent: "center",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                borderRadius: "1rem",
+                                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                            }}
                         >
-                            {section === "Band Score"
-                                ? bandScore
-                                : sectionResults.length > 0
-                                ? sectionResults.find(
-                                      (result) =>
-                                          result.sectionName.toLowerCase() ===
-                                          section.toLowerCase()
-                                  ) !== undefined &&
-                                  sectionResults.find(
-                                      (result) =>
-                                          result.sectionName.toLowerCase() ===
-                                          section.toLowerCase()
-                                  ).score !== null
-                                    ? sectionResults.find(
-                                          (result) =>
-                                              result.sectionName.toLowerCase() ===
-                                              section.toLowerCase()
-                                      ).score
-                                    : "N/A"
-                                : "N/A"}
-                        </Typography>
-                        {section !== "Band Score" && (
-                            <Button
-                                component={Link}
-                                variant="contained"
-                                to={`/user/results/scores/${examRegistrationId}/${section}`}
+                            <Typography
+                                variant="h6"
+                                gutterBottom
+                                fontWeight="bold"
+                                sx={{ color: colors.primary }}
+                            >
+                                {section.charAt(0).toUpperCase() +
+                                    section.slice(1)}
+                            </Typography>
+
+                            <Typography
                                 sx={{
-                                    bgcolor: colors.primary,
-                                    ":hover": { bgcolor: colors.primary },
-                                    borderRadius: "0.6rem",
-                                    textTransform: "none",
+                                    color: "red",
+                                    fontWeight: "bold",
+                                    fontSize: "1.5rem",
                                 }}
                             >
-                                Details
-                            </Button>
-                        )}
-                    </Stack>
+                                {sections[section] || "N/A"}
+                            </Typography>
+                        </Card>
+                    ))}
                 </Box>
-            ))}
-        </Stack>
+
+                <Button
+                    fullWidth
+                    sx={{
+                        borderRadius: "0.6rem",
+                        padding: "0.6rem 1.5rem",
+                        textTransform: "none",
+                        fontSize: "1.1rem",
+                        ":hover": { bgcolor: colors.primary },
+                        bgcolor: "green",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                    }}
+                    onClick={() => handleDownload(fileUrl)}
+                    aria-label="Upload feedback"
+                >
+                    <CloudUploadIcon /> FeedBack Folder
+                </Button>
+            </Box>
+        </Grow>
     );
 };
 

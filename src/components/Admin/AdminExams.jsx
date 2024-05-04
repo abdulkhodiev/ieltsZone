@@ -138,20 +138,22 @@ const AdminExams = () => {
                         gap: "1rem",
                     }}
                 >
-                    <Link to="/admin/exams/create">
-                        <Button
-                            sx={{
-                                my: "1rem",
-                                bgcolor: colors.primary,
-                                color: "white",
-                                borderRadius: "0.7rem",
-                                ":hover": { bgcolor: colors.primary },
-                            }}
-                            variant="contained"
-                        >
-                            + Add Exam
-                        </Button>
-                    </Link>
+                    <Button
+                        component={Link}
+                        to="/admin/exams/create"
+                        sx={{
+                            ml: "auto",
+                            my: "1rem",
+                            bgcolor: colors.primary,
+                            color: "white",
+                            borderRadius: "0.7rem",
+                            ":hover": { bgcolor: colors.primary },
+                        }}
+                        variant="contained"
+                    >
+                        + Add Exam
+                    </Button>
+
                     {exams.map((exam) => (
                         <Accordion
                             key={exam.id}
@@ -168,8 +170,26 @@ const AdminExams = () => {
                                     display: "flex",
                                     gap: "0.5rem",
                                     justifyContent: "end",
+                                    alignItems: "center",
                                 }}
                             >
+                                <Typography
+                                    sx={{
+                                        fontWeight: "bold",
+                                        color: "red",
+                                    }}
+                                >
+                                    {exam.countOfRegistrations || 0}
+                                </Typography>
+                                <Typography
+                                    sx={{
+                                        fontWeight: "bold",
+                                        mx: "0.5rem",
+                                        color: "green",
+                                    }}
+                                >
+                                    {exam.countOfAcceptedRegistrations || 0}
+                                </Typography>
                                 <ButtonGroup
                                     variant="contained"
                                     ref={refs.current[exam.id]}

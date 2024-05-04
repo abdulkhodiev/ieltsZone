@@ -67,6 +67,7 @@ const MyModal = ({ refreshAdmins }) => {
         <React.Fragment>
             <Button
                 sx={{
+                    ml: "auto",
                     my: "1rem",
                     bgcolor: colors.primary,
                     color: "white",

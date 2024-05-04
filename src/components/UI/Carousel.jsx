@@ -70,7 +70,7 @@ const Carousel = () => {
                         opacity: 0.7,
                     };
                 } else {
-                    style = { display: "none" }; // Hide other images
+                    style = { display: "none" };
                 }
 
                 return (

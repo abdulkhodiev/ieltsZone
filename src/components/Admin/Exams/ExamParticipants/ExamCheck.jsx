@@ -14,6 +14,7 @@ import { colors } from "../../../../constants/colors";
 import {
     getExamResults,
     putSectionScores,
+    postFeedbackFolder,
 } from "../../../../utils/api/requests/exam-check-by-section";
 
 const ExamCheck = () => {
@@ -28,7 +29,7 @@ const ExamCheck = () => {
         writing: "",
         speaking: "",
     });
-    const [feedbackFile, setFeedbackFile] = useState(null);
+    const [feedbackResponse, setFeedbackResponse] = useState("");
 
     const getUserScore = async () => {
         const res = await getExamResults(rowId);
@@ -42,20 +43,29 @@ const ExamCheck = () => {
         }));
     };
 
+    const [feedbackFile, setFeedbackFile] = useState(null);
+
     useEffect(() => {
         getUserScore();
     }, [rowId]);
 
-    const handleFeedbackUpload = (event) => {
+    const handleFeedbackUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
             setFeedbackFile(file);
+            try {
+                const formData = new FormData();
+                formData.append("file", file);
+                const response = await postFeedbackFolder(formData);
+                setFeedbackResponse(response);
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
         }
     };
 
     const handleChange = (sectionName, value) => {
         const numValue = parseFloat(value);
-
         if (
             value === "" ||
             (numValue >= 0 && numValue <= 9 && (numValue * 2) % 1 === 0)
@@ -68,7 +78,21 @@ const ExamCheck = () => {
     };
 
     const handleSubmit = async () => {
-        const res = await putSectionScores(userInfo.id, sections);
+        if (feedbackResponse) {
+            const payload = {
+                ...sections,
+                feedbackFileId: feedbackResponse,
+            };
+
+            try {
+                await putSectionScores(userInfo.id, payload);
+            } catch (error) {
+                console.error("Failed to submit scores with feedback", error);
+                alert("Submission failed!");
+            }
+        } else {
+            alert("Please upload the feedback folder before submitting.");
+        }
     };
 
     const handleCancel = () => {
@@ -90,27 +114,21 @@ const ExamCheck = () => {
             <Box
                 display="flex"
                 flexDirection="column"
-                m={"auto"}
+                m="auto"
                 justifyContent="center"
                 py={5}
                 px={3}
                 width={{ xs: "100%", md: "65%" }}
             >
                 <Stack
-                    direction={{
-                        xs: "column",
-                        md: "row",
-                    }}
+                    direction={{ xs: "column", md: "row" }}
                     alignItems="center"
                     justifyContent="space-between"
                 >
                     <Typography
                         variant="h4"
                         fontWeight="bold"
-                        mb={{
-                            xs: 2,
-                            md: 4,
-                        }}
+                        mb={{ xs: 2, md: 4 }}
                         color={colors.primary}
                         textAlign="center"
                     >
@@ -119,24 +137,18 @@ const ExamCheck = () => {
                     <Typography
                         variant="h4"
                         fontWeight="bold"
-                        mb={{
-                            xs: 2,
-                            md: 4,
-                        }}
+                        mb={{ xs: 2, md: 4 }}
                         color={colors.primary}
                         textAlign="center"
                     >
                         Band Score: {calculateBandScore()}
                     </Typography>
                 </Stack>
-
                 <Box
                     display="flex"
                     justifyContent="center"
                     flexWrap="wrap"
-                    gap={{
-                        xs: "2rem",
-                    }}
+                    gap={{ xs: "2rem" }}
                 >
                     {Object.keys(sections).map((section) => (
                         <Card
@@ -160,7 +172,6 @@ const ExamCheck = () => {
                                 {section.charAt(0).toUpperCase() +
                                     section.slice(1)}
                             </Typography>
-
                             <TextField
                                 type="number"
                                 label="Score"
@@ -170,31 +181,19 @@ const ExamCheck = () => {
                                 onChange={(e) =>
                                     handleChange(section, e.target.value)
                                 }
-                                inputProps={{
-                                    step: "0.5",
-                                    min: "0",
-                                    max: "9",
-                                }}
+                                inputProps={{ step: "0.5", min: "0", max: "9" }}
                                 sx={{ mb: 2 }}
                             />
                         </Card>
                     ))}
                 </Box>
-
                 <Stack
-                    direction={{
-                        xs: "column",
-                        sm: "column",
-                        md: "row",
-                    }}
+                    direction={{ xs: "column", sm: "column", md: "row" }}
                     alignItems="center"
                     spacing={2}
                     alignSelf={"center"}
                     mt={3}
-                    sx={{
-                        borderRadius: "0.6rem",
-                        padding: "1rem",
-                    }}
+                    sx={{ borderRadius: "0.6rem", padding: "1rem" }}
                 >
                     <input
                         accept="*/*"
@@ -228,8 +227,12 @@ const ExamCheck = () => {
                             {feedbackFile.name}
                         </Typography>
                     )}
+                    {userInfo.feedbackFileId && (
+                        <Typography variant="subtitle1" gutterBottom>
+                            You have already uploaded the feedback folder.
+                        </Typography>
+                    )}
                 </Stack>
-
                 <Stack
                     direction="row"
                     justifyContent={"flex-end"}

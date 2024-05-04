@@ -152,8 +152,13 @@ const Login = () => {
                             Sign Up
                         </Link>
                     </Typography>
+
                     {error && (
-                        <Link to="/forget-password">Forgot Password?</Link>
+                        <Typography variant="body2">
+                            <Link component={RouterLink} to="/forget-password">
+                                Forgot Password?
+                            </Link>
+                        </Typography>
                     )}
                 </CardContent>
             </Card>

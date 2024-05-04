@@ -152,6 +152,7 @@ const Accordion = ({
                         {price} so&lsquo;m
                     </span>
                 </div>
+
                 <div>{children}</div>
             </div>
         </div>

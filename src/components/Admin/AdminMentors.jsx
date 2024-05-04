@@ -39,7 +39,12 @@ const AdminMentors = () => {
                     padding: "0.5rem",
                 }}
             >
-                <Box sx={{ width: "100%" }}>
+                <Box
+                    sx={{ width: "100%" }}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    justifyContent={"center"}
+                >
                     <MyModal refreshAdmins={refreshAdmins} />
                     <TableContainer
                         component={Paper}
