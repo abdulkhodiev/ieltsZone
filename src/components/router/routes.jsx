@@ -18,108 +18,113 @@ import Main from "../Main/Main";
 import UserMain from "../User/UserMain";
 
 import ResultAnalysis from "../Admin/ResultAnalysis";
+import ForgetPassword from "../Main/ForgetPassword";
 import Login from "../Main/Login";
 import NotFound from "../Main/NotFound";
 import Register from "../Main/Register";
+import OTP from "../Main/sms";
 import UserApply from "../User/UserApply";
 import UserExams from "../User/UserExams";
 import UserLayout from "../User/UserLayout";
 import UserResults from "../User/UserResults";
 import UserScoreCheck from "../User/UserScoreCheck";
 import UserSectionScore from "../User/UserSectionScore";
-import OTP from "../Main/sms";
-import ForgetPassword from "../Main/ForgetPassword";
 
 import { DataProvider } from "../../context/Context";
+import { PaymentAnalysis } from "../Admin/PaymentAnalysis";
 
 export const router = createBrowserRouter([
-    {
-        element: <Layout />,
+	{
+		element: <Layout />,
 
-        children: [
-            { index: true, element: <Main /> },
-            { path: "login", element: <Login /> },
-            { path: "register", element: <Register /> },
-            { path: "sms", element: <OTP /> },
-            { path: "forget-password", element: <ForgetPassword /> },
-            { path: "not-found", element: <NotFound /> },
-            {
-                path: "admin",
-                element: (
-                    <DataProvider>
-                        <ProtectedRoute>
-                            <AdminLayout />
-                        </ProtectedRoute>
-                    </DataProvider>
-                ),
-                children: [
-                    {
-                        path: "",
-                        element: <AdminMain />,
-                        children: [
-                            {
-                                index: true,
-                                path: "mentors",
-                                element: <AdminMentors />,
-                            },
-                            { path: "exams", element: <AdminExams /> },
-                            {
-                                path: "result-analysis",
-                                element: <ResultAnalysis />,
-                            },
-                        ],
-                    },
+		children: [
+			{ index: true, element: <Main /> },
+			{ path: "login", element: <Login /> },
+			{ path: "register", element: <Register /> },
+			{ path: "sms", element: <OTP /> },
+			{ path: "forget-password", element: <ForgetPassword /> },
+			{ path: "not-found", element: <NotFound /> },
+			{
+				path: "admin",
+				element: (
+					<DataProvider>
+						<ProtectedRoute>
+							<AdminLayout />
+						</ProtectedRoute>
+					</DataProvider>
+				),
+				children: [
+					{
+						path: "",
+						element: <AdminMain />,
+						children: [
+							{
+								index: true,
+								path: "mentors",
+								element: <AdminMentors />,
+							},
+							{ path: "exams", element: <AdminExams /> },
+							{
+								path: "result-analysis",
+								element: <ResultAnalysis />,
+							},
+							{
+								path: "payment-analysis",
+								element: <PaymentAnalysis />,
+							},
+						],
+					},
 
-                    { path: "exams/create", element: <ExamCreation /> },
-                    { path: "exams/:examId/edit", element: <ExamCreation /> },
-                    {
-                        path: "exams/:examId/participants",
-                        element: <ExamParticipantsLayout />,
-                        children: [
-                            {
-                                path: "",
-                                element: <ExamParticipants />,
-                                children: [
-                                    {
-                                        path: "applied",
-                                        element: <ExamApplied />,
-                                    },
-                                    {
-                                        path: "accepted",
-                                        element: <ExamAccepted />,
-                                    },
-                                ],
-                            },
+					{ path: "exams/create", element: <ExamCreation /> },
+					{ path: "exams/:examId/edit", element: <ExamCreation /> },
+					{
+						path: "exams/:examId/participants",
+						element: <ExamParticipantsLayout />,
+						children: [
+							{
+								path: "",
+								element: <ExamParticipants />,
+								children: [
+									{
+										path: "applied",
+										element: <ExamApplied />,
+									},
+									{
+										path: "accepted",
+										element: <ExamAccepted />,
+									},
+								],
+							},
 
-                            {
-                                path: "applied/:rowId",
-                                element: <PaymentCheck />,
-                            },
-                            { path: "accepted/:rowId", element: <ExamCheck /> },
-                            {
-                                path: "accepted/:rowId/:section",
-                                element: <SectionCheck />,
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                path: "user",
-                element: <UserLayout />,
-                children: [
-                    {
-                        path: "",
-                        element: <UserMain />,
-                        children: [
-                            {
-                                index: true,
-                                path: "exams",
-                                element: <UserExams />,
-                            },
-                            { path: "results", element: <UserResults /> },
-                        ],
-                    },
+							{
+								path: "applied/:rowId",
+								element: <PaymentCheck />,
+							},
+							{ path: "accepted/:rowId", element: <ExamCheck /> },
+							{
+								path: "accepted/:rowId/:section",
+								element: <SectionCheck />,
+							},
+						],
+					},
+				],
+			},
+			{
+				path: "user",
+				element: <UserLayout />,
+				children: [
+					{
+						path: "",
+						element: <UserMain />,
+						children: [
+							{
+								index: true,
+								path: "exams",
+								element: <UserExams />,
+							},
+							{ path: "results", element: <UserResults /> },
+						],
+					},
 
                     { path: "exams/apply/:examId", element: <UserApply /> },
                     {
