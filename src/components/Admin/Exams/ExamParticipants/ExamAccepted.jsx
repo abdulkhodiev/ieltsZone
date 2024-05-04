@@ -95,9 +95,9 @@ const ExamAccepted = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>#</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Last Name</TableCell>
-                                <TableCell>Phone</TableCell>
+                                <TableCell>Full Name</TableCell>
+                                <TableCell>Phone Number</TableCell>
+                                <TableCell>Telegram</TableCell>
                                 <TableCell>Speaking Date</TableCell>
                                 <TableCell>Status</TableCell>
                             </TableRow>
@@ -122,10 +122,20 @@ const ExamAccepted = () => {
                                     }
                                 >
                                     <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{row.user.firstName}</TableCell>
-                                    <TableCell>{row.user.lastName}</TableCell>
+                                    <TableCell>
+                                        {row.user.firstName} {row.user.lastName}
+                                    </TableCell>
                                     <TableCell>
                                         {row.user.phoneNumber}
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            maxWidth: "200px",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        {row.user.telegramUsername ||
+                                            "Not Given"}
                                     </TableCell>
                                     <TableCell>
                                         {dayjs(row.speakingDateTime).format(

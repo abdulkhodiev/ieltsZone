@@ -23,6 +23,7 @@ const Register = () => {
         phoneNumber: "",
         password: "",
         confirmPassword: "",
+        telegramUsername: "",
     });
     const [error, setError] = useState("");
 
@@ -57,6 +58,7 @@ const Register = () => {
                 lastName: credentials.lastName,
                 phoneNumber: credentials.phoneNumber,
                 password: credentials.password,
+                telegramUsername: credentials.telegramUsername,
             });
             navigate("/sms");
         } catch (err) {
@@ -84,8 +86,8 @@ const Register = () => {
                     maxWidth: {
                         xs: "90%",
                         sm: "90%",
-                        md: "60%",
-                        lg: "%",
+                        md: "50%",
+                        lg: "40%",
                     },
                     boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.2)",
                 }}
@@ -128,6 +130,15 @@ const Register = () => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            style={{ marginBottom: "1rem" }}
+                        />
+                        <TextField
+                            label="Telegram Username"
+                            variant="outlined"
+                            name="telegramUsername"
+                            value={credentials.telegramUsername}
+                            onChange={handleChange}
+                            fullWidth
                             style={{ marginBottom: "1rem" }}
                         />
                         <MyTelInput
