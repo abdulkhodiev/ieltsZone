@@ -51,7 +51,7 @@ const Navigation = () => {
           }
         : {};
     const paymentDynamicStyles = location.pathname.includes(
-        "admin/payments-analysis"
+        "admin/payment-analysis"
     )
         ? {
               bgcolor: colors.primary,

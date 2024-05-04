@@ -17,7 +17,7 @@ const AdminNavbar = () => {
             setSectionName("Exams");
         } else if (location.pathname.includes("result")) {
             setSectionName("Result Analysis");
-        } else if (location.pathname.includes("payments")) {
+        } else if (location.pathname.includes("payment")) {
             setSectionName("Payment Analysis");
         } else {
             setSectionName("ADMIN DASHBOARD");
