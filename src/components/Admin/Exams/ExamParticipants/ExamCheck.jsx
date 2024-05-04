@@ -91,6 +91,7 @@ const ExamCheck = () => {
                 await putSectionScores(userInfo.id, payload);
                 setMessage("Submission successful!");
                 setFeedbackFile(null);
+                getUserScore();
             } catch (error) {
                 setError(error.response.data.detail);
             }

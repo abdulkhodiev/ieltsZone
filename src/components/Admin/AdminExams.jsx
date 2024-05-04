@@ -26,6 +26,7 @@ import {
     getExams,
     deleteExams,
     examInformation,
+    deleteFeedbackFolders,
 } from "../../utils/api/requests/add-exams";
 import Accordion from "../UI/Accordion";
 
@@ -103,6 +104,15 @@ const AdminExams = () => {
             setOpen(true);
         } catch (error) {
             console.error("Failed to get exam information:", error);
+        }
+    };
+
+    const handleDeleteFeedbackFiles = async (examId) => {
+        try {
+            await deleteFeedbackFolders(examId);
+            fetchExams();
+        } catch (error) {
+            console.error("Failed to delete feedback files:", error);
         }
     };
 
@@ -299,6 +309,22 @@ const AdminExams = () => {
                                                             }}
                                                         >
                                                             <Edit /> Edit
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            onClick={() =>
+                                                                handleDeleteFeedbackFiles(
+                                                                    exam.id
+                                                                )
+                                                            }
+                                                            sx={{
+                                                                display: "flex",
+                                                                gap: "0.5rem",
+                                                                alignItems:
+                                                                    "center",
+                                                            }}
+                                                        >
+                                                            <Delete />
+                                                            Feedback Files
                                                         </MenuItem>
                                                     </MenuList>
                                                 </ClickAwayListener>
