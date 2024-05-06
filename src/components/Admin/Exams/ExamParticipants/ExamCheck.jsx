@@ -7,6 +7,7 @@ import {
     Typography,
     Button,
     Grow,
+    CircularProgress, // Import CircularProgress here
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
@@ -31,6 +32,8 @@ const ExamCheck = () => {
         speaking: "",
     });
     const [feedbackResponse, setFeedbackResponse] = useState("");
+    const [feedbackFile, setFeedbackFile] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
@@ -46,8 +49,6 @@ const ExamCheck = () => {
         }));
     };
 
-    const [feedbackFile, setFeedbackFile] = useState(null);
-
     useEffect(() => {
         getUserScore();
     }, [rowId]);
@@ -56,13 +57,16 @@ const ExamCheck = () => {
         const file = event.target.files[0];
         if (file) {
             setFeedbackFile(file);
+            setLoading(true);
             try {
                 const formData = new FormData();
                 formData.append("file", file);
                 const response = await postFeedbackFolder(formData);
                 setFeedbackResponse(response);
+                setLoading(false);
             } catch (error) {
                 console.error("Error uploading file:", error);
+                setLoading(false); // Stop loading on error
             }
         }
     };
@@ -81,22 +85,15 @@ const ExamCheck = () => {
     };
 
     const handleSubmit = async () => {
-        if (feedbackResponse) {
-            const payload = {
-                ...sections,
-                feedbackFileId: feedbackResponse,
-            };
-
-            try {
-                await putSectionScores(userInfo.id, payload);
-                setMessage("Submission successful!");
-                setFeedbackFile(null);
-                getUserScore();
-            } catch (error) {
-                setError(error.response.data.detail);
-            }
-        } else {
+        setLoading(true); // Start loading on submit
+        try {
             await putSectionScores(userInfo.id, sections);
+            setMessage("Submission successful!");
+            setLoading(false);
+            navigate(-1);
+        } catch (error) {
+            setError(error.response.data.detail);
+            setLoading(false);
         }
     };
 
@@ -123,7 +120,7 @@ const ExamCheck = () => {
                 justifyContent="center"
                 py={5}
                 px={3}
-                width={{ xs: "100%", md: "65%" }}
+                width={{ xs: "100%", md: "75%" }}
             >
                 <Stack
                     direction={{ xs: "column", md: "row" }}
@@ -151,7 +148,10 @@ const ExamCheck = () => {
                 </Stack>
                 <Box
                     display="flex"
-                    justifyContent="center"
+                    justifyContent={{
+                        xs: "center",
+                        md: "space-between",
+                    }}
                     flexWrap="wrap"
                     gap={{ xs: "2rem" }}
                 >
@@ -258,8 +258,9 @@ const ExamCheck = () => {
                             borderRadius: "0.6rem",
                         }}
                     >
-                        Cancel
+                        Close
                     </Button>
+
                     <Button
                         sx={{
                             bgcolor: colors.primary,
@@ -268,12 +269,22 @@ const ExamCheck = () => {
                             fontWeight: "bold",
                             ":hover": { bgcolor: colors.primary },
                             borderRadius: "0.6rem",
+                            display: "flex",
+                            gap: "0.5rem",
                         }}
                         fullWidth
                         variant="contained"
                         color="primary"
+                        disabled={loading}
                         onClick={handleSubmit}
                     >
+                        {loading && (
+                            <CircularProgress
+                                sx={{
+                                    color: "white",
+                                }}
+                            />
+                        )}
                         Submit
                     </Button>
                 </Stack>
@@ -297,6 +308,7 @@ const ExamCheck = () => {
                 >
                     {message}
                 </Snackbar>
+                {/* Loading indicator */}
             </Box>
         </Grow>
     );

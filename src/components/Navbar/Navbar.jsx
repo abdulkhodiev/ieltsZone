@@ -13,7 +13,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import { MyButton } from "../index";
-import logo from "../../assets/editedLogo.jpg";
+import logo from "../../assets/Zonelogo14.png";
 import { colors } from "../../constants/colors";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import HomeIcon from "@mui/icons-material/Home";
@@ -290,17 +290,10 @@ const Navbar = () => {
                 <Box
                     sx={{
                         display: { sm: "flex", md: "none", lg: "none" },
-                        bgcolor: colors.primary,
                         color: "white",
-                        borderRadius: "0.6rem",
                     }}
                 >
-                    <img
-                        src={logo}
-                        alt="Logo"
-                        width="70px"
-                        style={{ borderRadius: "0.8rem" }}
-                    />
+                    <img src={logo} alt="Logo" width="70px" />
                 </Box>
 
                 <Box

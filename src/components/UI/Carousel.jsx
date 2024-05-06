@@ -47,6 +47,7 @@ const Carousel = () => {
                 width: "100%",
                 height: "480px",
                 position: "relative",
+                borderRadius: "2rem",
             }}
         >
             {images.map((img, index) => {
@@ -95,17 +96,6 @@ const Carousel = () => {
                                     "linear-gradient(to top, rgba(0,0,0,0.4), rgba(0,0,0,0) 200px), linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0) 300px)",
                             }}
                         />
-                        <CardContent sx={{ justifyContent: "flex-end" }}>
-                            <Typography level="title-lg" textColor="#fff">
-                                Yosemite National Park
-                            </Typography>
-                            <Typography
-                                startDecorator={<LocationOnRoundedIcon />}
-                                textColor="neutral.300"
-                            >
-                                California, USA
-                            </Typography>
-                        </CardContent>
                     </Card>
                 );
             })}

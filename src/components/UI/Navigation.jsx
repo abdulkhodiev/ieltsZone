@@ -8,7 +8,7 @@ import Sheet from "@mui/joy/Sheet";
 import ListItemButton from "@mui/joy/ListItemButton";
 import { useNavigate } from "react-router-dom";
 import { colors } from "../../constants/colors";
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/Zonelogo13.png";
 import Cookies from "js-cookie";
 import { useContext } from "react";
 import { DataContext } from "../../context/Context";
@@ -89,19 +89,19 @@ const Navigation = () => {
                     display: "flex",
                     color: colors.primary,
                     gap: 1,
-                    mb: 2,
+                    mb: 1,
+                    justifyContent: "center",
                     alignItems: "center",
                 }}
             >
                 <img
                     src={logo}
                     style={{
-                        width: "4rem",
+                        width: "10rem",
                         borderRadius: "0.4rem",
                     }}
                     alt=""
                 />
-                IELTSZONE
             </DialogTitle>
 
             <List
