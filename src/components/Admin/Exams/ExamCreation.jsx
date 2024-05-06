@@ -44,8 +44,6 @@ const ExamCreation = () => {
         event.preventDefault();
 
         const trimmedCardNumber = cardNumber.replace(/\s/g, "");
-        console.log("Submitting with card number:", trimmedCardNumber);
-        console.log("Card Holder Name:", cardHolderName);
 
         const examData = {
             cardNumber: trimmedCardNumber,
@@ -58,8 +56,6 @@ const ExamCreation = () => {
             details,
             speakingDates,
         };
-
-        console.log("Exam Data:", examData);
 
         try {
             if (examId) {
@@ -291,10 +287,6 @@ const ExamCreation = () => {
                             label="Card Number"
                             value={cardNumber}
                             onChange={(e) => {
-                                console.log(
-                                    "Card Number onChange:",
-                                    e.target.value
-                                ); // Debug log
                                 setCardNumber(e.target.value);
                             }}
                             name="cardNumber"
@@ -311,10 +303,6 @@ const ExamCreation = () => {
                             fullWidth
                             value={cardHolderName}
                             onChange={(e) => {
-                                console.log(
-                                    "Card Holder Name onChange:",
-                                    e.target.value
-                                );
                                 setCardHolderName(e.target.value);
                             }}
                             variant="outlined"

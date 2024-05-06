@@ -1,16 +1,37 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { Input as BaseInput } from "@mui/base/Input";
-import { Box, styled } from "@mui/system";
-import { Typography } from "@mui/material";
+import { Box, Button, styled, Typography } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { resetPasswordVerify } from "../../utils/api/requests/verify";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "@mui/material";
+import { Alert, Stack } from "@mui/material";
 
 function OTP({ separator, length, value, onChange, setError }) {
     const inputRefs = React.useRef(new Array(length).fill(null));
     const location = useNavigate();
+    const [timer, setTimer] = React.useState(300); // 300 seconds equals 5 minutes
+    const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setTimer((prevTimer) => {
+                if (prevTimer <= 1) {
+                    clearInterval(interval);
+                    setIsButtonDisabled(false);
+                    return 0;
+                }
+                return prevTimer - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const resetTimer = () => {
+        setTimer(300);
+        setIsButtonDisabled(true);
+    };
 
     const focusInput = (targetIndex) => {
         const targetInput = inputRefs.current[targetIndex];
@@ -24,7 +45,7 @@ function OTP({ separator, length, value, onChange, setError }) {
 
     const handleKeyDown = (event, currentIndex) => {
         if (event.key >= 0 && event.key <= 9) {
-            return; // Allow number input
+            return;
         }
 
         switch (event.key) {
@@ -92,32 +113,67 @@ function OTP({ separator, length, value, onChange, setError }) {
     };
 
     return (
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-            {new Array(length).fill(null).map((_, index) => (
-                <React.Fragment key={index}>
-                    <BaseInput
-                        slots={{
-                            input: InputElement,
-                        }}
-                        aria-label={`Digit ${index + 1} of OTP`}
-                        slotProps={{
-                            input: {
-                                ref: (ele) => {
-                                    inputRefs.current[index] = ele;
+        <Box
+            sx={{
+                display: "flex",
+                gap: 4,
+                flexDirection: "column",
+            }}
+        >
+            <Box sx={{ display: "flex", gap: 1 }}>
+                {new Array(length).fill(null).map((_, index) => (
+                    <React.Fragment key={index}>
+                        <BaseInput
+                            slots={{
+                                input: InputElement,
+                            }}
+                            aria-label={`Digit ${index + 1} of OTP`}
+                            slotProps={{
+                                input: {
+                                    ref: (ele) => {
+                                        inputRefs.current[index] = ele;
+                                    },
+                                    onKeyDown: (event) =>
+                                        handleKeyDown(event, index),
+                                    onChange: (event) =>
+                                        handleChange(event, index),
+                                    onClick: (event) =>
+                                        handleClick(event, index),
+                                    onPaste: (event) =>
+                                        handlePaste(event, index),
+                                    value: value[index] ?? "",
+                                    type: "tel",
                                 },
-                                onKeyDown: (event) =>
-                                    handleKeyDown(event, index),
-                                onChange: (event) => handleChange(event, index),
-                                onClick: (event) => handleClick(event, index),
-                                onPaste: (event) => handlePaste(event, index),
-                                value: value[index] ?? "",
-                                type: "tel",
-                            },
-                        }}
-                    />
-                    {index === length - 1 ? null : separator}
-                </React.Fragment>
-            ))}
+                            }}
+                        />
+                        {index === length - 1 ? null : separator}
+                    </React.Fragment>
+                ))}
+            </Box>
+            <Stack
+                direction="row"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+            >
+                <Typography
+                    variant="body2"
+                    sx={{ flexGrow: 1, display: "block" }}
+                >
+                    Time left: {Math.floor(timer / 60)}:
+                    {("0" + (timer % 60)).slice(-2)} minutes
+                </Typography>
+                <Button
+                    variant="contained"
+                    bgcolor={colors.primary}
+                    sx={{
+                        color: "white",
+                    }}
+                    onClick={resetTimer}
+                    disabled={isButtonDisabled}
+                >
+                    Resend
+                </Button>
+            </Stack>
         </Box>
     );
 }
@@ -129,7 +185,7 @@ OTP.propTypes = {
     value: PropTypes.string.isRequired,
 };
 
-export default function ResetInput() {
+export default function OTPInput() {
     const [otp, setOtp] = React.useState("");
     const [error, setError] = React.useState("");
     console.log(error);
@@ -163,28 +219,16 @@ export default function ResetInput() {
                 }}
             >
                 <Typography variant="subtitle1" sx={{ color: colors.primary }}>
-                    <h1>Enter message:</h1>
+                    <h1>Enter Code:</h1>
                 </Typography>
                 {error && <Alert severity="error">{error}</Alert>}
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                    }}
-                >
-                    <OTP
-                        separator={<span> </span>}
-                        value={otp}
-                        onChange={setOtp}
-                        length={6}
-                        type="number"
-                        setError={setError}
-                    />
-                    <Typography variant="body2" alii>
-                        You have 5 minutes
-                    </Typography>
-                </Box>
+                <OTP
+                    separator={<span> </span>}
+                    value={otp}
+                    onChange={setOtp}
+                    length={6}
+                    setError={setError}
+                />
             </Box>
         </div>
     );

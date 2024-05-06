@@ -29,6 +29,7 @@ import {
     deleteFeedbackFolders,
 } from "../../utils/api/requests/add-exams";
 import Accordion from "../UI/Accordion";
+import DeleteConfirmation from "../UI/DeleteConfimation";
 
 const style = {
     position: "absolute",
@@ -82,15 +83,6 @@ const AdminExams = () => {
             2,
             "0"
         )}-${String(date.getDate()).padStart(2, "0")}`;
-    };
-
-    const handleDelete = async (examId) => {
-        try {
-            await deleteExams(examId);
-            fetchExams();
-        } catch (error) {
-            console.error("Failed to delete exam:", error);
-        }
     };
 
     const getExamInformation = async (examId) => {
@@ -186,7 +178,7 @@ const AdminExams = () => {
                                 <Typography
                                     sx={{
                                         fontWeight: "bold",
-                                        color: "red",
+                                        color: "blue",
                                     }}
                                 >
                                     {exam.countOfRegistrations || 0}
@@ -280,21 +272,14 @@ const AdminExams = () => {
                                                         >
                                                             <Info /> Info
                                                         </MenuItem>
-                                                        <MenuItem
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    exam.id
-                                                                )
+
+                                                        <DeleteConfirmation
+                                                            id={exam.id}
+                                                            fetchExams={
+                                                                fetchExams
                                                             }
-                                                            sx={{
-                                                                display: "flex",
-                                                                gap: "0.5rem",
-                                                                alignItems:
-                                                                    "center",
-                                                            }}
-                                                        >
-                                                            <Delete /> Delete
-                                                        </MenuItem>
+                                                        />
+
                                                         <MenuItem
                                                             onClick={() =>
                                                                 navigate(
@@ -324,7 +309,7 @@ const AdminExams = () => {
                                                             }}
                                                         >
                                                             <Delete />
-                                                            Feedback Files
+                                                            Delete Files
                                                         </MenuItem>
                                                     </MenuList>
                                                 </ClickAwayListener>

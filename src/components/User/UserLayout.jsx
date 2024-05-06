@@ -13,7 +13,7 @@ import ListItemButton from "@mui/joy/ListItemButton";
 import { Outlet, useNavigate } from "react-router-dom";
 import { colors } from "../../constants/colors";
 import { format } from "date-fns";
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/Zonelogo13.png";
 import { Box } from "@mui/material";
 import { getRegisteredExams } from "../../utils/api/requests/get-registered-exams";
 import { getMe } from "../../utils/api/requests/add-exams";
@@ -123,6 +123,7 @@ const UserLayout = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 2,
+
                                 height: "100%",
                                 overflow: "auto",
                             }}
@@ -131,6 +132,7 @@ const UserLayout = () => {
                                 sx={{
                                     fontSize: "lg",
                                     display: "flex",
+                                    justifyContent: "center",
                                     gap: 1,
                                     alignItems: "center",
                                 }}
@@ -138,12 +140,11 @@ const UserLayout = () => {
                                 <img
                                     src={logo}
                                     style={{
-                                        width: "3rem",
+                                        width: "10rem",
                                         borderRadius: "0.4rem",
                                     }}
                                     alt=""
-                                />{" "}
-                                IELTSZONE
+                                />
                             </DialogTitle>
                             <ModalClose />
                             <Divider />

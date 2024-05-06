@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Box, Typography, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import logo from "../../assets/logo.jpg";
@@ -107,7 +106,12 @@ const MainContact = () => {
                         </Link>
                     </Stack>
                 </Stack>
-                <Box>
+                <Box
+                    width={{ xs: "100%", sm: "100%", md: "20%" }}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    alignItems={"center"}
+                >
                     <Typography
                         color={colors.secondary}
                         variant="h6"
@@ -124,20 +128,36 @@ const MainContact = () => {
                     <Typography color={colors.secondary} variant="h6">
                         +998 00 000 00 00
                     </Typography>
-                    <Typography color={colors.secondary} variant="body2">
-                        info@ieltszone.uz
+                    <Typography
+                        color={colors.secondary}
+                        component="a"
+                        href="https://t.me/testzone_adminn"
+                        variant="body2"
+                    >
+                        t.me/testzone_adminn
                     </Typography>
-                    <Typography color={colors.secondary} variant="body2">
-                        Tashkent, Uzbekistan, Bla 123
+                    <Typography
+                        color={colors.secondary}
+                        variant="body2"
+                        sx={{ textAlign: "center" }}
+                        my={1}
+                    >
+                        Bunyodkor avenue 52, Tashkent, Uzbekistan
                     </Typography>
-                    <Box py={2}>
-                        <Button>
+                    <Box pt={1}>
+                        <Button component="a" href="https://t.me/ieltszone_uz">
                             <Telegram />
                         </Button>
-                        <Button>
+                        <Button
+                            component="a"
+                            href="https://www.instagram.com/ieltszone.uz?igsh=MTd4eWhmbzZqbHg1eQ=="
+                        >
                             <Instagram />
                         </Button>
-                        <Button>
+                        <Button
+                            component="a"
+                            href="https://www.facebook.com/IELTSZONE09?mibextid=ZbWKwL  "
+                        >
                             <Facebook />
                         </Button>
                     </Box>
