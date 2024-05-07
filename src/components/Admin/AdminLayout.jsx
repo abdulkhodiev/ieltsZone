@@ -26,7 +26,14 @@ const AdminLayout = () => {
                 <Sidebar />
             </Box>
 
-            <Stack sx={{ flexGrow: 1, width: "100%", overflow: "auto" }}>
+            <Stack
+                sx={{
+                    flexGrow: 1,
+                    width: "100%",
+                    overflow: "auto",
+                    mt: { xs: "3rem", sm: "3rem", md: "0", lg: "0" },
+                }}
+            >
                 <AdminNavbar />
                 <Outlet />
             </Stack>
