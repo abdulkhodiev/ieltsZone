@@ -52,7 +52,7 @@ const MainHeader = () => {
                         color: colors.primary,
                     }}
                 >
-                    Welcome to IELTSZONE
+                    Welcome to IELTS ZONE
                 </Typography>
                 <Typography
                     variant="h3"
@@ -86,7 +86,7 @@ const MainHeader = () => {
                     py={2}
                 >
                     Step into a realm of unparalleled preparation and triumph at
-                    IELTSZONE, your premier destination for mastering the IELTS
+                    IELTS ZONE, your premier destination for mastering the IELTS
                     exam through the power of Mock Tests. Our specialized focus
                     on Mock IELTS sets us apart, ensuring you are not just
                     prepared but confident to face the challenges of the real

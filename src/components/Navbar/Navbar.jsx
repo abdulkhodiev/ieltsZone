@@ -134,7 +134,7 @@ const Navbar = () => {
                                     fontWeight: "500",
                                 }}
                             >
-                                Facilities
+                                Atmosphere
                             </Typography>
                         }
                     />
@@ -363,7 +363,7 @@ const Navbar = () => {
                             color: "inherit",
                         }}
                     >
-                        <Typography variant="h6">Facilities</Typography>
+                        <Typography variant="h6">Atmosphere</Typography>
                     </a>
                 </Box>
 
