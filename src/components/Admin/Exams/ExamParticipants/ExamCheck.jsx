@@ -18,6 +18,8 @@ import {
     postFeedbackFolder,
 } from "../../../../utils/api/requests/exam-check-by-section";
 import Snackbar from "@mui/joy/Snackbar";
+import { data } from "../../../../constants/cardContent";
+import { set } from "date-fns";
 
 const ExamCheck = () => {
     const { rowId } = useParams();
@@ -66,7 +68,7 @@ const ExamCheck = () => {
                 setLoading(false);
             } catch (error) {
                 console.error("Error uploading file:", error);
-                setLoading(false); // Stop loading on error
+                setLoading(false);
             }
         }
     };
@@ -85,15 +87,30 @@ const ExamCheck = () => {
     };
 
     const handleSubmit = async () => {
-        setLoading(true); // Start loading on submit
-        try {
+        setLoading(true);
+
+        if (feedbackResponse) {
+            const payload = {
+                ...sections,
+                feedbackFileId: feedbackResponse,
+            };
+
+            try {
+                await putSectionScores(userInfo.id, payload);
+                setMessage("Submission successful!");
+                setFeedbackFile(null);
+                getUserScore();
+                setLoading(false);
+                navigate(-1);
+            } catch (error) {
+                setError(error.response.data.detail);
+            }
+        } else {
             await putSectionScores(userInfo.id, sections);
             setMessage("Submission successful!");
             setLoading(false);
             navigate(-1);
-        } catch (error) {
-            setError(error.response.data.detail);
-            setLoading(false);
+            setFeedbackFile(null);
         }
     };
 
@@ -308,7 +325,6 @@ const ExamCheck = () => {
                 >
                     {message}
                 </Snackbar>
-                {/* Loading indicator */}
             </Box>
         </Grow>
     );

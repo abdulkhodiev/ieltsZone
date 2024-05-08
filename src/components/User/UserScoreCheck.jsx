@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Stack, Card, Typography, Button, Grow } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import { useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
 import {
@@ -142,7 +142,7 @@ const UserScoreCheck = () => {
                 </Box>
 
                 <Button
-                    fullWidth
+                    disabled={userInfo.feedbackFileId === null}
                     sx={{
                         borderRadius: "0.6rem",
                         padding: "0.6rem 1.5rem",
@@ -158,7 +158,7 @@ const UserScoreCheck = () => {
                     onClick={() => handleDownload(fileUrl)}
                     aria-label="Upload feedback"
                 >
-                    <CloudUploadIcon /> FeedBack Folder
+                    <CloudDownloadIcon /> Download FeedBack Folder
                 </Button>
             </Box>
         </Grow>

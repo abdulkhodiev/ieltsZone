@@ -52,6 +52,7 @@ const AdminExams = () => {
     const [open, setOpen] = useState(false);
     const [buttonOpen, setButtonOpen] = useState(false);
     const [activeId, setActiveId] = useState(null);
+
     const refs = useRef({});
     const navigate = useNavigate();
 
