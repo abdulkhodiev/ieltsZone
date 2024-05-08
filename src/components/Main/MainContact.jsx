@@ -49,9 +49,9 @@ const MainContact = () => {
                         textAlign={"center"}
                         width={{ xs: "70%", sm: "70%", md: "100%" }}
                     >
-                        IELTSZONE is a specialized teaching center that prepares
-                        individuals for the IELTS exam, with a focus on Mock
-                        IELTS tests for effective and targeted preparation.
+                        IELTS ZONE is a specialized teaching center that
+                        prepares individuals for the IELTS exam, with a focus on
+                        Mock IELTS tests for effective and targeted preparation.
                     </Typography>
                 </Box>
                 <Stack>
@@ -126,7 +126,7 @@ const MainContact = () => {
                         Contact Us
                     </Typography>
                     <Typography color={colors.secondary} variant="h6">
-                        +998 00 000 00 00
+                        +998 55 511 09 09
                     </Typography>
                     <Typography
                         color={colors.secondary}

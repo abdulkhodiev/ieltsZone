@@ -24,7 +24,6 @@ import {
 } from "@mui/icons-material";
 import {
     getExams,
-    deleteExams,
     examInformation,
     deleteFeedbackFolders,
 } from "../../utils/api/requests/add-exams";
@@ -140,21 +139,93 @@ const AdminExams = () => {
                         gap: "1rem",
                     }}
                 >
-                    <Button
-                        component={Link}
-                        to="/admin/exams/create"
-                        sx={{
-                            ml: "auto",
-                            my: "1rem",
-                            bgcolor: colors.primary,
-                            color: "white",
-                            borderRadius: "0.7rem",
-                            ":hover": { bgcolor: colors.primary },
-                        }}
-                        variant="contained"
+                    <Stack
+                        direction={"row"}
+                        justifyContent={"space-between"}
+                        py={{ xs: 2, md: 0 }}
+                        px={{ xs: 1, md: 0 }}
                     >
-                        + Add Exam
-                    </Button>
+                        <Stack
+                            direction={{ xs: "column", md: "row" }}
+                            spacing={{ xs: 1, md: 3 }}
+                        >
+                            <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"0.5rem"}
+                            >
+                                <Box
+                                    sx={{
+                                        width: "1rem",
+                                        height: "1rem",
+                                        bgcolor: "#E55263",
+                                        borderRadius: "50%",
+                                    }}
+                                ></Box>
+                                <Typography
+                                    color={colors.primary}
+                                    fontWeight={"bold"}
+                                >
+                                    All
+                                </Typography>
+                            </Stack>
+                            <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"0.5rem"}
+                            >
+                                <Box
+                                    sx={{
+                                        width: "1rem",
+                                        height: "1rem",
+                                        bgcolor: "#69A2B0",
+                                        borderRadius: "50%",
+                                    }}
+                                ></Box>
+                                <Typography
+                                    color={colors.primary}
+                                    fontWeight={"bold"}
+                                >
+                                    Accepted
+                                </Typography>
+                            </Stack>
+                            <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"0.5rem"}
+                            >
+                                <Box
+                                    sx={{
+                                        width: "1rem",
+                                        height: "1rem",
+                                        bgcolor: "#659157",
+                                        borderRadius: "50%",
+                                    }}
+                                ></Box>
+                                <Typography
+                                    color={colors.primary}
+                                    fontWeight={"bold"}
+                                >
+                                    Marked
+                                </Typography>
+                            </Stack>
+                        </Stack>
+                        <Button
+                            component={Link}
+                            to="/admin/exams/create"
+                            sx={{
+                                ml: "auto",
+                                my: "1rem",
+                                bgcolor: colors.primary,
+                                color: "white",
+                                borderRadius: "0.7rem",
+                                ":hover": { bgcolor: colors.primary },
+                            }}
+                            variant="contained"
+                        >
+                            + Add Exam
+                        </Button>
+                    </Stack>
 
                     {exams.map((exam) => (
                         <Accordion
@@ -178,7 +249,7 @@ const AdminExams = () => {
                                 <Typography
                                     sx={{
                                         fontWeight: "bold",
-                                        color: "blue",
+                                        color: "#E55263",
                                     }}
                                 >
                                     {exam.countOfRegistrations || 0}
@@ -186,11 +257,20 @@ const AdminExams = () => {
                                 <Typography
                                     sx={{
                                         fontWeight: "bold",
-                                        mx: "0.5rem",
-                                        color: "green",
+                                        ml: "0.5rem",
+                                        color: "#69A2B0",
                                     }}
                                 >
                                     {exam.countOfAcceptedRegistrations || 0}
+                                </Typography>
+                                <Typography
+                                    sx={{
+                                        fontWeight: "bold",
+                                        mx: "0.5rem",
+                                        color: "#659157",
+                                    }}
+                                >
+                                    {exam.countOfMarkedRegistrations || 0}
                                 </Typography>
                                 <ButtonGroup
                                     variant="contained"

@@ -28,7 +28,7 @@ const Facilities = () => {
                 }}
                 sx={{ width: "100%" }}
             >
-                Our Facilities
+                Mock Exam Atmosphere
             </Typography>
 
             <DarkVariantExample />

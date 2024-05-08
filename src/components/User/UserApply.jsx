@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     Container,
     Button,
@@ -12,10 +12,9 @@ import {
     Grid,
     IconButton,
     Paper,
-    CardMedia,
     Box,
 } from "@mui/material";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
     userInfo,
     paymentPic,
@@ -26,6 +25,7 @@ import { colors } from "../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import dayjs from "dayjs";
 import TransitionsModal from "../UI/ContentPreviewModal";
+import Snackbar from "@mui/joy/Snackbar";
 
 const UserApply = () => {
     const { examId } = useParams();
@@ -37,6 +37,8 @@ const UserApply = () => {
     const [paymentImagePreview, setPaymentImagePreview] = useState(null);
     const [cardNumber, setCardNumber] = useState("");
     const [cardHolderName, setCardHolderName] = useState("");
+    const [countdown, setCountdown] = useState(900);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         fetchAvailableTimes();
@@ -53,6 +55,14 @@ const UserApply = () => {
             console.error("Error fetching available speaking times:", error);
         }
     };
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCountdown((prevTime) => prevTime - 1);
+        }, 1000);
+        setOpen(true);
+        return () => clearInterval(timer);
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -86,11 +96,17 @@ const UserApply = () => {
         cancelReservation(examId);
         navigate("/user/exams");
     };
+
+    const formatTime = () => {
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+        return `${minutes} : ${String(seconds).padStart(2, "0")}`;
+    };
+
     return (
         <Container
             maxWidth="md"
             sx={{
-                my: "1rem",
                 minHeight: "100vh",
                 display: "flex",
                 justifyContent: "center",
@@ -100,7 +116,10 @@ const UserApply = () => {
             <Paper
                 elevation={3}
                 sx={{
-                    padding: "2rem",
+                    padding: {
+                        xs: "1rem",
+                        sm: "2rem",
+                    },
                     width: {
                         xs: "100%",
                         sm: "80%",
@@ -267,6 +286,7 @@ const UserApply = () => {
                                 </Box>
                             )}
                         </Grid>
+
                         <Grid item xs={12}>
                             <Stack
                                 direction="row"
@@ -285,7 +305,7 @@ const UserApply = () => {
                                         fontWeight: "bold",
                                     }}
                                 >
-                                    Cancel
+                                    Cancel | {formatTime()}
                                 </Button>
                                 <Button
                                     type="submit"
@@ -307,6 +327,23 @@ const UserApply = () => {
                         </Grid>
                     </Grid>
                 </form>
+                <Snackbar
+                    open={open}
+                    color="warning"
+                    variant="solid"
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    onClose={() => setOpen(false)}
+                    autoHideDuration={8000}
+                    size="sm"
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "min-content",
+                        alignItems: "center",
+                    }}
+                >
+                    You have 15 minutes to apply.
+                </Snackbar>
             </Paper>
         </Container>
     );
