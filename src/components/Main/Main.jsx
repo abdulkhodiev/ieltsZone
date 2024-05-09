@@ -7,6 +7,7 @@ import { colors } from "../../constants/colors";
 import MainNiners from "./MainNiners";
 import Cookies from "js-cookie";
 import Facilities from "./Facilities";
+import Comments from "./Comments";
 
 const Main = () => {
     const role = Cookies.get("role");
@@ -46,6 +47,7 @@ const Main = () => {
                     <MainAbout />
                     <MainNiners />
                     <Facilities />
+                    <Comments />
                 </Stack>
                 <MainContact />
             </Stack>

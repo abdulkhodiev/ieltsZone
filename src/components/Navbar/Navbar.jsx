@@ -25,6 +25,7 @@ import Groups2Icon from "@mui/icons-material/Groups2";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Cookies from "js-cookie";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import MessageIcon from "@mui/icons-material/Message";
 
 const Navbar = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -135,6 +136,24 @@ const Navbar = () => {
                                 }}
                             >
                                 Atmosphere
+                            </Typography>
+                        }
+                    />
+                </ListItem>
+                <ListItem button component="a" href="#reviews">
+                    <ListItemIcon>
+                        <MessageIcon sx={{ color: colors.primary }} />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    color: colors.primary,
+                                    fontWeight: "500",
+                                }}
+                            >
+                                Reviews
                             </Typography>
                         }
                     />
@@ -259,7 +278,7 @@ const Navbar = () => {
                     onClick={handleDrawerToggle}
                     sx={{
                         ml: "0.1rem",
-                        display: { sm: "flex", md: "none", lg: "none" },
+                        display: { sm: "flex", md: "flex", lg: "none" },
                         bgcolor: colors.primary,
                         color: "white",
                         borderRadius: "0.6rem",
@@ -274,7 +293,7 @@ const Navbar = () => {
                         display: {
                             xs: "block",
                             sm: "block",
-                            md: "none",
+                            md: "block",
                             lg: "none",
                         },
                     }}
@@ -283,13 +302,13 @@ const Navbar = () => {
                         variant="h5"
                         sx={{ color: `${colors.primary}`, fontWeight: "bold" }}
                     >
-                        IELTSZONE
+                        IELTS ZONE
                     </Typography>
                 </Box>
 
                 <Box
                     sx={{
-                        display: { sm: "flex", md: "none", lg: "none" },
+                        display: { sm: "flex", md: "flex", lg: "none" },
                         color: "white",
                     }}
                 >
@@ -301,7 +320,7 @@ const Navbar = () => {
                         display: {
                             xs: "none",
                             sm: "none",
-                            md: "flex",
+                            md: "none",
                             lg: "flex",
                         },
                         gap: "2rem",
@@ -321,7 +340,7 @@ const Navbar = () => {
                         display: {
                             xs: "none",
                             sm: "none",
-                            md: "flex",
+                            md: "none",
                             lg: "flex",
                         },
                         gap: "3rem",
@@ -365,12 +384,21 @@ const Navbar = () => {
                     >
                         <Typography variant="h6">Atmosphere</Typography>
                     </a>
+                    <a
+                        href="#reviews"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                        }}
+                    >
+                        <Typography variant="h6">Reviews</Typography>
+                    </a>
                 </Box>
 
                 {token ? (
                     <Box
                         sx={{
-                            display: { xs: "none", md: "flex" },
+                            display: { xs: "none", lg: "flex" },
                             gap: "1rem",
                         }}
                     >
@@ -387,7 +415,7 @@ const Navbar = () => {
                 ) : (
                     <Box
                         sx={{
-                            display: { xs: "none", md: "flex" },
+                            display: { xs: "none", lg: "flex" },
                             gap: "1rem",
                         }}
                     >
