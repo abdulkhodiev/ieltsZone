@@ -39,7 +39,7 @@ export default function DeleteConfirmation({ id, fetchExams }) {
     const handleDelete = async (examId) => {
         try {
             const res = await deleteExams(examId);
-            console.log(res);
+
             if (res.success) {
                 fetchExams();
             } else {

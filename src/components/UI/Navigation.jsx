@@ -36,7 +36,15 @@ const Navigation = () => {
                   color: "white",
               },
           }
+        : location.pathname.includes("admin/archive")
+        ? {
+              bgcolor: colors.primary,
+              color: "  white",
+              borderRadius: "0.6rem",
+              "&:hover": { bgcolor: colors.primary, color: "white" },
+          }
         : {};
+
     const resultsDynamicStyles = location.pathname.includes(
         "admin/result-analysis"
     )
@@ -144,6 +152,7 @@ const Navigation = () => {
                 >
                     Exams
                 </ListItemButton>
+
                 <ListItemButton
                     sx={{
                         borderRadius: "0.6rem",

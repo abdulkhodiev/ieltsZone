@@ -16,6 +16,7 @@ import SectionCheck from "../Admin/Exams/ExamParticipants/SectionCheck";
 import Layout from "../Layout/Layout";
 import Main from "../Main/Main";
 import UserMain from "../User/UserMain";
+import ArchiveExams from "../Admin/ArchiveExams";
 
 import ResultAnalysis from "../Admin/ResultAnalysis";
 import ForgetPassword from "../Main/ForgetPassword";
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
                             {
                                 path: "payment-analysis",
                                 element: <PaymentAnalysis />,
+                            },
+                            {
+                                path: "archive",
+                                element: <ArchiveExams />,
                             },
                         ],
                     },

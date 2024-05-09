@@ -50,6 +50,15 @@ export const getExams = async () => {
         throw error;
     }
 };
+export const getAllExams = async () => {
+    try {
+        const res = await $api.get("/exam/all");
+        return res.data || [];
+    } catch (error) {
+        console.error("Failed to fetch exams:", error);
+        throw error;
+    }
+};
 
 export const getMe = async () => {
     const res = await $api.get("users/me");

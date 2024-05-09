@@ -4,13 +4,20 @@ import { Input as BaseInput } from "@mui/base/Input";
 import { Box, Button, styled, Typography } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { verify } from "../../utils/api/requests/verify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Alert, Stack } from "@mui/material";
+import { register } from "../../utils/api/requests/register";
 
 function OTP({ separator, length, value, onChange, setError }) {
     const inputRefs = React.useRef(new Array(length).fill(null));
     const location = useNavigate();
-    const [timer, setTimer] = React.useState(300); // 300 seconds equals 5 minutes
+    const credentials = useLocation();
+    const phoneNumber = credentials.state.phoneNumber;
+    const password = credentials.state.password;
+    const telegramUsername = credentials.state.telegramUsername;
+    const firstName = credentials.state.firstName;
+    const lastName = credentials.state.lastName;
+    const [timer, setTimer] = React.useState(300);
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
 
     React.useEffect(() => {
@@ -28,9 +35,26 @@ function OTP({ separator, length, value, onChange, setError }) {
         return () => clearInterval(interval);
     }, []);
 
-    const resetTimer = () => {
+    const resetTimer = async () => {
         setTimer(300);
         setIsButtonDisabled(true);
+
+        try {
+            await register({
+                firstName,
+                lastName,
+                phoneNumber,
+                password,
+                telegramUsername,
+            });
+        } catch (err) {
+            setError(
+                err.response.data.password ||
+                    err.response.data.phoneNumber ||
+                    err.response.data.message ||
+                    "Failed to register."
+            );
+        }
     };
 
     const focusInput = (targetIndex) => {

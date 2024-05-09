@@ -4,15 +4,18 @@ import { Input as BaseInput } from "@mui/base/Input";
 import { Box, Button, styled, Typography } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { resetPasswordVerify } from "../../utils/api/requests/verify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Alert, Stack } from "@mui/material";
+import { forgetPassword } from "../../utils/api/requests/forgetPassword";
 
 function OTP({ separator, length, value, onChange, setError }) {
     const inputRefs = React.useRef(new Array(length).fill(null));
     const location = useNavigate();
-    const [timer, setTimer] = React.useState(300); // 300 seconds equals 5 minutes
+    const [timer, setTimer] = React.useState(300);
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
-
+    const credentials = useLocation();
+    const password = credentials.state.password;
+    const phoneNumber = credentials.state.phoneNumber;
     React.useEffect(() => {
         const interval = setInterval(() => {
             setTimer((prevTimer) => {
@@ -28,9 +31,19 @@ function OTP({ separator, length, value, onChange, setError }) {
         return () => clearInterval(interval);
     }, []);
 
-    const resetTimer = () => {
+    const resetTimer = async () => {
         setTimer(300);
         setIsButtonDisabled(true);
+
+        const payload = {
+            password: password,
+            phoneNumber: phoneNumber,
+        };
+        try {
+            await forgetPassword(payload);
+        } catch (error) {
+            setError(error.response.data.message);
+        }
     };
 
     const focusInput = (targetIndex) => {
@@ -81,7 +94,6 @@ function OTP({ separator, length, value, onChange, setError }) {
     const handleChange = (event, currentIndex) => {
         const newValue = event.target.value;
         if (!/^\d$/.test(newValue)) {
-            // Only allow single digit
             return;
         }
 
