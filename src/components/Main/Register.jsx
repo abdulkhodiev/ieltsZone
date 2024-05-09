@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     Card,
     CardContent,
@@ -60,7 +60,15 @@ const Register = () => {
                 password: credentials.password,
                 telegramUsername: credentials.telegramUsername,
             });
-            navigate("/sms");
+            navigate("/sms", {
+                state: {
+                    phoneNumber: credentials.phoneNumber,
+                    password: credentials.password,
+                    firstName: credentials.firstName,
+                    lastName: credentials.lastName,
+                    telegramUsername: credentials.telegramUsername,
+                },
+            });
         } catch (err) {
             setError(
                 err.response.data.password ||

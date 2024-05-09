@@ -52,7 +52,12 @@ const ForgetPassword = () => {
         };
         try {
             await forgetPassword(payload);
-            navigate("/reset-password");
+            navigate("/reset-password", {
+                state: {
+                    phoneNumber: credentials.phoneNumber,
+                    password: credentials.password,
+                },
+            });
         } catch (error) {
             setError(error.response.data.message);
         }

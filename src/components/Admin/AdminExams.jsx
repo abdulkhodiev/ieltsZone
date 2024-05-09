@@ -211,21 +211,38 @@ const AdminExams = () => {
                                 </Typography>
                             </Stack>
                         </Stack>
-                        <Button
-                            component={Link}
-                            to="/admin/exams/create"
-                            sx={{
-                                ml: "auto",
-                                my: "1rem",
-                                bgcolor: colors.primary,
-                                color: "white",
-                                borderRadius: "0.7rem",
-                                ":hover": { bgcolor: colors.primary },
-                            }}
-                            variant="contained"
-                        >
-                            + Add Exam
-                        </Button>
+                        <Stack direction={"row"} gap={"0.5rem"}>
+                            <Button
+                                component={Link}
+                                to="/admin/archive"
+                                sx={{
+                                    ml: "auto",
+                                    my: "1rem",
+                                    bgcolor: "green",
+                                    color: "white",
+                                    borderRadius: "0.7rem",
+                                    ":hover": { bgcolor: "green " },
+                                }}
+                                variant="contained"
+                            >
+                                Archive
+                            </Button>
+                            <Button
+                                component={Link}
+                                to="/admin/exams/create"
+                                sx={{
+                                    ml: "auto",
+                                    my: "1rem",
+                                    bgcolor: colors.primary,
+                                    color: "white",
+                                    borderRadius: "0.7rem",
+                                    ":hover": { bgcolor: colors.primary },
+                                }}
+                                variant="contained"
+                            >
+                                + Add Exam
+                            </Button>
+                        </Stack>
                     </Stack>
 
                     {exams.map((exam) => (
