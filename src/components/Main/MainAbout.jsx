@@ -44,10 +44,10 @@ const MainAbout = () => {
                                     fontWeight="bold"
                                     component="div"
                                 >
-                                    ✨ {item.title}
+                                    {item.title}
                                 </Typography>
                                 <Typography
-                                    variant="body2"
+                                    variant="body1"
                                     sx={{ my: 1.2, mx: 0.5 }}
                                     color="text.secondary"
                                 >
