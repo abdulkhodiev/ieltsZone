@@ -1,5 +1,8 @@
 import { Box, Typography, Grid } from "@mui/material";
-import comment from "../../assets/comment1.png";
+import review1 from "../../assets/tommy2.png";
+import review2 from "../../assets/laziz2.png";
+import review3 from "../../assets/nigina2.png";
+import review4 from "../../assets/shahzod.png";
 
 const Comments = () => {
     return (
@@ -43,7 +46,7 @@ const Comments = () => {
                     }}
                 >
                     <img
-                        src={comment}
+                        src={review1}
                         style={{
                             width: "100%",
                         }}
@@ -63,7 +66,7 @@ const Comments = () => {
                     md={6}
                     lg={3}
                 >
-                    <img src={comment} style={{ width: "100%" }} alt="review" />
+                    <img src={review2} style={{ width: "100%" }} alt="review" />
                 </Grid>
                 <Grid
                     sx={{
@@ -78,7 +81,7 @@ const Comments = () => {
                     md={6}
                     lg={3}
                 >
-                    <img src={comment} style={{ width: "100%" }} alt="review" />
+                    <img src={review3} style={{ width: "100%" }} alt="review" />
                 </Grid>
                 <Grid
                     sx={{
@@ -93,7 +96,7 @@ const Comments = () => {
                     md={6}
                     lg={3}
                 >
-                    <img src={comment} style={{ width: "100%" }} alt="review" />
+                    <img src={review4} style={{ width: "100%" }} alt="review" />
                 </Grid>
             </Grid>
         </Box>
