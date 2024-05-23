@@ -34,8 +34,10 @@ export default function TransitionsModal({ img, isMobile }) {
                 style={{
                     width: isMobile ? "100%" : "350px",
                     borderRadius: "1rem",
-                    height: 100,
+                    height: "min-content",
+                    maxHeight: 400,
                     cursor: "pointer",
+                    objectFit: "cover",
                 }}
                 alt="Couldn't load image"
             />{" "}
