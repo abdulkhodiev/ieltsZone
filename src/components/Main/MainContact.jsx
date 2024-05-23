@@ -163,6 +163,40 @@ const MainContact = () => {
                     </Box>
                 </Box>
             </Stack>
+            <Stack>
+                <Typography
+                    variant="body2"
+                    color={"white"}
+                    px={3}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                >
+                    Copyright ©{" "}
+                    <Button
+                        sx={{
+                            color: "white",
+                            textTransform: "none",
+                        }}
+                        component="a"
+                        href="https://t.me/hikmatilloanvarbekov"
+                    >
+                        Hikmatullo
+                    </Button>{" "}
+                    &{" "}
+                    <Button
+                        sx={{
+                            color: "white",
+                            textTransform: "none",
+                        }}
+                        component="a"
+                        href="https://t.me/abdulkhodiev1"
+                    >
+                        Abdulkhodiev
+                    </Button>{" "}
+                    2024. All rights reserved.
+                </Typography>
+            </Stack>
         </Stack>
     );
 };
