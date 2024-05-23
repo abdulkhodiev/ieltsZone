@@ -144,6 +144,7 @@ const Register = () => {
                             label="Telegram Username"
                             variant="outlined"
                             name="telegramUsername"
+                            type="text"
                             value={credentials.telegramUsername}
                             onChange={handleChange}
                             fullWidth
