@@ -11,29 +11,39 @@ import { forgetPassword } from "../../utils/api/requests/forgetPassword";
 function OTP({ separator, length, value, onChange, setError }) {
     const inputRefs = React.useRef(new Array(length).fill(null));
     const location = useNavigate();
-    const [timer, setTimer] = React.useState(300);
+    const [timer, setTimer] = React.useState(
+        () => Number(localStorage.getItem("otp-timer")) || 300
+    );
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
     const credentials = useLocation();
     const password = credentials.state.password;
     const phoneNumber = credentials.state.phoneNumber;
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setTimer((prevTimer) => {
-                if (prevTimer <= 1) {
-                    clearInterval(interval);
-                    setIsButtonDisabled(false);
-                    return 0;
-                }
-                return prevTimer - 1;
-            });
-        }, 1000);
 
-        return () => clearInterval(interval);
-    }, []);
+    React.useEffect(() => {
+        if (timer > 0) {
+            const interval = setInterval(() => {
+                setTimer((prevTimer) => {
+                    const newTimer = prevTimer - 1;
+                    localStorage.setItem("otp-timer", newTimer);
+                    if (newTimer <= 0) {
+                        clearInterval(interval);
+                        setIsButtonDisabled(false);
+                        localStorage.removeItem("otp-timer");
+                        return 0;
+                    }
+                    return newTimer;
+                });
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [timer]);
 
     const resetTimer = async () => {
-        setTimer(300);
+        const newTimerValue = 300;
+        setTimer(newTimerValue);
         setIsButtonDisabled(true);
+        localStorage.setItem("otp-timer", newTimerValue);
 
         const payload = {
             password: password,
@@ -195,6 +205,7 @@ OTP.propTypes = {
     onChange: PropTypes.func.isRequired,
     separator: PropTypes.node,
     value: PropTypes.string.isRequired,
+    setError: PropTypes.func.isRequired,
 };
 
 export default function OTPInput() {

@@ -17,27 +17,36 @@ function OTP({ separator, length, value, onChange, setError }) {
     const telegramUsername = credentials.state.telegramUsername;
     const firstName = credentials.state.firstName;
     const lastName = credentials.state.lastName;
-    const [timer, setTimer] = React.useState(300);
+    const [timer, setTimer] = React.useState(
+        () => Number(localStorage.getItem("otp-timer")) || 300
+    );
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
 
     React.useEffect(() => {
-        const interval = setInterval(() => {
-            setTimer((prevTimer) => {
-                if (prevTimer <= 1) {
-                    clearInterval(interval);
-                    setIsButtonDisabled(false);
-                    return 0;
-                }
-                return prevTimer - 1;
-            });
-        }, 1000);
+        if (timer > 0) {
+            const interval = setInterval(() => {
+                setTimer((prevTimer) => {
+                    const newTimer = prevTimer - 1;
+                    localStorage.setItem("otp-timer", newTimer);
+                    if (newTimer <= 0) {
+                        clearInterval(interval);
+                        setIsButtonDisabled(false);
+                        localStorage.removeItem("otp-timer");
+                        return 0;
+                    }
+                    return newTimer;
+                });
+            }, 1000);
 
-        return () => clearInterval(interval);
-    }, []);
+            return () => clearInterval(interval);
+        }
+    }, [timer]);
 
     const resetTimer = async () => {
-        setTimer(300);
+        const newTimerValue = 300;
+        setTimer(newTimerValue);
         setIsButtonDisabled(true);
+        localStorage.setItem("otp-timer", newTimerValue);
 
         try {
             await register({
@@ -105,7 +114,6 @@ function OTP({ separator, length, value, onChange, setError }) {
     const handleChange = (event, currentIndex) => {
         const newValue = event.target.value;
         if (!/^\d$/.test(newValue)) {
-            // Only allow single digit
             return;
         }
 
