@@ -174,6 +174,11 @@ const MainContact = () => {
                     variant="body2"
                     color={"white"}
                     px={3}
+                    pb={{
+                        xs: 3,
+                        sm: 2,
+                        md: 1,
+                    }}
                     display={"flex"}
                     alignItems={"center"}
                     flexWrap={"wrap"}
