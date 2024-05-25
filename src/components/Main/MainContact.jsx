@@ -7,7 +7,13 @@ import { Link } from "react-router-dom";
 const MainContact = () => {
     return (
         <Stack
-            minHeight={"40vh"}
+            minHeight={{
+                xs: "40vh",
+                md: "350px",
+            }}
+            maxHeight={{
+                md: "1080px",
+            }}
             width={"100%"}
             sx={{ bgcolor: colors.primary }}
         >
@@ -170,6 +176,7 @@ const MainContact = () => {
                     px={3}
                     display={"flex"}
                     alignItems={"center"}
+                    flexWrap={"wrap"}
                     justifyContent={"center"}
                 >
                     Copyright ©{" "}

@@ -6,7 +6,13 @@ const MainNiners = () => {
     return (
         <Box
             id="niners"
-            minHeight="80vh"
+            minHeight={{
+                xs: "80vh",
+                md: "calc(720px - 70px)",
+            }}
+            maxHeight={{
+                md: "1080px",
+            }}
             display="flex"
             flexDirection="column"
             justifyContent="center"
