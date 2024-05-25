@@ -9,7 +9,13 @@ const MainHeader = () => {
 
     return (
         <Box
-            height={"80vh"}
+            minHeight={{
+                xs: "80vh",
+                md: "calc(720px - 70px)",
+            }}
+            maxHeight={{
+                md: "1080px",
+            }}
             sx={{
                 borderRadius: "2rem",
                 display: "flex",

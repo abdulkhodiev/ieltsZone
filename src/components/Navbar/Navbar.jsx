@@ -268,7 +268,7 @@ const Navbar = () => {
                 justifyContent="space-between"
                 alignItems="center"
                 sx={{
-                    height: "10vh",
+                    height: "70px",
                 }}
             >
                 <IconButton

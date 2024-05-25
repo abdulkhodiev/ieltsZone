@@ -6,7 +6,13 @@ const MainAbout = () => {
     return (
         <Box
             id="about"
-            minHeight="100vh"
+            minHeight={{
+                xs: "100vh",
+                md: "calc(720px - 70px)",
+            }}
+            maxHeight={{
+                md: "1080px",
+            }}
             display="flex"
             flexDirection="column"
             justifyContent="center"
