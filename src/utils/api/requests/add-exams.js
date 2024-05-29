@@ -33,7 +33,7 @@ export const EditExam = async (examId, examData) => {
 
 export const getExamById = async (examId) => {
     try {
-        const response = await $api.get(`/exam/${examId}`);
+        const response = await $api.get(`/exam/${examId}/update`);
         return response.data;
     } catch (error) {
         console.error("Fetching exam details failed:", error);

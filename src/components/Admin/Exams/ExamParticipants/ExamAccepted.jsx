@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Table,
     TableBody,
@@ -16,11 +15,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../../../constants/colors";
 import { getAcceptedUsers } from "../../../../utils/api/requests/accepted-user";
 import dayjs from "dayjs";
+import Input from "@mui/joy/Input";
 
 const ExamAccepted = () => {
-    const { examId, rowId } = useParams();
+    const { examId } = useParams();
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchAcceptedUsers = async () => {
         const res = await getAcceptedUsers(examId);
@@ -60,27 +61,58 @@ const ExamAccepted = () => {
 
     const handleRowClick = (rowId, firstName, lastName) => {
         navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`, {
-            state: { firstName: firstName, lastName: lastName },
+            state: { firstName, lastName },
         });
     };
+
+    const handleSearch = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const filteredRows = rows.filter((row) =>
+        `${row.user.firstName} ${row.user.lastName} ${row.user.phoneNumber} ${row.user.telegramUsername}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+    );
 
     return (
         <Grow in={true} style={{ transformOrigin: "0 0 0" }} timeout={500}>
             <Stack width={"100%"}>
-                <Button
-                    onClick={() => excelExport(csvDonwload)}
-                    sx={{
-                        my: "1rem",
-                        ml: "auto",
-                        bgcolor: colors.primary,
-                        color: "white",
-                        borderRadius: "0.7rem",
-                        ":hover": { bgcolor: colors.primary },
+                <Stack
+                    direction={{
+                        xs: "column",
+                        sm: "row",
+                        md: "row",
+                        lg: "row",
                     }}
-                    variant="contained"
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
                 >
-                    Excel Export
-                </Button>
+                    <Input
+                        placeholder="Search..."
+                        variant="outlined"
+                        width={{
+                            xs: "100%",
+                            sm: "max-content",
+                        }}
+                        value={searchQuery}
+                        onChange={handleSearch}
+                    />
+                    <Button
+                        onClick={() => excelExport(csvDonwload)}
+                        sx={{
+                            my: "1rem",
+
+                            bgcolor: colors.primary,
+                            color: "white",
+                            borderRadius: "0.7rem",
+                            ":hover": { bgcolor: colors.primary },
+                        }}
+                        variant="contained"
+                    >
+                        Excel Export
+                    </Button>
+                </Stack>
                 <TableContainer
                     component={Paper}
                     sx={{
@@ -103,7 +135,7 @@ const ExamAccepted = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row, index) => (
+                            {filteredRows.map((row, index) => (
                                 <TableRow
                                     key={index}
                                     sx={{

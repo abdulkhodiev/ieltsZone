@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Container,
     Button,
@@ -23,15 +23,21 @@ import {
 } from "../../utils/api/requests/user-apply";
 import { colors } from "../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import dayjs from "dayjs";
+
 import TransitionsModal from "../UI/ContentPreviewModal";
 import Snackbar from "@mui/joy/Snackbar";
+import DropdownSpeakingDates from "../UI/DropdownSpeakingDates";
+import { getAvailableSpeakingTimes } from "../../utils/api/requests/get-availableSpeakingTimes";
+import {
+    connectWebSocket,
+    disconnectWebSocket,
+} from "../../utils/websocket/websocket";
 
 const UserApply = () => {
     const { examId } = useParams();
     const navigate = useNavigate();
     const [isStudent, setIsStudent] = useState(true);
-    const [speakingDate, setSpeakingDate] = useState("");
+    const [speakingDateId, setSpeakingDateId] = useState("");
     const [paymentPictureId, setPaymentPictureId] = useState(0);
     const [availableSpeakingTimes, setAvailableSpeakingTimes] = useState([]);
     const [paymentImagePreview, setPaymentImagePreview] = useState(null);
@@ -40,21 +46,47 @@ const UserApply = () => {
     const [countdown, setCountdown] = useState(900);
     const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        fetchAvailableTimes();
-    }, [examId]);
-
-    const fetchAvailableTimes = async () => {
+    const fetchExamInfo = async () => {
         try {
             const response = await speakingDates(examId);
-
-            setAvailableSpeakingTimes(response.speakingDates);
             setCardHolderName(response.cardHolderName);
             setCardNumber(response.cardNumber);
+        } catch (error) {
+            console.error("Error fetching exam info:", error);
+        }
+    };
+
+    const fetchAvailableSpeakingTimes = async () => {
+        try {
+            const response = await getAvailableSpeakingTimes(examId);
+            setAvailableSpeakingTimes(response);
         } catch (error) {
             console.error("Error fetching available speaking times:", error);
         }
     };
+
+    const removeSpeakingDateFromUI = (speakingDateId) => {
+        setAvailableSpeakingTimes((prevTimes) =>
+            prevTimes.filter((time) => time.id !== parseInt(speakingDateId))
+        );
+    };
+
+    useEffect(() => {
+        fetchExamInfo();
+        fetchAvailableSpeakingTimes();
+
+        connectWebSocket(examId, (speakingDateId) => {
+            if (speakingDateId) {
+                removeSpeakingDateFromUI(speakingDateId);
+            } else {
+                console.error("speakingDateId is undefined");
+            }
+        });
+
+        return () => {
+            disconnectWebSocket();
+        };
+    }, [examId]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -69,7 +101,7 @@ const UserApply = () => {
         try {
             const userData = {
                 isStudent,
-                speakingDate: speakingDate,
+                speakingDateId,
                 paymentPictureId,
             };
             await userInfo(examId, userData);
@@ -191,26 +223,12 @@ const UserApply = () => {
                                 >
                                     Available Speaking Times
                                 </FormLabel>
-                                <RadioGroup
-                                    sx={{ justifyContent: "center" }}
-                                    row
-                                    value={speakingDate}
-                                    onChange={(e) =>
-                                        setSpeakingDate(e.target.value)
+                                <DropdownSpeakingDates
+                                    setSpeakingDateId={setSpeakingDateId}
+                                    availableSpeakingTimes={
+                                        availableSpeakingTimes
                                     }
-                                >
-                                    {availableSpeakingTimes.map((date) => (
-                                        <FormControlLabel
-                                            required
-                                            key={date}
-                                            value={date}
-                                            control={<Radio />}
-                                            label={dayjs(date).format(
-                                                "HH:mm | DD MMM YYYY"
-                                            )}
-                                        />
-                                    ))}
-                                </RadioGroup>
+                                />
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -236,6 +254,7 @@ const UserApply = () => {
                                 style={{ display: "none" }}
                                 id="payment-screenshot"
                                 type="file"
+                                required
                                 onChange={handlePaymentScreenshotChange}
                             />
                             <label htmlFor="payment-screenshot">
@@ -246,7 +265,6 @@ const UserApply = () => {
                                         borderRadius: "1rem",
                                         color: colors.primary,
                                         width: "100%",
-
                                         fontSize: "1rem",
                                         padding: "0.5rem 1rem",
                                         ":hover": {
@@ -327,6 +345,7 @@ const UserApply = () => {
                         </Grid>
                     </Grid>
                 </form>
+
                 <Snackbar
                     open={open}
                     color="warning"
