@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Button } from "@mui/material";
 import { colors } from "../../../../constants/colors";
 import { Link, useLocation, useParams } from "react-router-dom";

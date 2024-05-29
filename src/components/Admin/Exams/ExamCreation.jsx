@@ -33,7 +33,7 @@ const ExamCreation = () => {
     const [location, setLocation] = useState("");
     const [locationUrl, setLocationUrl] = useState("");
     const [details, setDetails] = useState("");
-    const [speakingDates, setSpeakingDates] = useState([""]);
+    const [speakingDates, setSpeakingDates] = useState([{ date: "" }]);
     const [currency, setCurrency] = useState("dollar");
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -85,7 +85,9 @@ const ExamCreation = () => {
                     setLocation(examDetails.location);
                     setLocationUrl(examDetails.locationUrl);
                     setDetails(examDetails.details);
-                    setSpeakingDates(examDetails.speakingDates || [""]);
+                    setSpeakingDates(
+                        examDetails.speakingDates || [{ date: "" }]
+                    );
                     setCardNumber(examDetails.cardNumber || "");
                     setCardHolderName(examDetails.cardHolderName || "");
                 } catch (error) {
@@ -97,15 +99,20 @@ const ExamCreation = () => {
         fetchExamDetails();
     }, [examId]);
 
-    const handleSpeakingTimeChange = (index, value) => {
+    const handleSpeakingTimeChange = (index, event) => {
+        const newDate = event.target.value;
         const updatedSpeakingTimes = speakingDates.map((time, i) =>
-            i === index ? value : time
+            i === index ? { ...time, date: newDate } : time
         );
         setSpeakingDates(updatedSpeakingTimes);
     };
 
     const addSpeakingTime = () => {
-        setSpeakingDates([...speakingDates, ""]);
+        const newId =
+            speakingDates.length > 0
+                ? speakingDates[speakingDates.length - 1].id + 1
+                : 1;
+        setSpeakingDates([...speakingDates, { date: "" }]);
     };
 
     const removeSpeakingTime = (index) => {
@@ -338,12 +345,9 @@ const ExamCreation = () => {
                                     required
                                     label={`Speaking Time ${index + 1}`}
                                     type="datetime-local"
-                                    value={time}
+                                    value={time.date} // Ensure this uses the 'date' property
                                     onChange={(e) =>
-                                        handleSpeakingTimeChange(
-                                            index,
-                                            e.target.value
-                                        )
+                                        handleSpeakingTimeChange(index, e)
                                     }
                                     InputLabelProps={{ shrink: true }}
                                 />
@@ -393,7 +397,6 @@ const ExamCreation = () => {
                             fullWidth
                             sx={{
                                 fontWeight: "bold",
-
                                 bgcolor: "red",
                                 color: "white",
                                 fontSize: "0.7rem",
