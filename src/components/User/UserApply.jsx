@@ -13,6 +13,7 @@ import {
     IconButton,
     Paper,
     Box,
+    CircularProgress,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -45,6 +46,7 @@ const UserApply = () => {
     const [cardHolderName, setCardHolderName] = useState("");
     const [countdown, setCountdown] = useState(900);
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const fetchExamInfo = async () => {
         try {
@@ -114,11 +116,13 @@ const UserApply = () => {
 
     const handlePaymentScreenshotChange = async (event) => {
         const file = event.target.files[0];
+        setLoading(true);
         setPaymentImagePreview(URL.createObjectURL(file));
 
         try {
             const paymentRes = await paymentPic(file);
             setPaymentPictureId(paymentRes);
+            setLoading(false);
         } catch (error) {
             console.error("Error uploading payment image:", error);
         }
@@ -146,6 +150,9 @@ const UserApply = () => {
             }}
         >
             <Paper
+                marginY={{
+                    xs: "3rem",
+                }}
                 elevation={3}
                 sx={{
                     padding: {
@@ -329,6 +336,7 @@ const UserApply = () => {
                                     type="submit"
                                     variant="contained"
                                     fullWidth
+                                    disabled={loading}
                                     sx={{
                                         bgcolor: colors.primary,
                                         color: "white",
@@ -339,6 +347,13 @@ const UserApply = () => {
                                         borderRadius: "0.6rem",
                                     }}
                                 >
+                                    {loading && (
+                                        <CircularProgress
+                                            sx={{
+                                                color: "white",
+                                            }}
+                                        />
+                                    )}
                                     Submit
                                 </Button>
                             </Stack>

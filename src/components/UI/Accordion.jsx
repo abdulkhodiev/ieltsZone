@@ -17,8 +17,14 @@ const Accordion = ({
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 500) {
-                setFontSize(".9rem");
+            if (window.innerWidth <= 368) {
+                setFontSize(".6rem");
+            } else if (window.innerWidth <= 488) {
+                setFontSize(".7rem");
+            } else if (window.innerWidth <= 600) {
+                setFontSize("1rem");
+            } else if (window.innerWidth <= 626) {
+                setFontSize("1.1rem");
             } else {
                 setFontSize("1.2rem");
             }
