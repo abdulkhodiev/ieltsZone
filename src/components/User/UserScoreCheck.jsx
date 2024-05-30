@@ -40,7 +40,7 @@ const UserScoreCheck = () => {
 
     const id = userInfo.feedbackFileId;
 
-    const fileUrl = `http://localhost:8080/api/v1/file-storage/download-file?id=${id}`;
+    const fileUrl = `https://ieltszone.uz/api/v1/file-storage/download-file?id=${id}`;
 
     const handleDownload = (fileUrl) => {
         const fileName = fileUrl.split("/").pop();

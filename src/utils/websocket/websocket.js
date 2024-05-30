@@ -1,9 +1,11 @@
 let socket;
 
 export const connectWebSocket = (examId, onMessage) => {
-    socket = new WebSocket(`ws://localhost:8080/exam-websocket`);
+    socket = new WebSocket(`wss://ieltszone.uz/exam-websocket`);
 
-    socket.onopen = () => {};
+    socket.onopen = () => {
+        console.log("connected");
+    };
 
     socket.onmessage = (event) => {
         try {
@@ -19,7 +21,9 @@ export const connectWebSocket = (examId, onMessage) => {
         console.error("WebSocket error:", error);
     };
 
-    socket.onclose = () => {};
+    socket.onclose = () => {
+        console.log("disconnected");
+    };
 };
 
 export const disconnectWebSocket = () => {
