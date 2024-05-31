@@ -1,8 +1,6 @@
 import { TableRow as MTableRow, TableCell } from "@mui/material";
 
 export const TableRow = ({ row, index }) => {
-	console.log(row);
-
 	return (
 		<MTableRow
 			key={row.studentId}

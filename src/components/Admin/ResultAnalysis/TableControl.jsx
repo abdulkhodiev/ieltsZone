@@ -113,7 +113,7 @@ export const TableControl = ({
                         <MenuItem value={"all"}>All</MenuItem>
                         {exams?.map((exam) => (
                             <MenuItem key={exam.id} value={exam.id}>
-                                {dayjs(exam.examDate).format("DD.MM.YYYY")}
+                                {dayjs(exam.examDateTime).format("DD.MM.YYYY")}
                             </MenuItem>
                         ))}
                     </Select>
