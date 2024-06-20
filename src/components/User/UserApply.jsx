@@ -136,6 +136,9 @@ const UserApply = () => {
     const formatTime = () => {
         const minutes = Math.floor(countdown / 60);
         const seconds = countdown % 60;
+        if (minutes === 0 && seconds === 0) {
+            handleCancel();
+        }
         return `${minutes} : ${String(seconds).padStart(2, "0")}`;
     };
 

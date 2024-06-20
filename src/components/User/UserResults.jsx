@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Typography, Stack, Box, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Stack, Box, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
-import { Link } from "react-router-dom";
 import { Filter9 } from "@mui/icons-material";
-import { useParams } from "react-router-dom";
 import { getRegisteredExams } from "../../utils/api/requests/get-registered-exams";
 import Accordion from "../UI/Accordion";
+import Snackbar from "@mui/joy/Snackbar";
+import CloseIcon from "@mui/icons-material/Close";
 
 const UserResults = () => {
     const [exams, setExams] = useState([]);
+    const [openPending, setOpenPending] = useState(false);
+    const [openRejected, setOpenRejected] = useState(false);
 
     const fetchExams = async () => {
         const response = await getRegisteredExams();
@@ -28,6 +30,17 @@ const UserResults = () => {
     useEffect(() => {
         fetchExams();
     }, []);
+
+    const handleBandScore = (status, id) => {
+        if (status === "REJECTED") {
+            setOpenRejected(true);
+        } else if (status === "NEW") {
+            setOpenPending(true);
+        } else {
+            window.location.href = `/user/results/scores/${id}`;
+        }
+    };
+
     return (
         <Stack
             direction={"column"}
@@ -71,8 +84,13 @@ const UserResults = () => {
                             }}
                         >
                             <Button
-                                component={Link}
-                                to={`/user/results/scores/${exam.examRegistrationId}`}
+                                // to={`/user/results/scores/${exam.examRegistrationId}`}
+                                onClick={() => {
+                                    handleBandScore(
+                                        exam.status,
+                                        exam.examRegistrationId
+                                    );
+                                }}
                                 variant="contained"
                                 sx={{
                                     bgcolor: colors.primary,
@@ -98,6 +116,53 @@ const UserResults = () => {
                     </Accordion>
                 ))}
             </Box>
+
+            <Snackbar
+                open={openPending}
+                color="neutral"
+                variant="solid"
+                onClose={() => setOpenPending(false)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                autoHideDuration={6000}
+                endDecorator={
+                    <button
+                        onClick={() => setOpenPending(false)}
+                        style={{
+                            border: "none",
+                            background: "transparent",
+                            cursor: "pointer",
+                            color: "white",
+                        }}
+                    >
+                        <CloseIcon />
+                    </button>
+                }
+            >
+                Your application is pending! Please wait.
+            </Snackbar>
+            <Snackbar
+                open={openRejected}
+                color="danger"
+                variant="solid"
+                onClose={() => setOpenRejected(false)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                autoHideDuration={6000}
+                endDecorator={
+                    <button
+                        onClick={() => setOpenRejected(false)}
+                        style={{
+                            border: "none",
+                            background: "transparent",
+                            cursor: "pointer",
+                            color: "white",
+                        }}
+                    >
+                        <CloseIcon />
+                    </button>
+                }
+            >
+                Your application was rejected!
+            </Snackbar>
         </Stack>
     );
 };

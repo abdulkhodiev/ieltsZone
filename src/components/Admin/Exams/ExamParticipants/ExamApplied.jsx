@@ -14,6 +14,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { getAppliedUsers } from "../../../../utils/api/requests/applied-users";
 import Input from "@mui/joy/Input";
+import dayjs from "dayjs";
 
 const ExamApplied = () => {
     const navigate = useNavigate();
@@ -102,9 +103,10 @@ const ExamApplied = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>#</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Last Name</TableCell>
-                                <TableCell>Phone</TableCell>
+                                <TableCell>Full Name</TableCell>
+                                <TableCell>Phone Number</TableCell>
+                                <TableCell>Telegram</TableCell>
+                                <TableCell>Speaking Date</TableCell>
                                 <TableCell>Status</TableCell>
                             </TableRow>
                         </TableHead>
@@ -112,7 +114,6 @@ const ExamApplied = () => {
                             {filteredRows.map((row, index) => (
                                 <TableRow
                                     key={index}
-                                    hover
                                     sx={{
                                         cursor: "pointer",
                                         "&:hover": {
@@ -123,10 +124,25 @@ const ExamApplied = () => {
                                     onClick={() => handleRowClick(row)}
                                 >
                                     <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{row.user.firstName}</TableCell>
-                                    <TableCell>{row.user.lastName}</TableCell>
+                                    <TableCell>
+                                        {row.user.firstName} {row.user.lastName}
+                                    </TableCell>
                                     <TableCell>
                                         {row.user.phoneNumber}
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            maxWidth: "200px",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        {row.user.telegramUsername ||
+                                            "Not Given"}
+                                    </TableCell>
+                                    <TableCell>
+                                        {dayjs(row.speakingDateTime).format(
+                                            "HH:mm | DD MMM YYYY"
+                                        ) || "Not Chosen"}
                                     </TableCell>
                                     <TableCell
                                         sx={{
