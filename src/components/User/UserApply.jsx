@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     Container,
     Button,
@@ -91,12 +91,38 @@ const UserApply = () => {
     }, [examId]);
 
     useEffect(() => {
+        const savedCountdown = localStorage.getItem("countdown");
+        if (savedCountdown) {
+            setCountdown(parseInt(savedCountdown));
+        }
+
         const timer = setInterval(() => {
-            setCountdown((prevTime) => prevTime - 1);
+            setCountdown((prevTime) => {
+                const newTime = prevTime - 1;
+                localStorage.setItem("countdown", newTime);
+                return newTime;
+            });
         }, 1000);
+
         setOpen(true);
+
         return () => clearInterval(timer);
     }, []);
+
+    const handleCancel = () => {
+        localStorage.removeItem("countdown");
+        cancelReservation(examId);
+        navigate("/user/exams");
+    };
+
+    const formatTime = () => {
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+        if (minutes === 0 && seconds === 0) {
+            handleCancel();
+        }
+        return `${minutes} : ${String(seconds).padStart(2, "0")}`;
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -108,6 +134,7 @@ const UserApply = () => {
             };
             await userInfo(examId, userData);
 
+            localStorage.removeItem("countdown");
             navigate("/user/exams");
         } catch (error) {
             console.error("Error submitting application:", error);
@@ -128,30 +155,58 @@ const UserApply = () => {
         }
     };
 
-    const handleCancel = () => {
-        cancelReservation(examId);
-        navigate("/user/exams");
-    };
-
-    const formatTime = () => {
-        const minutes = Math.floor(countdown / 60);
-        const seconds = countdown % 60;
-        if (minutes === 0 && seconds === 0) {
-            handleCancel();
-        }
-        return `${minutes} : ${String(seconds).padStart(2, "0")}`;
-    };
-
     return (
         <Container
             maxWidth="md"
             sx={{
+                my: "1rem",
                 minHeight: "100vh",
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
             }}
         >
+            <Stack
+                sx={{
+                    padding: {
+                        xs: "1rem",
+                        sm: "1rem",
+                    },
+                    margin: {
+                        xs: "0.5rem",
+                        sm: "1rem",
+                        md: "1.5rem",
+                    },
+                    width: {
+                        xs: "100%",
+                        sm: "80%",
+                        md: "50%",
+                    },
+                    position: "sticky",
+                    top: 0,
+                    left: 0,
+                    boxShadow: "0 0 5px 0 rgba(0, 0, 0, 0.2)",
+                    zIndex: 1,
+                    backgroundColor: "white",
+                    borderRadius: "1rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    fontWeight="bold"
+                    color={colors.primary}
+                    textAlign="center"
+                >
+                    {formatTime()}
+                </Typography>
+            </Stack>
+
             <Paper
                 marginY={{
                     xs: "3rem",
@@ -333,7 +388,7 @@ const UserApply = () => {
                                         fontWeight: "bold",
                                     }}
                                 >
-                                    Cancel | {formatTime()}
+                                    Cancel
                                 </Button>
                                 <Button
                                     type="submit"
@@ -366,7 +421,7 @@ const UserApply = () => {
 
                 <Snackbar
                     open={open}
-                    color="warning"
+                    color="success"
                     variant="solid"
                     anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     onClose={() => setOpen(false)}
@@ -379,7 +434,7 @@ const UserApply = () => {
                         alignItems: "center",
                     }}
                 >
-                    You have 15 minutes to apply.
+                    You have {formatTime()} minutes to apply.
                 </Snackbar>
             </Paper>
         </Container>

@@ -13,12 +13,14 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: { xs: "90%", md: "20%" },
     bgcolor: "background.paper",
     boxShadow: 24,
+    maxHeight: "90vh",
+    maxWidth: "90vw",
     p: 2,
     border: "none !important",
     borderRadius: "1rem !important",
+    overflow: "hidden",
 };
 
 export default function TransitionsModal({ img, isMobile }) {
@@ -34,13 +36,12 @@ export default function TransitionsModal({ img, isMobile }) {
                 style={{
                     width: isMobile ? "100%" : "350px",
                     borderRadius: "1rem",
-                    height: "min-content",
-                    maxHeight: 400,
+                    maxHeight: "350px",
                     cursor: "pointer",
                     objectFit: "cover",
                 }}
                 alt="Couldn't load image"
-            />{" "}
+            />
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -72,7 +73,18 @@ export default function TransitionsModal({ img, isMobile }) {
                                 <CloseIcon />
                             </Button>
                         </Stack>
-                        <img src={img} style={{ width: "100%" }} alt="" />
+                        <img
+                            src={img}
+                            style={{
+                                width: "100%",
+                                height: "auto", // Maintain aspect ratio
+                                maxWidth: "100%",
+                                maxHeight: "80vh", // Ensure it doesn't exceed the viewport height
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                            alt="Couldn't load image"
+                        />
                     </Box>
                 </Fade>
             </Modal>

@@ -81,7 +81,15 @@ const UserLayout = () => {
         fetchExams();
     }, [fetchExams]);
     return (
-        <div>
+        <Box
+            sx={{
+                display: "flex",
+                height: "100vh",
+                width: "100%",
+                bgcolor: "#FBFCFE",
+                overflow: "auto",
+            }}
+        >
             <Box
                 sx={{
                     margin: {
@@ -237,8 +245,18 @@ const UserLayout = () => {
                     </Drawer>
                 </React.Fragment>
             </Box>
-            <Outlet />
-        </div>
+
+            <Stack
+                sx={{
+                    width: "100%",
+                    overflow: "auto",
+                    alignItems: "center",
+                    mt: { xs: "3rem", sm: "3rem", md: "0", lg: "0" },
+                }}
+            >
+                <Outlet />
+            </Stack>
+        </Box>
     );
 };
 

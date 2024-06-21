@@ -10,7 +10,12 @@ const UserMain = () => {
             justifyContent={"center"}
             alignItems={"center"}
             padding={"0.5rem"}
-            m={"auto"}
+            m={{
+                sm: "1rem",
+                md: "1rem",
+                lg: "1rem",
+                xl: "1rem",
+            }}
             sx={{
                 width: {
                     xs: "100%",

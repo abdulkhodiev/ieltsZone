@@ -13,6 +13,7 @@ import {
     useTheme,
     useMediaQuery,
     Grow,
+    FormLabel,
 } from "@mui/material";
 import { colors } from "../../../../constants/colors";
 import {
@@ -20,12 +21,21 @@ import {
     updatePaymentCheck,
 } from "../../../../utils/api/requests/applied-users";
 import TransitionsModal from "../../../UI/ContentPreviewModal";
+import DropdownSpeakingDates from "../../../UI/DropdownSpeakingDates";
+import { getAvailableSpeakingTimes } from "../../../../utils/api/requests/get-availableSpeakingTimes";
+import {
+    connectWebSocket,
+    disconnectWebSocket,
+} from "../../../../utils/websocket/websocket";
+import dayjs from "dayjs";
 
 const PaymentCheck = () => {
     const { examId, rowId } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const [speakingDateId, setSpeakingDateId] = useState("");
+    const [availableSpeakingTimes, setAvailableSpeakingTimes] = useState([]);
 
     const [studentData, setStudentData] = useState({
         firstName: "Loading",
@@ -48,7 +58,11 @@ const PaymentCheck = () => {
                     firstName: res.student.firstName,
                     lastName: res.student.lastName,
                     ieltsZoneStudent: res.isStudent,
+                    status: res.status,
+                    message: res.message,
                     phoneNumber: res.student.phoneNumber,
+                    paymentPictureUrl: res.paymentPictureUrl,
+                    speakingDate: res.speakingDate,
                 });
                 if (res.paymentPictureUrl !== null) {
                     setImage(res.paymentPictureUrl);
@@ -60,6 +74,37 @@ const PaymentCheck = () => {
         };
         fetchPaymentCheck();
     }, [rowId]);
+
+    const fetchAvailableSpeakingTimes = async () => {
+        try {
+            const response = await getAvailableSpeakingTimes(examId);
+            setAvailableSpeakingTimes(response);
+        } catch (error) {
+            console.error("Error fetching available speaking times:", error);
+        }
+    };
+
+    const removeSpeakingDateFromUI = (speakingDateId) => {
+        setAvailableSpeakingTimes((prevTimes) =>
+            prevTimes.filter((time) => time.id !== parseInt(speakingDateId))
+        );
+    };
+
+    useEffect(() => {
+        fetchAvailableSpeakingTimes();
+
+        connectWebSocket(examId, (speakingDateId) => {
+            if (speakingDateId) {
+                removeSpeakingDateFromUI(speakingDateId);
+            } else {
+                console.error("speakingDateId is undefined");
+            }
+        });
+
+        return () => {
+            disconnectWebSocket();
+        };
+    }, [examId]);
 
     const handleStatusChange = (event) => {
         setStudentData({ ...studentData, status: event.target.value });
@@ -74,6 +119,7 @@ const PaymentCheck = () => {
             await updatePaymentCheck(rowId, {
                 status: studentData.status,
                 message: studentData.message,
+                speakingDateId: speakingDateId,
             });
             console.log("Payment check updated successfully.");
             navigate(`/admin/exams/${examId}/participants/applied`);
@@ -125,23 +171,69 @@ const PaymentCheck = () => {
                             examId={examId}
                             rowId={rowId}
                         />
+                        <a href={studentData.paymentPictureUrl} target="_blank">
+                            <Button
+                                sx={{
+                                    my: "1rem",
+                                    bgcolor: colors.primary,
+                                    color: "white",
+                                    borderRadius: "0.7rem",
+                                    ":hover": { bgcolor: colors.primary },
+                                }}
+                                variant="contained"
+                            >
+                                View Payment Check
+                            </Button>
+                        </a>
                     </Box>
+
                     <Box
                         display="flex"
                         flexDirection="column"
                         justifyContent="space-evenly"
                         width={isMobile ? "100%" : "auto"}
                     >
-                        <Typography variant="h6" sx={{ mb: "1rem" }}>
+                        <Typography variant="h6" sx={{ mb: "0.5rem" }}>
                             IELTSZONE STUDENT:{" "}
-                            <span style={{ fontWeight: "bold" }}>
+                            <span
+                                style={{
+                                    fontWeight: "bold",
+                                    backgroundColor: `${
+                                        studentData.ieltsZoneStudent
+                                            ? "green"
+                                            : "red"
+                                    }`,
+                                    color: "white",
+                                    padding: "0.2rem 0.5rem",
+                                    borderRadius: "0.5rem",
+                                }}
+                            >
                                 {studentData.ieltsZoneStudent ? "YES" : "NO"}
                             </span>
                         </Typography>
-                        <Typography variant="h6" sx={{ mb: "1rem" }}>
+                        <Typography variant="h7" sx={{ mb: "0.5rem" }}>
                             Phone Number: {studentData.phoneNumber}
-                            <span style={{ fontWeight: "bold" }}></span>
                         </Typography>
+                        <Typography variant="h7" sx={{ mb: "1rem" }}>
+                            Speaking Time:{" "}
+                            {dayjs(studentData.speakingDate).format(
+                                "HH:mm | DD MMM YYYY"
+                            ) || "Not Chosen"}
+                        </Typography>
+
+                        <FormControl fullWidth>
+                            <FormLabel
+                                component="legend"
+                                sx={{ fontWeight: "bold" }}
+                            >
+                                Available Speaking Times
+                            </FormLabel>
+                            <DropdownSpeakingDates
+                                setSpeakingDateId={setSpeakingDateId}
+                                availableSpeakingTimes={availableSpeakingTimes}
+                            />
+                        </FormControl>
+
                         <FormControl fullWidth>
                             <InputLabel id="status-label">Status</InputLabel>
                             <Select
@@ -161,9 +253,9 @@ const PaymentCheck = () => {
                                 label="Details"
                                 multiline
                                 name="details"
-                                value={studentData.message}
                                 onChange={handleDetailsChange}
                                 margin="normal"
+                                value={studentData.message}
                             />
                         </FormControl>
                         <Stack

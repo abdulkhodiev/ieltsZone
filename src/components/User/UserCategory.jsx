@@ -16,7 +16,6 @@ const UserCategory = () => {
             width={"max-content"}
             borderRadius={"1rem"}
             bgcolor={colors.secondary}
-            mt={"3rem"}
             mb={"1rem"}
         >
             <Link to="/user/exams">
