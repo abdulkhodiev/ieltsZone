@@ -6,7 +6,11 @@ export const postLogin = async (phoneNumber, password) => {
         phoneNumber,
         password,
     });
-    Cookies.set("token", res.data.token);
-    Cookies.set("role", res.data.role);
+
+    const expires = 30;
+
+    Cookies.set("token", res.data.token, { expires });
+    Cookies.set("role", res.data.role, { expires });
+
     return res.data;
 };
