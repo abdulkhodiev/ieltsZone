@@ -88,7 +88,7 @@ const UserResults = () => {
                         fullRegionName={exam.location}
                         speakingDate={
                             exam.speakingDate === null
-                                ? "Speaking Date was cancelled"
+                                ? "Speaking date has been cancelled"
                                 : exam.formattedSpeakingDate
                         }
                         status={exam.status}
@@ -157,7 +157,7 @@ const UserResults = () => {
                         fullRegionName={exam.location}
                         speakingDate={
                             exam.speakingDate === null
-                                ? "Speaking Date was cancelled"
+                                ? "Speaking Date has been cancelled"
                                 : exam.formattedSpeakingDate
                         }
                         status={exam.status}

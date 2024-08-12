@@ -178,7 +178,7 @@ const Accordion = ({
                             fontSize,
                         }}
                     >
-                        {speakingTime} {speakingDate}
+                        Speaking Date: {speakingTime} {speakingDate}
                     </span>
                 </div>
 

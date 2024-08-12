@@ -7,5 +7,5 @@ export const getExams = async (params) => {
 
 export const getUserAvailableExam = async () => {
     const res = await $api.get("/exam/all-user");
-    return res;
+    return res.data;
 };
