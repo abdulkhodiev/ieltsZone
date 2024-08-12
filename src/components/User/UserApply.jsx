@@ -24,7 +24,7 @@ import {
 } from "../../utils/api/requests/user-apply";
 import { colors } from "../../constants/colors";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
+import { reserveExamTemporariy } from "../../utils/api/requests/add-exams";
 import TransitionsModal from "../UI/ContentPreviewModal";
 import Snackbar from "@mui/joy/Snackbar";
 import DropdownSpeakingDates from "../UI/DropdownSpeakingDates";
@@ -33,18 +33,19 @@ import {
     connectWebSocket,
     disconnectWebSocket,
 } from "../../utils/websocket/websocket";
+import Cookie from "js-cookie";
 
 const UserApply = () => {
     const { examId } = useParams();
     const navigate = useNavigate();
-    const [isStudent, setIsStudent] = useState(true);
+    const [isStudent, setIsStudent] = useState(false);
     const [speakingDateId, setSpeakingDateId] = useState("");
     const [paymentPictureId, setPaymentPictureId] = useState(0);
     const [availableSpeakingTimes, setAvailableSpeakingTimes] = useState([]);
     const [paymentImagePreview, setPaymentImagePreview] = useState(null);
     const [cardNumber, setCardNumber] = useState("");
     const [cardHolderName, setCardHolderName] = useState("");
-    const [countdown, setCountdown] = useState(900);
+    const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -74,6 +75,11 @@ const UserApply = () => {
     };
 
     useEffect(() => {
+        const handleReserveExam = async (examId) => {
+            await reserveExamTemporariy(examId);
+        };
+
+        handleReserveExam(examId);
         fetchExamInfo();
         fetchAvailableSpeakingTimes();
 
@@ -90,16 +96,19 @@ const UserApply = () => {
         };
     }, [examId]);
 
-    useEffect(() => {
-        const savedCountdown = localStorage.getItem("countdown");
-        if (savedCountdown) {
-            setCountdown(parseInt(savedCountdown));
-        }
+    const handleLeave = () => {
+        navigate("/user/exams");
+    };
 
+    useEffect(() => {
         const timer = setInterval(() => {
             setCountdown((prevTime) => {
                 const newTime = prevTime - 1;
-                localStorage.setItem("countdown", newTime);
+
+                if (newTime <= 0) {
+                    handleLeave();
+                }
+
                 return newTime;
             });
         }, 1000);
@@ -110,7 +119,6 @@ const UserApply = () => {
     }, []);
 
     const handleCancel = () => {
-        localStorage.removeItem("countdown");
         cancelReservation(examId);
         navigate("/user/exams");
     };
@@ -118,9 +126,6 @@ const UserApply = () => {
     const formatTime = () => {
         const minutes = Math.floor(countdown / 60);
         const seconds = countdown % 60;
-        if (minutes === 0 && seconds === 0) {
-            handleCancel();
-        }
         return `${minutes} : ${String(seconds).padStart(2, "0")}`;
     };
 
@@ -134,7 +139,7 @@ const UserApply = () => {
             };
             await userInfo(examId, userData);
 
-            localStorage.removeItem("countdown");
+            Cookie.remove("countdown");
             navigate("/user/exams");
         } catch (error) {
             console.error("Error submitting application:", error);
@@ -170,8 +175,8 @@ const UserApply = () => {
             <Stack
                 sx={{
                     padding: {
-                        xs: "1rem",
-                        sm: "1rem",
+                        xs: "0.5rem",
+                        sm: "0.5rem",
                     },
                     margin: {
                         xs: "0.5rem",
@@ -202,6 +207,7 @@ const UserApply = () => {
                     fontWeight="bold"
                     color={colors.primary}
                     textAlign="center"
+                    className="mb-0"
                 >
                     {formatTime()}
                 </Typography>
@@ -247,39 +253,57 @@ const UserApply = () => {
                         display="flex"
                     >
                         <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <FormControl required component="fieldset">
-                                <FormLabel
-                                    component="legend"
-                                    sx={{ fontWeight: "bold" }}
+                            <h6 className="mb-3  fw-bold">
+                                Are you an IELTSZONE student?
+                            </h6>
+                            <div className="d-flex flex-row justify-content-center items-center gap-2 w-full">
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                        border: `2px solid ${colors.primary}`,
+                                        borderRadius: "0.5rem",
+                                        bgcolor: isStudent
+                                            ? colors.primary
+                                            : null,
+                                        color: isStudent
+                                            ? "white"
+                                            : colors.primary,
+                                        fontWeight: "bold",
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                        transition: "all 0.3s ease",
+                                    }}
+                                    onClick={() => setIsStudent(true)}
                                 >
-                                    Are you an IELTSZONE student?
-                                </FormLabel>
-                                <RadioGroup
-                                    required
-                                    row
-                                    sx={{ justifyContent: "center" }}
-                                    value={isStudent}
-                                    onChange={(e) =>
-                                        setIsStudent(
-                                            e.target.value === "true"
-                                                ? true
-                                                : (prevState) => !prevState
-                                        )
-                                    }
+                                    YES
+                                </Button>
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                        border: `2px solid ${colors.primary}`,
+                                        borderRadius: "0.5rem",
+                                        bgcolor: isStudent
+                                            ? null
+                                            : colors.primary,
+                                        color: isStudent
+                                            ? colors.primary
+                                            : "white",
+                                        fontWeight: "bold",
+                                        ":hover": {
+                                            bgcolor: colors.primary,
+                                            color: "white",
+                                        },
+                                        transition: "all 0.3s ease",
+                                    }}
+                                    onClick={() => setIsStudent(false)}
                                 >
-                                    <FormControlLabel
-                                        value={true}
-                                        control={<Radio />}
-                                        label="Yes"
-                                    />
-                                    <FormControlLabel
-                                        value={false}
-                                        control={<Radio />}
-                                        label="No"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
+                                    NO
+                                </Button>
+                            </div>
                         </Grid>
+
                         <Grid item xs={12} sx={{ textAlign: "center" }}>
                             <FormControl required component="fieldset">
                                 <FormLabel
@@ -433,6 +457,7 @@ const UserApply = () => {
                         width: "min-content",
                         alignItems: "center",
                     }}
+                    x
                 >
                     You have {formatTime()} minutes to apply.
                 </Snackbar>

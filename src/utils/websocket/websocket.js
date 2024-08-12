@@ -1,7 +1,7 @@
 let socket;
 
 export const connectWebSocket = (examId, onMessage) => {
-    socket = new WebSocket(`wss://ieltszone.uz/exam-websocket`);
+    socket = new WebSocket(`ws://localhost:8080/exam-websocket`);
 
     socket.onopen = () => {
         console.log("connected");

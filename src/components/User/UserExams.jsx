@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Typography, Stack, Box, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Stack, Box, Button } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import Snackbar from "@mui/joy/Snackbar";
-import {
-    getExams,
-    reserveExamTemporariy,
-} from "../../utils/api/requests/add-exams";
+import { reserveExamTemporariy } from "../../utils/api/requests/add-exams";
+import { getUserAvailableExam } from "../../utils/api/requests/get-exams";
 import Accordion from "../UI/Accordion";
 import { colors } from "../../constants/colors";
 
@@ -18,7 +16,7 @@ const UserExams = () => {
 
     const fetchExams = async () => {
         try {
-            const response = await getExams();
+            const response = await getUserAvailableExam();
             const formattedExams = response.map((exam) => {
                 const examDate = new Date(exam.examDateTime);
                 const day = String(examDate.getDate()).padStart(2, "0");

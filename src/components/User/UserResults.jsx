@@ -3,7 +3,8 @@ import { Stack, Box, Button } from "@mui/material";
 import { colors } from "../../constants/colors";
 import { Filter9 } from "@mui/icons-material";
 import { getRegisteredExams } from "../../utils/api/requests/get-registered-exams";
-import Accordion from "../UI/Accordion";
+import Accordion from "./_components/Accordion";
+import MobileAccordion from "./_components/MobileAccordion";
 import Snackbar from "@mui/joy/Snackbar";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -19,9 +20,14 @@ const UserResults = () => {
             const day = String(examDate.getDate()).padStart(2, "0");
             const month = String(examDate.getMonth() + 1).padStart(2, "0");
             const year = examDate.getFullYear();
+            const speakingDate = new Date(exam.speakingDate);
+            const day2 = String(speakingDate.getDate()).padStart(2, "0");
+            const month2 = String(speakingDate.getMonth() + 1).padStart(2, "0");
+            const year2 = speakingDate.getFullYear();
             return {
                 ...exam,
-                formattedDate: `${year}-${month}-${day}`,
+                formattedDate: `${day}-${month}-${year}`,
+                formattedSpeakingDate: `${day2}-${month2}-${year2}`,
             };
         });
         setExams(formattedExams);
@@ -60,7 +66,13 @@ const UserResults = () => {
             <Box
                 sx={{
                     width: "100%",
-                    display: "flex",
+                    display: {
+                        xs: "none",
+                        sm: "none",
+                        md: "flex",
+                        lg: "flex",
+                        xl: "flex",
+                    },
                     flexDirection: "column",
                     gap: "1rem",
                 }}
@@ -69,12 +81,18 @@ const UserResults = () => {
                     <Accordion
                         key={exam.id}
                         regionName={exam.location.split(",")[0]}
-                        price={exam.price}
                         examTime={exam.examDateTime.slice(11, 16)}
                         examDate={exam.formattedDate}
                         details={exam.message}
                         locationUrl={exam.locationUrl}
                         fullRegionName={exam.location}
+                        speakingDate={
+                            exam.speakingDate === null
+                                ? "Speaking Date was cancelled"
+                                : exam.formattedSpeakingDate
+                        }
+                        status={exam.status}
+                        speakingTime={exam.speakingDate?.slice(11, 16)}
                     >
                         <Box
                             sx={{
@@ -114,6 +132,74 @@ const UserResults = () => {
                             </Button>
                         </Box>
                     </Accordion>
+                ))}
+            </Box>
+            <Box
+                sx={{
+                    width: "100%",
+                    display: {
+                        xs: "flex",
+                        sm: "flex",
+                        md: "none",
+                    },
+                    flexDirection: "column",
+                    gap: "1rem",
+                }}
+            >
+                {exams.map((exam) => (
+                    <MobileAccordion
+                        key={exam.id}
+                        regionName={exam.location.split(",")[0]}
+                        examTime={exam.examDateTime.slice(11, 16)}
+                        examDate={exam.formattedDate}
+                        details={exam.message}
+                        locationUrl={exam.locationUrl}
+                        fullRegionName={exam.location}
+                        speakingDate={
+                            exam.speakingDate === null
+                                ? "Speaking Date was cancelled"
+                                : exam.formattedSpeakingDate
+                        }
+                        status={exam.status}
+                        speakingTime={exam.speakingDate?.slice(11, 16)}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                gap: "0.5rem",
+                                justifyContent: "end",
+                            }}
+                        >
+                            <Button
+                                onClick={() => {
+                                    handleBandScore(
+                                        exam.status,
+                                        exam.examRegistrationId
+                                    );
+                                }}
+                                variant="contained"
+                                sx={{
+                                    bgcolor: colors.primary,
+                                    borderRadius: "0.7rem",
+                                    padding: {
+                                        xs: "0.3rem 0.8rem",
+                                        sm: "0.3rem 0.8rem",
+                                        md: "0.4rem 1rem",
+                                    },
+                                    fontSize: {
+                                        xs: "0.6rem",
+                                        sm: "0.8rem",
+                                        md: "0.9rem",
+                                        lg: "0.9rem",
+                                    },
+                                    gap: "0.3rem",
+                                }}
+                            >
+                                <Filter9 sx={{ fontSize: "1.2rem" }} />
+                                Band Score
+                            </Button>
+                        </Box>
+                    </MobileAccordion>
                 ))}
             </Box>
 
