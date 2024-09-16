@@ -3,10 +3,7 @@ import {
     Container,
     Button,
     Typography,
-    Radio,
-    RadioGroup,
     FormControl,
-    FormControlLabel,
     FormLabel,
     Stack,
     Grid,
@@ -252,58 +249,6 @@ const UserApply = () => {
                         alignItems="baseline"
                         display="flex"
                     >
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <h6 className="mb-3  fw-bold">
-                                Are you an IELTSZONE student?
-                            </h6>
-                            <div className="d-flex flex-row justify-content-center items-center gap-2 w-full">
-                                <Button
-                                    sx={{
-                                        width: "100%",
-                                        border: `2px solid ${colors.primary}`,
-                                        borderRadius: "0.5rem",
-                                        bgcolor: isStudent
-                                            ? colors.primary
-                                            : null,
-                                        color: isStudent
-                                            ? "white"
-                                            : colors.primary,
-                                        fontWeight: "bold",
-                                        ":hover": {
-                                            bgcolor: colors.primary,
-                                            color: "white",
-                                        },
-                                        transition: "all 0.3s ease",
-                                    }}
-                                    onClick={() => setIsStudent(true)}
-                                >
-                                    YES
-                                </Button>
-                                <Button
-                                    sx={{
-                                        width: "100%",
-                                        border: `2px solid ${colors.primary}`,
-                                        borderRadius: "0.5rem",
-                                        bgcolor: isStudent
-                                            ? null
-                                            : colors.primary,
-                                        color: isStudent
-                                            ? colors.primary
-                                            : "white",
-                                        fontWeight: "bold",
-                                        ":hover": {
-                                            bgcolor: colors.primary,
-                                            color: "white",
-                                        },
-                                        transition: "all 0.3s ease",
-                                    }}
-                                    onClick={() => setIsStudent(false)}
-                                >
-                                    NO
-                                </Button>
-                            </div>
-                        </Grid>
-
                         <Grid item xs={12} sx={{ textAlign: "center" }}>
                             <FormControl required component="fieldset">
                                 <FormLabel
