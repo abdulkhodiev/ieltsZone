@@ -6,6 +6,6 @@ export const getExams = async (params) => {
 };
 
 export const getUserAvailableExam = async () => {
-    const res = await $api.get("/exam/all"); // /exam/all
+    const res = await $api.get("/exam"); // /exam/all
     return res.data;
 };
