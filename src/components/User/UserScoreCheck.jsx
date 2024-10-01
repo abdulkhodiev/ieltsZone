@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { Box, Stack, Card, Typography, Button, Grow } from "@mui/material";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
-import {
-    getExamResults,
-    getFeedbackFolder,
-} from "../../utils/api/requests/exam-check-by-section";
+import { getExamResults } from "../../utils/api/requests/exam-check-by-section";
 
 const UserScoreCheck = () => {
     const { examRegistrationId } = useParams();
@@ -19,15 +15,17 @@ const UserScoreCheck = () => {
         speaking: "",
     });
 
+    const navigate = useNavigate();
+
     const getUserScore = async () => {
         try {
             const res = await getExamResults(examRegistrationId);
             setUserInfo(res);
             setSections({
-                listening: res.listening || "",
-                reading: res.reading || "",
-                writing: res.writing || "",
-                speaking: res.speaking || "",
+                listening: res.listeningScore || "",
+                reading: res.readingScore || "",
+                writing: res.writingScore || "",
+                speaking: res.speakingScore || "",
             });
         } catch (error) {
             console.error("Failed to fetch exam results:", error);
@@ -36,21 +34,22 @@ const UserScoreCheck = () => {
 
     useEffect(() => {
         getUserScore();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examRegistrationId]);
 
-    const id = userInfo.feedbackFileId;
+    // const id = userInfo.feedbackFileId;
 
-    const fileUrl = `https://ieltszone.uz/api/v1/file-storage/download-file?id=${id}`;
+    // const fileUrl = `https://ieltszone.uz/api/v1/file-storage/download-file?id=${id}`;
 
-    const handleDownload = (fileUrl) => {
-        const fileName = fileUrl.split("/").pop();
-        const aTag = document.createElement("a");
-        aTag.href = fileUrl;
-        aTag.setAttribute("download", fileName);
-        document.body.appendChild(aTag);
-        aTag.click();
-        aTag.remove();
-    };
+    // const handleDownload = (fileUrl) => {
+    //     const fileName = fileUrl.split("/").pop();
+    //     const aTag = document.createElement("a");
+    //     aTag.href = fileUrl;
+    //     aTag.setAttribute("download", fileName);
+    //     document.body.appendChild(aTag);
+    //     aTag.click();
+    //     aTag.remove();
+    // };
 
     const calculateBandScore = () => {
         const totalScore = Object.values(sections).reduce(
@@ -142,23 +141,27 @@ const UserScoreCheck = () => {
                 </Box>
 
                 <Button
-                    disabled={userInfo.feedbackFileId === null}
+                    disabled
+                    // disabled={userInfo.feedbackFileId === null}
                     sx={{
                         borderRadius: "0.6rem",
                         padding: "0.6rem 1.5rem",
                         textTransform: "none",
                         fontSize: "1.1rem",
                         ":hover": { bgcolor: colors.primary },
-                        bgcolor: "green",
+                        bgcolor: "purple",
                         color: "white",
                         display: "flex",
                         alignItems: "center",
                         gap: "1rem",
                     }}
-                    onClick={() => handleDownload(fileUrl)}
-                    aria-label="Upload feedback"
+                    // onClick={() => {
+                    //     navigate(
+                    //         `/user/results/scores/${examRegistrationId}/feedback`
+                    //     );
+                    // }}
                 >
-                    <CloudDownloadIcon /> Download FeedBack Folder
+                    Feedbacks
                 </Button>
             </Box>
         </Grow>

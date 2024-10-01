@@ -1,10 +1,8 @@
 import { Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { ExamCategory } from "../../../index";
-import { useParams } from "react-router-dom";
 
 const ExamParticipants = () => {
-    const { examId } = useParams();
     return (
         <Stack
             direction={"column"}

@@ -42,7 +42,7 @@ const UserApply = () => {
     const [paymentImagePreview, setPaymentImagePreview] = useState(null);
     const [cardNumber, setCardNumber] = useState("");
     const [cardHolderName, setCardHolderName] = useState("");
-    const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
+    const [countdown, setCountdown] = useState(900);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -91,6 +91,7 @@ const UserApply = () => {
         return () => {
             disconnectWebSocket();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examId]);
 
     const handleLeave = () => {
@@ -243,6 +244,49 @@ const UserApply = () => {
                     Seat Reservation
                 </Typography>
                 <form onSubmit={handleSubmit}>
+                    <Grid item xs={12} sx={{ textAlign: "center", mb: 3 }}>
+                        <h6 className="mb-3  fw-bold">
+                            Are you an IELTSZONE student?
+                        </h6>
+                        <div className="d-flex flex-row justify-content-center items-center gap-2 w-full">
+                            <Button
+                                sx={{
+                                    width: "100%",
+                                    border: `2px solid ${colors.primary}`,
+                                    borderRadius: "0.5rem",
+                                    bgcolor: isStudent ? colors.primary : null,
+                                    color: isStudent ? "white" : colors.primary,
+                                    fontWeight: "bold",
+                                    ":hover": {
+                                        bgcolor: colors.primary,
+                                        color: "white",
+                                    },
+                                    transition: "all 0.3s ease",
+                                }}
+                                onClick={() => setIsStudent(true)}
+                            >
+                                YES
+                            </Button>
+                            <Button
+                                sx={{
+                                    width: "100%",
+                                    border: `2px solid ${colors.primary}`,
+                                    borderRadius: "0.5rem",
+                                    bgcolor: isStudent ? null : colors.primary,
+                                    color: isStudent ? colors.primary : "white",
+                                    fontWeight: "bold",
+                                    ":hover": {
+                                        bgcolor: colors.primary,
+                                        color: "white",
+                                    },
+                                    transition: "all 0.3s ease",
+                                }}
+                                onClick={() => setIsStudent(false)}
+                            >
+                                NO
+                            </Button>
+                        </div>
+                    </Grid>
                     <Grid
                         container
                         spacing={2}

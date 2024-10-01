@@ -31,6 +31,7 @@ import UserResults from "../User/UserResults";
 import UserScoreCheck from "../User/UserScoreCheck";
 import UserSectionScore from "../User/UserSectionScore";
 import ResetInput from "../Main/resetPassword";
+import FeedbackFolder from "../User/FeedbackFolder";
 
 import { DataProvider } from "../../context/Context";
 import { PaymentAnalysis } from "../Admin/PaymentAnalysis";
@@ -137,6 +138,10 @@ export const router = createBrowserRouter([
                     {
                         path: "results/scores/:examRegistrationId",
                         element: <UserScoreCheck />,
+                    },
+                    {
+                        path: "results/scores/:examRegistrationId/feedback",
+                        element: <FeedbackFolder />,
                     },
                 ],
             },

@@ -104,6 +104,7 @@ const PaymentCheck = () => {
         return () => {
             disconnectWebSocket();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examId]);
 
     const handleStatusChange = (event) => {
@@ -119,7 +120,6 @@ const PaymentCheck = () => {
             await updatePaymentCheck(rowId, {
                 status: studentData.status,
                 message: studentData.message,
-                speakingDateId: speakingDateId,
             });
             console.log("Payment check updated successfully.");
             navigate(`/admin/exams/${examId}/participants/applied`);
