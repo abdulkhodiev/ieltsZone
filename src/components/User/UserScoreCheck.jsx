@@ -141,7 +141,7 @@ const UserScoreCheck = () => {
                 </Box>
 
                 <Button
-                    disabled={userInfo === null}
+                    disabled={userInfo.listeningScore === null}
                     sx={{
                         borderRadius: "0.6rem",
                         padding: "0.6rem 1.5rem",
