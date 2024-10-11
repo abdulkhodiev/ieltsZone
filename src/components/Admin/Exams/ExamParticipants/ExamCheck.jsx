@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     Box,
     Stack,
@@ -9,7 +9,6 @@ import {
     CircularProgress,
     Snackbar,
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { colors } from "../../../../constants/colors";
 import {
@@ -18,6 +17,11 @@ import {
     postFeedbackFolder,
 } from "../../../../utils/api/requests/exam-check-by-section";
 import { uploadMultipleFiles } from "../../../../utils/api/requests/multi-file-upload";
+import {
+    listeningScoreMap,
+    readingScoreMap,
+} from "../../../../utils/calculators/calculators";
+import { Delete } from "@mui/icons-material";
 
 const parts = [1, 2, 3, 4];
 
@@ -51,10 +55,10 @@ const ExamCheck = () => {
     const { firstName, lastName } = location.state;
     const [userInfo, setUserInfo] = useState({});
     const [sections, setSections] = useState({
-        listeningScore: 0,
-        readingScore: 0,
-        writingScore: 0,
-        speakingScore: 0,
+        listeningScore: "",
+        readingScore: "",
+        writingScore: "",
+        speakingScore: "",
         listening: {
             section1: "",
             section2: "",
@@ -75,8 +79,8 @@ const ExamCheck = () => {
             section4: "",
             section5: "",
             section6: "",
+            section7: "",
             section8: "",
-            section9: "",
             files: [],
         },
         speaking: {
@@ -87,25 +91,67 @@ const ExamCheck = () => {
             audioId: "",
         },
     });
-    const [feedbackFile, setFeedbackFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const [listeningFiles, setListeningFiles] = useState([]);
     const [readingFiles, setReadingFiles] = useState([]);
     const [writingFiles, setWritingFiles] = useState([]);
-    const [speakingFiles, setSpeakingFiles] = useState([]);
+    const [speakingFiles, setSpeakingFiles] = useState("");
 
     const getUserScore = async () => {
         const res = await getExamResults(rowId);
         setUserInfo(res);
-        setSections(res);
+
+        setSections({
+            listening: {
+                id: res.listening.id,
+                section1: res.listening.sectionOne,
+                section2: res.listening.sectionTwo,
+                section3: res.listening.sectionThree,
+                section4: res.listening.sectionFour,
+                files: res.listening.files.map((file) => file.id),
+            },
+            reading: {
+                id: res.reading.id,
+                section1: res.reading.sectionOne,
+                section2: res.reading.sectionTwo,
+                section3: res.reading.sectionThree,
+                files: res.reading.files.map((file) => file.id),
+            },
+            writing: {
+                id: res.writing.id,
+                section1: res.writing.sectionOne,
+                section2: res.writing.sectionTwo,
+                section3: res.writing.sectionThree,
+                section4: res.writing.sectionFour,
+                section5: res.writing.sectionFive,
+                section6: res.writing.sectionSix,
+                section7: res.writing.sectionSeven,
+                section8: res.writing.sectionEight,
+                files: res.writing.files.map((file) => file.id),
+            },
+            speaking: {
+                id: res.speaking.id,
+                section1: res.speaking.sectionOne,
+                section2: res.speaking.sectionTwo,
+                section3: res.speaking.sectionThree,
+                section4: res.speaking.sectionFour,
+                audioId: res.speaking.audio,
+            },
+        });
+        setListeningFiles(res.listening.files.map((file) => file));
+        setReadingFiles(res.reading.files.map((file) => file));
+        setWritingFiles(res.writing.files.map((file) => file));
+        if (res.speaking.audio !== null) {
+            setSpeakingFiles(res.speaking.audio.url);
+        }
     };
 
     useEffect(() => {
         getUserScore();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [rowId]);
+    }, []);
 
     const handleFileChange = async (event, sectionName) => {
         const files = Array.from(event.target.files);
@@ -117,8 +163,7 @@ const ExamCheck = () => {
                 ...prevSections,
                 [sectionName]: {
                     ...prevSections[sectionName],
-                    files: res,
-                    audioId: res[0].id,
+                    files: [...prevSections[sectionName].files, ...res],
                 },
             }));
         }
@@ -138,24 +183,160 @@ const ExamCheck = () => {
                 ...prevWritingFiles,
                 ...files,
             ]);
-        } else if (sectionName === "speaking") {
-            setSpeakingFiles((prevSpeakingFiles) => [
-                ...prevSpeakingFiles,
-                ...files,
-            ]);
         }
     };
 
-    const handleFeedbackUpload = async (event) => {
+    console.log(sections);
+
+    const sectionScore = useCallback(
+        (sectionName) => {
+            let total = 0;
+
+            if (sectionName === "listening") {
+                const section1 = Number(sections.listening.section1);
+
+                const section2 = Number(sections.listening.section2);
+
+                const section3 = Number(sections.listening.section3);
+
+                const section4 = Number(sections.listening.section4);
+
+                total = section1 + section2 + section3 + section4;
+
+                return listeningScoreMap[total];
+            } else if (sectionName === "reading") {
+                const section1 = Number(sections.reading.section1);
+
+                const section2 = Number(sections.reading.section2);
+
+                const section3 = Number(sections.reading.section3);
+
+                total = section1 + section2 + section3;
+
+                return readingScoreMap[total];
+            } else if (sectionName === "writing") {
+                const section1 = Number(sections.writing.section1);
+                const section2 = Number(sections.writing.section2);
+                const section3 = Number(sections.writing.section3);
+                const section4 = Number(sections.writing.section4);
+                const section5 = Number(sections.writing.section5);
+                const section6 = Number(sections.writing.section6);
+                const section7 = Number(sections.writing.section7);
+                const section8 = Number(sections.writing.section8);
+
+                total =
+                    ((section1 + section2 + section3 + section4) / 4 +
+                        ((section5 + section6 + section7 + section8) / 4) * 2) /
+                    3;
+
+                return Math.round(total * 2) / 2;
+            } else if (sectionName === "speaking") {
+                const section1 = Number(sections.speaking.section1);
+                const section2 = Number(sections.speaking.section2);
+                const section3 = Number(sections.speaking.section3);
+                const section4 = Number(sections.speaking.section4);
+
+                total = (section1 + section2 + section3 + section4) / 4;
+                return Math.round(total * 2) / 2;
+            }
+        },
+        [
+            sections.listening,
+            sections.reading,
+            sections.writing,
+            sections.speaking,
+        ]
+    );
+
+    useEffect(
+        () => {
+            const total1 = sectionScore("listening");
+            setSections((prevSections) => ({
+                ...prevSections,
+                listeningScore: total1,
+            }));
+
+            const total2 = sectionScore("reading");
+            setSections((prevSections) => ({
+                ...prevSections,
+                readingScore: total2,
+            }));
+
+            const total3 = sectionScore("writing");
+            setSections((prevSections) => ({
+                ...prevSections,
+                writingScore: total3,
+            }));
+
+            const total4 = sectionScore("speaking");
+            setSections((prevSections) => ({
+                ...prevSections,
+                speakingScore: total4,
+            }));
+        },
+
+        [sectionScore, sections.listeningScore],
+        [sections.readingScore],
+        [sections.writingScore],
+        [sections.speakingScore]
+    );
+
+    const handleDeleteFile = (id, sectionName) => {
+        setSections((prevSections) => ({
+            ...prevSections,
+            [sectionName]:
+                sectionName === "speaking"
+                    ? {
+                          ...prevSections[sectionName],
+                          files: [],
+                      }
+                    : {
+                          ...prevSections[sectionName],
+                          files: prevSections[sectionName].files.filter(
+                              (file) => file !== id
+                          ),
+                      },
+        }));
+        if (sectionName === "listening") {
+            setListeningFiles((prevListeningFiles) =>
+                prevListeningFiles.filter((file) => file.id !== id)
+            );
+        } else if (sectionName === "reading") {
+            setReadingFiles((prevReadingFiles) =>
+                prevReadingFiles.filter((file) => file.id !== id)
+            );
+        } else if (sectionName === "writing") {
+            setWritingFiles((prevWritingFiles) =>
+                prevWritingFiles.filter((file) => file.id !== id)
+            );
+        } else if (sectionName === "speaking") {
+            setSpeakingFiles("");
+        }
+    };
+
+    const handleOverAllSectionsChange = (e, sectionName) => {
+        setSections((prevSections) => ({
+            ...prevSections,
+            [sectionName]: e.target.value,
+        }));
+    };
+
+    const handleAudioUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            setFeedbackFile(file);
+            setSpeakingFiles(file.name);
             setLoading(true);
             try {
                 const formData = new FormData();
                 formData.append("file", file);
                 const response = await postFeedbackFolder(formData);
-                setFeedbackResponse(response);
+                setSections((prevSections) => ({
+                    ...prevSections,
+                    speaking: {
+                        ...prevSections.speaking,
+                        audioId: response,
+                    },
+                }));
                 setLoading(false);
             } catch (error) {
                 console.error("Error uploading file:", error);
@@ -164,56 +345,62 @@ const ExamCheck = () => {
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
+        console.log(sections);
+        const payload = {
+            listeningScore: sections.listeningScore,
+            readingScore: sections.readingScore,
+            writingScore: sections.writingScore,
+            speakingScore: sections.speakingScore,
 
-        const payload = [
-            {
-                listening: {
-                    sectionOne: sections.listening.section1,
-                    sectionTwo: sections.listening.section2,
-                    sectionThree: sections.listening.section3,
-                    sectionFour: sections.listening.section4,
-                    files: sections.listening.files,
-                },
+            listening: {
+                id: sections.listening.id,
+                sectionOne: sections.listening.section1,
+                sectionTwo: sections.listening.section2,
+                sectionThree: sections.listening.section3,
+                sectionFour: sections.listening.section4,
+                files: sections.listening.files,
             },
-            {
-                reading: {
-                    sectionOne: sections.reading.section1,
-                    sectionTwo: sections.reading.section2,
-                    sectionThree: sections.reading.section3,
-                    files: sections.reading.files,
-                },
+
+            reading: {
+                id: sections.reading.id,
+                sectionOne: sections.reading.section1,
+                sectionTwo: sections.reading.section2,
+                sectionThree: sections.reading.section3,
+                files: sections.reading.files,
             },
-            {
-                writing: {
-                    sectionOne: sections.writing.section1,
-                    sectionTwo: sections.writing.section2,
-                    sectionThree: sections.writing.section3,
-                    sectionFour: sections.writing.section4,
-                    sectionFive: sections.writing.section5,
-                    sectionSix: sections.writing.section6,
-                    sectionEight: sections.writing.section8,
-                    sectionNine: sections.writing.section9,
-                    files: sections.writing.files,
-                },
+
+            writing: {
+                id: sections.writing.id,
+                sectionOne: sections.writing.section1,
+                sectionTwo: sections.writing.section2,
+                sectionThree: sections.writing.section3,
+                sectionFour: sections.writing.section4,
+                sectionFive: sections.writing.section5,
+                sectionSix: sections.writing.section6,
+                sectionSeven: sections.writing.section7,
+                sectionEight: sections.writing.section8,
+                files: sections.writing.files,
             },
-            {
-                speaking: {
-                    sectionOne: sections.speaking.section1,
-                    sectionTwo: sections.speaking.section2,
-                    sectionThree: sections.speaking.section3,
-                    sectionFour: sections.speaking.section4,
-                    audioId: sections.speaking.audioId,
-                },
+
+            speaking: {
+                id: sections.speaking.id,
+                sectionOne: sections.speaking.section1,
+                sectionTwo: sections.speaking.section2,
+                sectionThree: sections.speaking.section3,
+                sectionFour: sections.speaking.section4,
+                audioId:
+                    typeof sections.speaking.audioId === "number"
+                        ? sections.speaking.audioId
+                        : sections.speaking.audioId.id,
             },
-        ];
+        };
 
         try {
             await putSectionScores(userInfo.id, payload);
             setMessage("Submission successful!");
-            setFeedbackFile(null);
             getUserScore();
             setLoading(false);
             // navigate(-1);
@@ -278,7 +465,11 @@ const ExamCheck = () => {
 
                     <Box
                         display={"grid"}
-                        gridTemplateColumns={"repeat(2, 1fr)"}
+                        gridTemplateColumns={{
+                            xs: "repeat(1, 1fr)",
+                            sm: "repeat(1, 1fr)",
+                            md: "repeat(2, 1fr)",
+                        }}
                         gap={{ xs: "2rem" }}
                     >
                         <Box
@@ -359,11 +550,127 @@ const ExamCheck = () => {
                                             <Typography variant="h6">
                                                 Selected Files:
                                             </Typography>
-                                            <ul>
+                                            <ul
+                                                style={{
+                                                    listStyle: "none",
+                                                    padding: 0,
+                                                    display: "flex",
+                                                    gap: "0.5rem",
+                                                    flexWrap: "wrap",
+                                                    justifyContent:
+                                                        "flex-start",
+                                                    width: "100%",
+                                                }}
+                                            >
                                                 {listeningFiles.map(
                                                     (file, index) => (
-                                                        <li key={index}>
-                                                            {file.name}
+                                                        <li
+                                                            key={index}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    "lightblue",
+                                                                padding:
+                                                                    "0.5rem",
+                                                                borderRadius:
+                                                                    "0.5rem",
+                                                                width: "100%",
+                                                            }}
+                                                        >
+                                                            {file.name ? (
+                                                                <span
+                                                                    style={{
+                                                                        display:
+                                                                            "flex",
+                                                                        justifyContent:
+                                                                            "space-between",
+                                                                        alignItems:
+                                                                            "center",
+                                                                        gap: "1rem",
+                                                                    }}
+                                                                >
+                                                                    <Typography
+                                                                        variant="body2"
+                                                                        sx={{
+                                                                            overflow:
+                                                                                "hidden",
+                                                                            textOverflow:
+                                                                                "ellipsis",
+                                                                            whiteSpace:
+                                                                                "nowrap",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            file.name
+                                                                        }
+                                                                    </Typography>
+                                                                </span>
+                                                            ) : (
+                                                                <span
+                                                                    style={{
+                                                                        display:
+                                                                            "flex",
+                                                                        justifyContent:
+                                                                            "space-between",
+                                                                        alignItems:
+                                                                            "center",
+                                                                        gap: "1rem",
+                                                                    }}
+                                                                >
+                                                                    <a
+                                                                        style={{
+                                                                            textDecoration:
+                                                                                "none",
+                                                                            color: "black",
+                                                                        }}
+                                                                        href={
+                                                                            file?.url
+                                                                        }
+                                                                    >
+                                                                        <Typography
+                                                                            variant="body2"
+                                                                            sx={{
+                                                                                overflow:
+                                                                                    "hidden",
+                                                                                textOverflow:
+                                                                                    "ellipsis",
+                                                                                whiteSpace:
+                                                                                    "nowrap",
+                                                                                width: "fit-content",
+                                                                                maxWidth:
+                                                                                    "200px",
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                file?.url
+                                                                            }
+                                                                        </Typography>
+                                                                    </a>
+                                                                    <Button
+                                                                        sx={{
+                                                                            bgcolor:
+                                                                                "red",
+                                                                            color: "white",
+                                                                            padding:
+                                                                                "0.5rem",
+                                                                            borderRadius:
+                                                                                "0.5rem",
+                                                                            ":hover":
+                                                                                {
+                                                                                    bgcolor:
+                                                                                        "red",
+                                                                                },
+                                                                        }}
+                                                                        onClick={() =>
+                                                                            handleDeleteFile(
+                                                                                file?.id,
+                                                                                "listening"
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <Delete />
+                                                                    </Button>
+                                                                </span>
+                                                            )}
                                                         </li>
                                                     )
                                                 )}
@@ -383,11 +690,28 @@ const ExamCheck = () => {
                                     margin="normal"
                                     label={`Overall`}
                                     inputProps={{
-                                        step: "1",
+                                        step: "0.5",
                                         min: "0",
-                                        max: "10",
+                                        max: "9",
                                     }}
-                                    sx={{ width: "100%" }}
+                                    value={sections.listeningScore}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    onChange={(e) =>
+                                        handleOverAllSectionsChange(
+                                            e,
+                                            "listeningScore"
+                                        )
+                                    }
+                                    disabled
+                                    name="listening-overall"
+                                    sx={{
+                                        width: "100%",
+                                        // "& .MuiInputBase-root.Mui-disabled": {
+                                        //     opacity: 1,
+                                        // },
+                                    }}
                                 />
                             </Box>
                         </Box>
@@ -412,7 +736,7 @@ const ExamCheck = () => {
                                 >
                                     Reading
                                 </Typography>
-                                {passages.map(() => (
+                                {passages.map((part) => (
                                     <TextField
                                         padding={"1rem"}
                                         key={part}
@@ -429,6 +753,16 @@ const ExamCheck = () => {
                                             min: "0",
                                             max: "14",
                                         }}
+                                        onChange={(e) =>
+                                            setSections((prev) => ({
+                                                ...prev,
+                                                reading: {
+                                                    ...prev.reading,
+                                                    [`section${part}`]:
+                                                        e.target.value,
+                                                },
+                                            }))
+                                        }
                                         sx={{ width: "100%" }}
                                     />
                                 ))}
@@ -457,11 +791,125 @@ const ExamCheck = () => {
                                             <Typography variant="h6">
                                                 Selected Files:
                                             </Typography>
-                                            <ul>
+                                            <ul
+                                                style={{
+                                                    listStyle: "none",
+                                                    padding: 0,
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    gap: "0.5rem",
+                                                    width: "100%",
+                                                }}
+                                            >
                                                 {readingFiles.map(
                                                     (file, index) => (
-                                                        <li key={index}>
-                                                            {file.name}
+                                                        <li
+                                                            key={index}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    "lightblue",
+                                                                padding:
+                                                                    "0.5rem",
+                                                                borderRadius:
+                                                                    "0.5rem",
+                                                                width: "100%",
+                                                            }}
+                                                        >
+                                                            {file.name ? (
+                                                                <span
+                                                                    style={{
+                                                                        display:
+                                                                            "flex",
+                                                                        justifyContent:
+                                                                            "space-between",
+                                                                        alignItems:
+                                                                            "center",
+                                                                        gap: "1rem",
+                                                                    }}
+                                                                >
+                                                                    <Typography
+                                                                        variant="body2"
+                                                                        sx={{
+                                                                            overflow:
+                                                                                "hidden",
+                                                                            textOverflow:
+                                                                                "ellipsis",
+                                                                            whiteSpace:
+                                                                                "nowrap",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            file.name
+                                                                        }
+                                                                    </Typography>
+                                                                </span>
+                                                            ) : (
+                                                                <span
+                                                                    style={{
+                                                                        display:
+                                                                            "flex",
+                                                                        justifyContent:
+                                                                            "space-between",
+                                                                        alignItems:
+                                                                            "center",
+                                                                        gap: "1rem",
+                                                                    }}
+                                                                >
+                                                                    <a
+                                                                        style={{
+                                                                            textDecoration:
+                                                                                "none",
+                                                                            color: "black",
+                                                                        }}
+                                                                        href={
+                                                                            file?.url
+                                                                        }
+                                                                    >
+                                                                        <Typography
+                                                                            variant="body2"
+                                                                            sx={{
+                                                                                overflow:
+                                                                                    "hidden",
+                                                                                textOverflow:
+                                                                                    "ellipsis",
+                                                                                whiteSpace:
+                                                                                    "nowrap",
+                                                                                width: "fit-content",
+                                                                                maxWidth:
+                                                                                    "200px",
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                file?.url
+                                                                            }
+                                                                        </Typography>
+                                                                    </a>
+                                                                    <Button
+                                                                        onClick={() =>
+                                                                            handleDeleteFile(
+                                                                                file?.id,
+                                                                                "reading"
+                                                                            )
+                                                                        }
+                                                                        sx={{
+                                                                            bgcolor:
+                                                                                "red",
+                                                                            color: "white",
+                                                                            padding:
+                                                                                "0.5rem",
+                                                                            borderRadius:
+                                                                                "0.5rem",
+                                                                            ":hover":
+                                                                                {
+                                                                                    bgcolor:
+                                                                                        "red",
+                                                                                },
+                                                                        }}
+                                                                    >
+                                                                        <Delete />
+                                                                    </Button>
+                                                                </span>
+                                                            )}
                                                         </li>
                                                     )
                                                 )}
@@ -478,14 +926,31 @@ const ExamCheck = () => {
                                 <TextField
                                     type="number"
                                     required
+                                    open
                                     margin="normal"
                                     label={`Overall`}
                                     inputProps={{
-                                        step: "1",
+                                        step: "0.5",
                                         min: "0",
-                                        max: "10",
+                                        max: "9",
                                     }}
-                                    sx={{ width: "100%" }}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={sections.readingScore}
+                                    onChange={(e) =>
+                                        handleOverAllSectionsChange(
+                                            e,
+                                            "readingScore"
+                                        )
+                                    }
+                                    disabled
+                                    sx={{
+                                        width: "100%",
+                                        "& .MuiInputBase-root.Mui-disabled": {
+                                            opacity: 1,
+                                        },
+                                    }}
                                 />
                             </Box>
                         </Box>
@@ -519,7 +984,7 @@ const ExamCheck = () => {
                                     Task 1
                                 </Typography>
 
-                                {task1.map((part) => (
+                                {task1.map((part, index) => (
                                     <TextField
                                         padding={"1rem"}
                                         key={part}
@@ -527,14 +992,27 @@ const ExamCheck = () => {
                                         required
                                         label={`${part}`}
                                         name={`task1-${part}`}
+                                        id={`task1-${part}`}
                                         value={
-                                            sections.writing[`section${part}`]
+                                            sections.writing[
+                                                `section${index + 1}`
+                                            ]
                                         }
                                         inputProps={{
                                             step: "1",
                                             min: "0",
                                             max: "10",
                                         }}
+                                        onChange={(e) =>
+                                            setSections((prev) => ({
+                                                ...prev,
+                                                writing: {
+                                                    ...prev.writing,
+                                                    [`section${index + 1}`]:
+                                                        e.target.value,
+                                                },
+                                            }))
+                                        }
                                         sx={{ width: "100%" }}
                                     />
                                 ))}
@@ -546,16 +1024,29 @@ const ExamCheck = () => {
                                     Task 2
                                 </Typography>
 
-                                {task2.map((part) => (
+                                {task2.map((part, index) => (
                                     <TextField
                                         padding={"1rem"}
                                         key={part}
                                         type="number"
                                         required
+                                        id={`task1-${part}`}
                                         label={`${part}`}
                                         name={`task1-${part}`}
                                         value={
-                                            sections.listening[`section${part}`]
+                                            sections.writing[
+                                                `section${index + 5}`
+                                            ]
+                                        }
+                                        onChange={(e) =>
+                                            setSections((prev) => ({
+                                                ...prev,
+                                                writing: {
+                                                    ...prev.writing,
+                                                    [`section${index + 5}`]:
+                                                        e.target.value,
+                                                },
+                                            }))
                                         }
                                         inputProps={{
                                             step: "1",
@@ -590,11 +1081,125 @@ const ExamCheck = () => {
                                             <Typography variant="h6">
                                                 Selected Files:
                                             </Typography>
-                                            <ul>
+                                            <ul
+                                                style={{
+                                                    listStyle: "none",
+                                                    padding: 0,
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    gap: "0.5rem",
+                                                    width: "100%",
+                                                }}
+                                            >
                                                 {writingFiles.map(
                                                     (file, index) => (
-                                                        <li key={index}>
-                                                            {file.name}
+                                                        <li
+                                                            key={index}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    "lightblue",
+                                                                padding:
+                                                                    "0.5rem",
+                                                                borderRadius:
+                                                                    "0.5rem",
+                                                                width: "100%",
+                                                            }}
+                                                        >
+                                                            {file.name ? (
+                                                                <span
+                                                                    style={{
+                                                                        display:
+                                                                            "flex",
+                                                                        justifyContent:
+                                                                            "space-between",
+                                                                        alignItems:
+                                                                            "center",
+                                                                        gap: "1rem",
+                                                                    }}
+                                                                >
+                                                                    <Typography
+                                                                        variant="body2"
+                                                                        sx={{
+                                                                            overflow:
+                                                                                "hidden",
+                                                                            textOverflow:
+                                                                                "ellipsis",
+                                                                            whiteSpace:
+                                                                                "nowrap",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            file.name
+                                                                        }
+                                                                    </Typography>
+                                                                </span>
+                                                            ) : (
+                                                                <span
+                                                                    style={{
+                                                                        display:
+                                                                            "flex",
+                                                                        justifyContent:
+                                                                            "space-between",
+                                                                        alignItems:
+                                                                            "center",
+                                                                        gap: "1rem",
+                                                                    }}
+                                                                >
+                                                                    <a
+                                                                        style={{
+                                                                            textDecoration:
+                                                                                "none",
+                                                                            color: "black",
+                                                                        }}
+                                                                        href={
+                                                                            file?.url
+                                                                        }
+                                                                    >
+                                                                        <Typography
+                                                                            variant="body2"
+                                                                            sx={{
+                                                                                overflow:
+                                                                                    "hidden",
+                                                                                textOverflow:
+                                                                                    "ellipsis",
+                                                                                whiteSpace:
+                                                                                    "nowrap",
+                                                                                width: "fit-content",
+                                                                                maxWidth:
+                                                                                    "200px",
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                file?.url
+                                                                            }
+                                                                        </Typography>
+                                                                    </a>
+                                                                    <Button
+                                                                        onClick={() =>
+                                                                            handleDeleteFile(
+                                                                                file?.id,
+                                                                                "writing"
+                                                                            )
+                                                                        }
+                                                                        sx={{
+                                                                            bgcolor:
+                                                                                "red",
+                                                                            color: "white",
+                                                                            padding:
+                                                                                "0.5rem",
+                                                                            borderRadius:
+                                                                                "0.5rem",
+                                                                            ":hover":
+                                                                                {
+                                                                                    bgcolor:
+                                                                                        "red",
+                                                                                },
+                                                                        }}
+                                                                    >
+                                                                        <Delete />
+                                                                    </Button>
+                                                                </span>
+                                                            )}
                                                         </li>
                                                     )
                                                 )}
@@ -614,11 +1219,27 @@ const ExamCheck = () => {
                                     margin="normal"
                                     label={`Overall`}
                                     inputProps={{
-                                        step: "1",
+                                        step: "0.5",
                                         min: "0",
-                                        max: "10",
+                                        max: "9",
                                     }}
-                                    sx={{ width: "100%" }}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={sections.writingScore}
+                                    onChange={(e) =>
+                                        handleOverAllSectionsChange(
+                                            e,
+                                            "writingScore"
+                                        )
+                                    }
+                                    disabled
+                                    sx={{
+                                        width: "100%",
+                                        "& .MuiInputBase-root.Mui-disabled": {
+                                            opacity: 1,
+                                        },
+                                    }}
                                 />
                             </Box>
                         </Box>
@@ -643,22 +1264,34 @@ const ExamCheck = () => {
                                 >
                                     Speaking
                                 </Typography>
-                                {speaking.map((part) => (
+                                {speaking.map((part, index) => (
                                     <TextField
                                         padding={"1rem"}
                                         key={part}
                                         type="number"
                                         required
-                                        id={`${part}`}
+                                        id={`speaking-${part}`}
                                         label={`${part}`}
-                                        name={`listening-${part}`}
+                                        name={`speaking-${part}`}
                                         value={
-                                            sections.speaking[`section${part}`]
+                                            sections.speaking[
+                                                `section${index + 1}`
+                                            ]
                                         }
                                         inputProps={{
                                             step: "1",
                                             min: "0",
                                             max: "10",
+                                        }}
+                                        onChange={(e) => {
+                                            setSections((prev) => ({
+                                                ...prev,
+                                                speaking: {
+                                                    ...prev.speaking,
+                                                    [`section${index + 1}`]:
+                                                        e.target.value,
+                                                },
+                                            }));
                                         }}
                                         sx={{ width: "100%" }}
                                     />
@@ -677,9 +1310,7 @@ const ExamCheck = () => {
                                             type="file"
                                             multiple
                                             hidden
-                                            onChange={(e) => {
-                                                handleFileChange(e, "speaking");
-                                            }}
+                                            onChange={handleAudioUpload}
                                         />
                                     </Button>
 
@@ -688,13 +1319,110 @@ const ExamCheck = () => {
                                             <Typography variant="h6">
                                                 Selected Files:
                                             </Typography>
-                                            <ul>
-                                                {speakingFiles.map(
-                                                    (file, index) => (
-                                                        <li key={index}>
-                                                            {file.name}
-                                                        </li>
-                                                    )
+                                            <ul
+                                                style={{
+                                                    listStyle: "none",
+                                                    padding: 0,
+                                                }}
+                                            >
+                                                {sections?.speaking?.audioId
+                                                    ?.url ? (
+                                                    <li
+                                                        style={{
+                                                            backgroundColor:
+                                                                "lightblue",
+                                                            padding: "0.5rem",
+                                                            borderRadius:
+                                                                "0.5rem",
+                                                            width: "100%",
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                display: "flex",
+                                                                justifyContent:
+                                                                    "space-between",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: "1rem",
+                                                            }}
+                                                        >
+                                                            <a
+                                                                style={{
+                                                                    textDecoration:
+                                                                        "none",
+                                                                    color: "black",
+                                                                }}
+                                                                href={
+                                                                    sections
+                                                                        .speaking
+                                                                        .audioId
+                                                                        ?.url
+                                                                }
+                                                            >
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    sx={{
+                                                                        overflow:
+                                                                            "hidden",
+                                                                        textOverflow:
+                                                                            "ellipsis",
+                                                                        whiteSpace:
+                                                                            "nowrap",
+                                                                        width: "fit-content",
+                                                                        maxWidth:
+                                                                            "200px",
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        sections
+                                                                            .speaking
+                                                                            .audioId
+                                                                            ?.url
+                                                                    }
+                                                                </Typography>
+                                                            </a>
+                                                            <Button
+                                                                sx={{
+                                                                    bgcolor:
+                                                                        "red",
+                                                                    color: "white",
+                                                                    padding:
+                                                                        "0.5rem",
+                                                                    borderRadius:
+                                                                        "0.5rem",
+                                                                    ":hover": {
+                                                                        bgcolor:
+                                                                            "red",
+                                                                    },
+                                                                }}
+                                                                onClick={() =>
+                                                                    handleDeleteFile(
+                                                                        sections
+                                                                            .speaking
+                                                                            .audioId
+                                                                            ?.id,
+                                                                        "speaking"
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Delete />
+                                                            </Button>
+                                                        </span>
+                                                    </li>
+                                                ) : (
+                                                    <li
+                                                        style={{
+                                                            backgroundColor:
+                                                                "lightblue",
+                                                            padding: "0.5rem",
+                                                            borderRadius:
+                                                                "0.5rem",
+                                                            width: "100%",
+                                                        }}
+                                                    >
+                                                        {speakingFiles}
+                                                    </li>
                                                 )}
                                             </ul>
                                         </Box>
@@ -710,65 +1438,33 @@ const ExamCheck = () => {
                                     type="number"
                                     required
                                     margin="normal"
+                                    disabled
+                                    value={sections.speakingScore}
                                     label={`Overall`}
                                     inputProps={{
-                                        step: "1",
+                                        step: "0.5",
                                         min: "0",
-                                        max: "10",
+                                        max: "9",
                                     }}
-                                    sx={{ width: "100%" }}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    onChange={(e) =>
+                                        handleOverAllSectionsChange(
+                                            e,
+                                            "speakingScore"
+                                        )
+                                    }
+                                    sx={{
+                                        width: "100%",
+                                        "& .MuiInputBase-root.Mui-disabled": {
+                                            opacity: 1,
+                                        },
+                                    }}
                                 />
                             </Box>
                         </Box>
                     </Box>
-
-                    <Stack
-                        direction={{
-                            xs: "column",
-                            sm: "column",
-                            md: "row",
-                        }}
-                        alignItems="center"
-                        alignSelf={"center"}
-                    >
-                        <input
-                            accept="*/*"
-                            style={{ display: "none" }}
-                            id="feedback-file-upload"
-                            type="file"
-                            onChange={handleFeedbackUpload}
-                        />
-                        <label
-                            style={{ cursor: "pointer" }}
-                            htmlFor="feedback-file-upload"
-                        >
-                            <Button
-                                variant="contained"
-                                component="span"
-                                sx={{
-                                    bgcolor: "green",
-                                    color: "white",
-                                    padding: "0.5rem 2rem",
-                                    fontWeight: "bold",
-                                    ":hover": { bgcolor: "green" },
-                                    borderRadius: "0.6rem",
-                                }}
-                                startIcon={<CloudUploadIcon />}
-                            >
-                                Upload Feedback Folder
-                            </Button>
-                        </label>
-                        {feedbackFile && (
-                            <Typography variant="subtitle1" gutterBottom>
-                                {feedbackFile.name}
-                            </Typography>
-                        )}
-                        {userInfo.feedbackFileId && (
-                            <Typography variant="subtitle1" gutterBottom>
-                                You have already uploaded the feedback folder.
-                            </Typography>
-                        )}
-                    </Stack>
 
                     <Stack
                         direction="row"

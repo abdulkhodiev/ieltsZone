@@ -60,9 +60,9 @@ const ExamAccepted = () => {
     }
 
     const handleRowClick = (rowId, firstName, lastName) => {
-        // navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`, {
-        //     state: { firstName, lastName },
-        // });
+        navigate(`/admin/exams/${examId}/participants/accepted/${rowId}`, {
+            state: { firstName, lastName },
+        });
     };
 
     const handleSearch = (event) => {

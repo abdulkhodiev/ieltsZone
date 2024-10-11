@@ -141,8 +141,7 @@ const UserScoreCheck = () => {
                 </Box>
 
                 <Button
-                    disabled
-                    // disabled={userInfo.feedbackFileId === null}
+                    disabled={userInfo === null}
                     sx={{
                         borderRadius: "0.6rem",
                         padding: "0.6rem 1.5rem",
@@ -155,11 +154,11 @@ const UserScoreCheck = () => {
                         alignItems: "center",
                         gap: "1rem",
                     }}
-                    // onClick={() => {
-                    //     navigate(
-                    //         `/user/results/scores/${examRegistrationId}/feedback`
-                    //     );
-                    // }}
+                    onClick={() => {
+                        navigate(
+                            `/user/results/scores/${examRegistrationId}/feedback`
+                        );
+                    }}
                 >
                     Feedbacks
                 </Button>
