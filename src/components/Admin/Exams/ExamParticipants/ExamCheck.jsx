@@ -403,7 +403,7 @@ const ExamCheck = () => {
             setMessage("Submission successful!");
             getUserScore();
             setLoading(false);
-            // navigate(-1);
+            navigate(-1);
         } catch (error) {
             setError(error.response?.data?.detail || "An error occurred");
             setLoading(false);
