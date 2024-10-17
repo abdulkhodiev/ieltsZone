@@ -350,10 +350,10 @@ const ExamCheck = () => {
         setLoading(true);
         console.log(sections);
         const payload = {
-            listeningScore: sections.listeningScore,
-            readingScore: sections.readingScore,
-            writingScore: sections.writingScore,
-            speakingScore: sections.speakingScore,
+            listeningScore: sections.listeningScore || undefined,
+            readingScore: sections.readingScore || undefined,
+            writingScore: sections.writingScore || undefined,
+            speakingScore: sections.speakingScore || undefined,
 
             listening: {
                 id: sections.listening.id,

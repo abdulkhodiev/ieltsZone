@@ -21,12 +21,20 @@ const UserScoreCheck = () => {
         try {
             const res = await getExamResults(examRegistrationId);
             setUserInfo(res);
-            setSections({
-                listening: res.listeningScore || "",
-                reading: res.readingScore || "",
-                writing: res.writingScore || "",
-                speaking: res.speakingScore || "",
-            });
+
+            if (
+                res.listeningScore !== null &&
+                res.readingScore !== null &&
+                res.writingScore !== null &&
+                res.speakingScore !== null
+            ) {
+                setSections({
+                    listening: res.listeningScore,
+                    reading: res.readingScore,
+                    writing: res.writingScore,
+                    speaking: res.speakingScore,
+                });
+            }
         } catch (error) {
             console.error("Failed to fetch exam results:", error);
         }
@@ -36,20 +44,6 @@ const UserScoreCheck = () => {
         getUserScore();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examRegistrationId]);
-
-    // const id = userInfo.feedbackFileId;
-
-    // const fileUrl = `https://ieltszone.uz/api/v1/file-storage/download-file?id=${id}`;
-
-    // const handleDownload = (fileUrl) => {
-    //     const fileName = fileUrl.split("/").pop();
-    //     const aTag = document.createElement("a");
-    //     aTag.href = fileUrl;
-    //     aTag.setAttribute("download", fileName);
-    //     document.body.appendChild(aTag);
-    //     aTag.click();
-    //     aTag.remove();
-    // };
 
     const calculateBandScore = () => {
         const totalScore = Object.values(sections).reduce(
@@ -141,7 +135,12 @@ const UserScoreCheck = () => {
                 </Box>
 
                 <Button
-                    disabled={userInfo.listeningScore === null}
+                    disabled={
+                        userInfo.listeningScore === null ||
+                        userInfo.speakingScore === null ||
+                        userInfo.readingScore === null ||
+                        userInfo.writingScore === null
+                    }
                     sx={{
                         borderRadius: "0.6rem",
                         padding: "0.6rem 1.5rem",
