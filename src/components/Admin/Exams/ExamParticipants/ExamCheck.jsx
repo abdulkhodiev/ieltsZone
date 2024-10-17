@@ -237,7 +237,7 @@ const ExamCheck = () => {
                 const section4 = Number(sections.speaking.section4);
 
                 total = (section1 + section2 + section3 + section4) / 4;
-                return Math.round(total * 2) / 2;
+                return Math.floor(total * 2) / 2;
             }
         },
         [
@@ -394,7 +394,7 @@ const ExamCheck = () => {
                 audioId:
                     typeof sections.speaking.audioId === "number"
                         ? sections.speaking.audioId
-                        : sections.speaking.audioId.id,
+                        : sections.speaking.audioId?.id,
             },
         };
 
@@ -403,7 +403,6 @@ const ExamCheck = () => {
             setMessage("Submission successful!");
             getUserScore();
             setLoading(false);
-            navigate(-1);
         } catch (error) {
             setError(error.response?.data?.detail || "An error occurred");
             setLoading(false);
@@ -428,50 +427,50 @@ const ExamCheck = () => {
 
     return (
         <Grow in={true} style={{ transformOrigin: "0 0 0" }} timeout={500}>
-            <form action="" onSubmit={handleSubmit}>
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    m="auto"
-                    justifyContent="center"
-                    py={5}
-                    px={3}
-                    width={{ xs: "100%", md: "75%" }}
+            <Box
+                display="flex"
+                flexDirection="column"
+                m="auto"
+                justifyContent="center"
+                py={5}
+                px={3}
+                width={{ xs: "100%", md: "75%" }}
+            >
+                <Stack
+                    direction={{ xs: "column", md: "row" }}
+                    alignItems="center"
+                    justifyContent="space-between"
                 >
-                    <Stack
-                        direction={{ xs: "column", md: "row" }}
-                        alignItems="center"
-                        justifyContent="space-between"
+                    <Typography
+                        variant="h4"
+                        fontWeight="bold"
+                        mb={{ xs: 2, md: 4 }}
+                        color={colors.primary}
+                        textAlign="center"
                     >
-                        <Typography
-                            variant="h4"
-                            fontWeight="bold"
-                            mb={{ xs: 2, md: 4 }}
-                            color={colors.primary}
-                            textAlign="center"
-                        >
-                            {firstName} {lastName}
-                        </Typography>
-                        <Typography
-                            variant="h4"
-                            fontWeight="bold"
-                            mb={{ xs: 2, md: 4 }}
-                            color={colors.primary}
-                            textAlign="center"
-                        >
-                            {/* Band Score: {calculateBandScore()} */}
-                        </Typography>
-                    </Stack>
+                        {firstName} {lastName}
+                    </Typography>
+                    <Typography
+                        variant="h4"
+                        fontWeight="bold"
+                        mb={{ xs: 2, md: 4 }}
+                        color={colors.primary}
+                        textAlign="center"
+                    >
+                        {/* Band Score: {calculateBandScore()} */}
+                    </Typography>
+                </Stack>
 
-                    <Box
-                        display={"grid"}
-                        gridTemplateColumns={{
-                            xs: "repeat(1, 1fr)",
-                            sm: "repeat(1, 1fr)",
-                            md: "repeat(2, 1fr)",
-                        }}
-                        gap={{ xs: "2rem" }}
-                    >
+                <Box
+                    display={"grid"}
+                    gridTemplateColumns={{
+                        xs: "repeat(1, 1fr)",
+                        sm: "repeat(1, 1fr)",
+                        md: "repeat(2, 1fr)",
+                    }}
+                    gap={{ xs: "2rem" }}
+                >
+                    <form action="listening" onSubmit={handleSubmit}>
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
@@ -683,6 +682,10 @@ const ExamCheck = () => {
                                 borderTop={"1px solid black"}
                                 paddingX={"1rem"}
                                 py={0.5}
+                                display={"flex"}
+                                alignItems={"baseline"}
+                                gap={"1rem"}
+                                justifyContent={"space-between"}
                             >
                                 <TextField
                                     type="number"
@@ -708,13 +711,36 @@ const ExamCheck = () => {
                                     name="listening-overall"
                                     sx={{
                                         width: "100%",
-                                        // "& .MuiInputBase-root.Mui-disabled": {
-                                        //     opacity: 1,
-                                        // },
                                     }}
                                 />
+
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                        bgcolor: "gray",
+                                        padding: "1rem",
+                                        border: "none",
+                                    }}
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={loading}
+                                    type="submit"
+                                >
+                                    {loading && (
+                                        <CircularProgress
+                                            sx={{
+                                                color: "white",
+                                            }}
+                                        />
+                                    )}
+                                    Save
+                                </Button>
                             </Box>
                         </Box>
+                    </form>
+
+                    <form action="" onSubmit={handleSubmit}>
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
@@ -922,6 +948,10 @@ const ExamCheck = () => {
                                 borderTop={"1px solid black"}
                                 paddingX={"1rem"}
                                 py={0.5}
+                                display={"flex"}
+                                justifyContent={"space-between"}
+                                alignItems={"baseline"}
+                                gap={2}
                             >
                                 <TextField
                                     type="number"
@@ -952,8 +982,33 @@ const ExamCheck = () => {
                                         },
                                     }}
                                 />
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                        bgcolor: "gray",
+                                        padding: "1rem",
+                                        border: "none",
+                                    }}
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={loading}
+                                    type="submit"
+                                >
+                                    {loading && (
+                                        <CircularProgress
+                                            sx={{
+                                                color: "white",
+                                            }}
+                                        />
+                                    )}
+                                    Save
+                                </Button>
                             </Box>
                         </Box>
+                    </form>
+
+                    <form action="" onSubmit={handleSubmit}>
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
@@ -1212,6 +1267,10 @@ const ExamCheck = () => {
                                 borderTop={"1px solid black"}
                                 paddingX={"1rem"}
                                 py={0.5}
+                                display={"flex"}
+                                justifyContent={"space-between"}
+                                alignItems={"baseline"}
+                                gap={"1rem"}
                             >
                                 <TextField
                                     type="number"
@@ -1241,8 +1300,33 @@ const ExamCheck = () => {
                                         },
                                     }}
                                 />
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                        bgcolor: "gray",
+                                        padding: "1rem",
+                                        border: "none",
+                                    }}
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={loading}
+                                    type="submit"
+                                >
+                                    {loading && (
+                                        <CircularProgress
+                                            sx={{
+                                                color: "white",
+                                            }}
+                                        />
+                                    )}
+                                    Save
+                                </Button>
                             </Box>
                         </Box>
+                    </form>
+
+                    <form onSubmit={handleSubmit}>
                         <Box
                             display={"flex"}
                             flexDirection={"column"}
@@ -1281,7 +1365,7 @@ const ExamCheck = () => {
                                         inputProps={{
                                             step: "1",
                                             min: "0",
-                                            max: "10",
+                                            max: "9",
                                         }}
                                         onChange={(e) => {
                                             setSections((prev) => ({
@@ -1433,6 +1517,9 @@ const ExamCheck = () => {
                                 borderTop={"1px solid black"}
                                 paddingX={"1rem"}
                                 py={0.5}
+                                display={"flex"}
+                                gap={"1rem"}
+                                alignItems={"baseline"}
                             >
                                 <TextField
                                     type="number"
@@ -1462,76 +1549,71 @@ const ExamCheck = () => {
                                         },
                                     }}
                                 />
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                        bgcolor: "gray",
+                                        padding: "1rem",
+                                        border: "none",
+                                    }}
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={loading}
+                                    type="submit"
+                                >
+                                    {loading && (
+                                        <CircularProgress
+                                            sx={{
+                                                color: "white",
+                                            }}
+                                        />
+                                    )}
+                                    Save
+                                </Button>
                             </Box>
                         </Box>
-                    </Box>
-
-                    <Stack
-                        direction="row"
-                        justifyContent={"flex-end"}
-                        spacing={2}
-                        mt={4}
-                    >
-                        <Button
-                            variant="outlined"
-                            color="error"
-                            fullWidth
-                            onClick={handleCancel}
-                            sx={{
-                                bgcolor: "red",
-                                color: "white",
-                                padding: "0.5rem 2rem",
-                                fontWeight: "bold",
-                                ":hover": { bgcolor: "red" },
-                                borderRadius: "0.6rem",
-                            }}
-                        >
-                            Close
-                        </Button>
-
-                        <Button
-                            sx={{
-                                bgcolor: colors.primary,
-                                color: "white",
-                                padding: "0.5rem 2rem",
-                                fontWeight: "bold",
-                                ":hover": { bgcolor: colors.primary },
-                                borderRadius: "0.6rem",
-                                display: "flex",
-                                gap: "0.5rem",
-                            }}
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            disabled={loading}
-                            type="submit"
-                        >
-                            {loading && (
-                                <CircularProgress
-                                    sx={{
-                                        color: "white",
-                                    }}
-                                />
-                            )}
-                            Submit
-                        </Button>
-                    </Stack>
-
-                    <Snackbar
-                        autoHideDuration={3000}
-                        open={!!error}
-                        onClose={() => setError("")}
-                        message={error}
-                    />
-
-                    <Snackbar
-                        autoHideDuration={3000}
-                        open={!!message}
-                        onClose={() => setMessage("")}
-                        message={message}
-                    />
+                    </form>
                 </Box>
-            </form>
+
+                <Stack
+                    direction="row"
+                    justifyContent={"flex-end"}
+                    spacing={2}
+                    mt={4}
+                >
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        fullWidth
+                        onClick={handleCancel}
+                        sx={{
+                            bgcolor: "red",
+                            color: "white",
+                            padding: "0.5rem 2rem",
+                            fontWeight: "bold",
+                            ":hover": { bgcolor: "red" },
+                            borderRadius: "0.6rem",
+                        }}
+                    >
+                        Close
+                    </Button>
+                </Stack>
+
+                <Snackbar
+                    autoHideDuration={3000}
+                    open={!!error}
+                    onClose={() => setError("")}
+                    message={error}
+                />
+
+                <Snackbar
+                    autoHideDuration={3000}
+                    open={!!message}
+                    onClose={() => setMessage("")}
+                    message={message}
+                />
+            </Box>
         </Grow>
     );
 };

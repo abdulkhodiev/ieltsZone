@@ -465,7 +465,7 @@ const FeedbackFolder = () => {
                                             Score
                                         </Typography>
                                         <Typography variant="h6">
-                                            {sections.reading?.sectionTwo}/14
+                                            {sections.reading?.sectionTwo}/13
                                         </Typography>
                                     </Box>
                                     <Box>
