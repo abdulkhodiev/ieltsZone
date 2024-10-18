@@ -536,6 +536,7 @@ const ExamCheck = () => {
                                         Upload Files
                                         <input
                                             type="file"
+                                            accept="image/*"
                                             multiple
                                             hidden
                                             onChange={(e) =>
@@ -805,6 +806,7 @@ const ExamCheck = () => {
                                         <input
                                             type="file"
                                             multiple
+                                            accept="image/*"
                                             hidden
                                             onChange={(e) => {
                                                 handleFileChange(e, "reading");
@@ -1125,6 +1127,7 @@ const ExamCheck = () => {
                                             type="file"
                                             multiple
                                             hidden
+                                            accept="image/*"
                                             onChange={(e) => {
                                                 handleFileChange(e, "writing");
                                             }}
