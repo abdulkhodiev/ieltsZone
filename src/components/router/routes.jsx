@@ -12,11 +12,11 @@ import ExamCheck from "../Admin/Exams/ExamParticipants/ExamCheck";
 import ExamParticipants from "../Admin/Exams/ExamParticipants/ExamParticipants";
 import ExamParticipantsLayout from "../Admin/Exams/ExamParticipants/ExamParticipantsLayout";
 import PaymentCheck from "../Admin/Exams/ExamParticipants/PaymentCheck";
-import SectionCheck from "../Admin/Exams/ExamParticipants/SectionCheck";
 import Layout from "../Layout/Layout";
 import Main from "../Main/Main";
 import UserMain from "../User/UserMain";
 import ArchiveExams from "../Admin/ArchiveExams";
+import AdminFeedbackFolder from "../Admin/Exams/ExamParticipants/AdminFeedbackFolder";
 
 import ResultAnalysis from "../Admin/ResultAnalysis";
 import ForgetPassword from "../Main/ForgetPassword";
@@ -29,7 +29,6 @@ import UserExams from "../User/UserExams";
 import UserLayout from "../User/UserLayout";
 import UserResults from "../User/UserResults";
 import UserScoreCheck from "../User/UserScoreCheck";
-import UserSectionScore from "../User/UserSectionScore";
 import ResetInput from "../Main/resetPassword";
 import FeedbackFolder from "../User/FeedbackFolder";
 
@@ -110,8 +109,8 @@ export const router = createBrowserRouter([
                             },
                             { path: "accepted/:rowId", element: <ExamCheck /> },
                             {
-                                path: "accepted/:rowId/:section",
-                                element: <SectionCheck />,
+                                path: "accepted/:rowId/feedback",
+                                element: <AdminFeedbackFolder />,
                             },
                         ],
                     },

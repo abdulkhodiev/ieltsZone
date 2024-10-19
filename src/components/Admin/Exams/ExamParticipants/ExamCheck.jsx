@@ -718,7 +718,7 @@ const ExamCheck = () => {
                                 <Button
                                     sx={{
                                         width: "100%",
-                                        bgcolor: "gray",
+                                        bgcolor: "purple",
                                         padding: "1rem",
                                         border: "none",
                                     }}
@@ -987,7 +987,7 @@ const ExamCheck = () => {
                                 <Button
                                     sx={{
                                         width: "100%",
-                                        bgcolor: "gray",
+                                        bgcolor: "purple",
                                         padding: "1rem",
                                         border: "none",
                                     }}
@@ -1306,7 +1306,7 @@ const ExamCheck = () => {
                                 <Button
                                     sx={{
                                         width: "100%",
-                                        bgcolor: "gray",
+                                        bgcolor: "purple",
                                         padding: "1rem",
                                         border: "none",
                                     }}
@@ -1555,7 +1555,7 @@ const ExamCheck = () => {
                                 <Button
                                     sx={{
                                         width: "100%",
-                                        bgcolor: "gray",
+                                        bgcolor: "purple",
                                         padding: "1rem",
                                         border: "none",
                                     }}
@@ -1600,6 +1600,21 @@ const ExamCheck = () => {
                         }}
                     >
                         Close
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => navigate(`feedback`)}
+                        sx={{
+                            bgcolor: "#38003d",
+                            color: "white",
+                            padding: "0.5rem 2rem",
+                            fontWeight: "bold",
+                            ":hover": { bgcolor: "primary" },
+                            borderRadius: "0.6rem",
+                        }}
+                        fullWidth
+                    >
+                        Feedback
                     </Button>
                 </Stack>
 
