@@ -29,6 +29,7 @@ const ExamApplied = () => {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line
     }, [examId]);
 
     function statusColor(status) {
@@ -39,6 +40,8 @@ const ExamApplied = () => {
                 return "red";
             case "MARKED":
                 return "blue";
+            case "P_MARKED":
+                return "yellow";
             case "NEW":
                 return "orange";
             default:
@@ -150,7 +153,9 @@ const ExamApplied = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        {row.status}
+                                        {row.status === "P_MARKED"
+                                            ? "In Progress"
+                                            : row.status}
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -42,6 +42,7 @@ const ExamAccepted = () => {
 
     useEffect(() => {
         fetchAcceptedUsers();
+        // eslint-disable-next-line
     }, [examId]);
 
     function statusColor(status) {
@@ -52,6 +53,8 @@ const ExamAccepted = () => {
                 return "red";
             case "MARKED":
                 return "blue";
+            case "P_MARKED":
+                return "yellow";
             case "NEW":
                 return "orange";
             default:
@@ -180,7 +183,9 @@ const ExamAccepted = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        {row.status}
+                                        {row.status === "P_MARKED"
+                                            ? "In Progress"
+                                            : row.status}
                                     </TableCell>
                                 </TableRow>
                             ))}

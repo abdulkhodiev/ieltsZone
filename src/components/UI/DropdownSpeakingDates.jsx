@@ -3,6 +3,7 @@ import Option from "@mui/joy/Option";
 import dayjs from "dayjs";
 
 const DropdownSpeakingDates = ({
+    placeholder,
     availableSpeakingTimes,
     setSpeakingDateId,
 }) => {
@@ -15,10 +16,10 @@ const DropdownSpeakingDates = ({
     return (
         <Select
             sx={{
-                marginY: "1rem",
+                marginBottom: "1rem",
             }}
             onChange={handleChange}
-            placeholder="Select Speaking Time"
+            placeholder={placeholder || "Select Speaking Date "}
             required
         >
             {availableSpeakingTimes.map((time) => (

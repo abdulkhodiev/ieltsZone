@@ -5,16 +5,18 @@ import {
     Stack,
     Typography,
     Box,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
     useTheme,
     useMediaQuery,
     Grow,
-    FormLabel,
 } from "@mui/material";
+import {
+    Select,
+    Option,
+    FormControl,
+    FormLabel,
+    Input,
+    Textarea,
+} from "@mui/joy";
 import { colors } from "../../../../constants/colors";
 import {
     getAppliedUserPaymentCheck,
@@ -107,8 +109,10 @@ const PaymentCheck = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examId]);
 
-    const handleStatusChange = (event) => {
-        setStudentData({ ...studentData, status: event.target.value });
+    const handleStatusChange = (event, newValue) => {
+        if (newValue) {
+            setStudentData({ ...studentData, status: newValue });
+        }
     };
 
     const handleDetailsChange = (event) => {
@@ -120,6 +124,8 @@ const PaymentCheck = () => {
             await updatePaymentCheck(rowId, {
                 status: studentData.status,
                 message: studentData.message,
+                speakingDateId:
+                    speakingDateId === "" ? undefined : speakingDateId,
             });
             console.log("Payment check updated successfully.");
             navigate(`/admin/exams/${examId}/participants/applied`);
@@ -222,37 +228,41 @@ const PaymentCheck = () => {
                         </Typography>
 
                         <FormControl fullWidth>
-                            <FormLabel
-                                component="legend"
-                                sx={{ fontWeight: "bold" }}
-                            >
+                            <FormLabel sx={{ fontWeight: "bold" }}>
                                 Available Speaking Times
                             </FormLabel>
                             <DropdownSpeakingDates
+                                placeholder={dayjs(
+                                    studentData.speakingDate
+                                ).format("HH:mm | DD MMM YYYY")}
                                 setSpeakingDateId={setSpeakingDateId}
                                 availableSpeakingTimes={availableSpeakingTimes}
                             />
                         </FormControl>
 
-                        <FormControl fullWidth>
-                            <InputLabel id="status-label">Status</InputLabel>
+                        <FormControl>
+                            <FormLabel sx={{ fontWeight: "bold" }}>
+                                Status
+                            </FormLabel>
                             <Select
                                 required
-                                labelId="status-label"
-                                id="status"
-                                value={studentData.status}
-                                label="Status"
+                                defaultValue={studentData.status}
                                 onChange={handleStatusChange}
+                                placeholder={studentData.status}
                             >
-                                <MenuItem value="REJECTED">REJECTED</MenuItem>
-                                <MenuItem value="ACCEPTED">ACCEPTED</MenuItem>
+                                <Option value="REJECTED">REJECTED</Option>
+                                <Option value="ACCEPTED">ACCEPTED</Option>
                             </Select>
-                            <TextField
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel sx={{ fontWeight: "bold", mt: "1rem" }}>
+                                Details
+                            </FormLabel>
+                            <Textarea
                                 fullWidth
+                                minRows={3}
                                 required
-                                label="Details"
-                                multiline
-                                name="details"
                                 onChange={handleDetailsChange}
                                 margin="normal"
                                 value={studentData.message}
