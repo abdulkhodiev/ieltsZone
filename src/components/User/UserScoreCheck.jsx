@@ -3,6 +3,7 @@ import { Box, Stack, Card, Typography, Button, Grow } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
 import { getExamResults } from "../../utils/api/requests/exam-check-by-section";
+import SuggestionModal from "./_components/SuggestionModal";
 
 const UserScoreCheck = () => {
     const { examRegistrationId } = useParams();
@@ -67,6 +68,8 @@ const UserScoreCheck = () => {
                 gap={5}
                 width={{ xs: "100%", md: "max-content" }}
             >
+                <SuggestionModal />
+
                 <Stack
                     direction={{
                         xs: "column",

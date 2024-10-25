@@ -9,14 +9,7 @@ import {
     useMediaQuery,
     Grow,
 } from "@mui/material";
-import {
-    Select,
-    Option,
-    FormControl,
-    FormLabel,
-    Input,
-    Textarea,
-} from "@mui/joy";
+import { Select, Option, FormControl, FormLabel, Textarea } from "@mui/joy";
 import { colors } from "../../../../constants/colors";
 import {
     getAppliedUserPaymentCheck,

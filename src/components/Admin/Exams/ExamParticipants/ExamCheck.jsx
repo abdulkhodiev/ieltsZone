@@ -154,39 +154,43 @@ const ExamCheck = () => {
     }, []);
 
     const handleFileChange = async (event, sectionName) => {
-        const files = Array.from(event.target.files);
+        try {
+            const files = Array.from(event.target.files);
 
-        const res = await uploadMultipleFiles(files);
-
-        if (res) {
-            setSections((prevSections) => ({
-                ...prevSections,
-                [sectionName]: {
-                    ...prevSections[sectionName],
-                    files: [...prevSections[sectionName].files, ...res],
-                },
-            }));
-        }
-
-        if (sectionName === "listening") {
-            setListeningFiles((prevListeningFiles) => [
-                ...prevListeningFiles,
-                ...files,
-            ]);
-        } else if (sectionName === "reading") {
-            setReadingFiles((prevReadingFiles) => [
-                ...prevReadingFiles,
-                ...files,
-            ]);
-        } else if (sectionName === "writing") {
-            setWritingFiles((prevWritingFiles) => [
-                ...prevWritingFiles,
-                ...files,
-            ]);
+            setLoading(true);
+            const res = await uploadMultipleFiles(files);
+            if (res) {
+                setSections((prevSections) => ({
+                    ...prevSections,
+                    [sectionName]: {
+                        ...prevSections[sectionName],
+                        files: [...prevSections[sectionName].files, ...res],
+                    },
+                }));
+            }
+            if (sectionName === "listening") {
+                setListeningFiles((prevListeningFiles) => [
+                    ...prevListeningFiles,
+                    ...files,
+                ]);
+            } else if (sectionName === "reading") {
+                setReadingFiles((prevReadingFiles) => [
+                    ...prevReadingFiles,
+                    ...files,
+                ]);
+            } else if (sectionName === "writing") {
+                setWritingFiles((prevWritingFiles) => [
+                    ...prevWritingFiles,
+                    ...files,
+                ]);
+            }
+        } catch (error) {
+            console.error("Error uploading files:", error);
+            return;
+        } finally {
+            setLoading(false);
         }
     };
-
-    console.log(sections);
 
     const sectionScore = useCallback(
         (sectionName) => {
