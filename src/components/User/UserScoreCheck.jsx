@@ -82,8 +82,8 @@ const UserScoreCheck = () => {
                     userInfo.readingScore !== null &&
                     userInfo.writingScore !== null &&
                     userInfo.speakingScore !== null &&
-                    offer.isStudent &&
-                    offer.isRegistered && <SuggestionModal />} */}
+                    !offer.isStudent &&
+                    !offer.isRegistered && <SuggestionModal />} */}
 
                 <Stack
                     direction={{
