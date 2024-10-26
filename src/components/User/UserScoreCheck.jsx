@@ -78,12 +78,12 @@ const UserScoreCheck = () => {
                 gap={5}
                 width={{ xs: "100%", md: "max-content" }}
             >
-                {userInfo.listeningScore !== null &&
+                {/* {userInfo.listeningScore !== null &&
                     userInfo.readingScore !== null &&
                     userInfo.writingScore !== null &&
                     userInfo.speakingScore !== null &&
                     offer.isStudent &&
-                    offer.isRegistered && <SuggestionModal />}
+                    offer.isRegistered && <SuggestionModal />} */}
 
                 <Stack
                     direction={{
