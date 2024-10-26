@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Stack, Card, Typography, Button, Grow } from "@mui/material";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
 import { getExamResults } from "../../utils/api/requests/exam-check-by-section";
 import SuggestionModal from "./_components/SuggestionModal";
@@ -9,11 +9,17 @@ const UserScoreCheck = () => {
     const { examRegistrationId } = useParams();
 
     const [userInfo, setUserInfo] = useState({});
+
     const [sections, setSections] = useState({
         listening: "",
         reading: "",
         writing: "",
         speaking: "",
+    });
+
+    const [offer, setOffer] = useState({
+        isRegistered: false,
+        isStudent: false,
     });
 
     const navigate = useNavigate();
@@ -22,6 +28,10 @@ const UserScoreCheck = () => {
         try {
             const res = await getExamResults(examRegistrationId);
             setUserInfo(res);
+            setOffer({
+                isRegistered: res.isRegistered,
+                isStudent: res.isStudent,
+            });
 
             if (
                 res.listeningScore !== null &&
@@ -71,7 +81,9 @@ const UserScoreCheck = () => {
                 {userInfo.listeningScore !== null &&
                     userInfo.readingScore !== null &&
                     userInfo.writingScore !== null &&
-                    userInfo.speakingScore !== null && <SuggestionModal />}
+                    userInfo.speakingScore !== null &&
+                    offer.isStudent &&
+                    offer.isRegistered && <SuggestionModal />}
 
                 <Stack
                     direction={{
