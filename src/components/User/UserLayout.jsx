@@ -63,14 +63,14 @@ const UserLayout = () => {
         }
     }, []);
 
-    const fetchUserInfo = useCallback(async () => {
+    const fetchUserInfo = async () => {
         try {
             const res = await getMe();
             setUserInfo(res);
         } catch (error) {
             console.error("Error fetching user info:", error);
         }
-    });
+    };
 
     const LogOut = () => {
         Cookies.remove("token", { path: "/" });

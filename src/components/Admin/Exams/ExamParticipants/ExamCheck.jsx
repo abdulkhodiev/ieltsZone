@@ -55,10 +55,10 @@ const ExamCheck = () => {
     const { firstName, lastName } = location.state;
     const [userInfo, setUserInfo] = useState({});
     const [sections, setSections] = useState({
-        listeningScore: "",
-        readingScore: "",
-        writingScore: "",
-        speakingScore: "",
+        listeningScore: null,
+        readingScore: null,
+        writingScore: null,
+        speakingScore: null,
         listening: {
             section1: "",
             section2: "",
@@ -353,11 +353,51 @@ const ExamCheck = () => {
         event.preventDefault();
         setLoading(true);
         console.log(sections);
+
+        const areAllSectionsNull = (sections) =>
+            sections.every((section) => section === null);
+
+        const { listening, reading, writing, speaking } = sections;
+
         const payload = {
-            listeningScore: sections.listeningScore || undefined,
-            readingScore: sections.readingScore || undefined,
-            writingScore: sections.writingScore || undefined,
-            speakingScore: sections.speakingScore || undefined,
+            listeningScore: areAllSectionsNull([
+                listening.section1,
+                listening.section2,
+                listening.section3,
+                listening.section4,
+            ])
+                ? undefined
+                : sections.listeningScore,
+
+            readingScore: areAllSectionsNull([
+                reading.section1,
+                reading.section2,
+                reading.section3,
+            ])
+                ? undefined
+                : sections.readingScore,
+
+            writingScore: areAllSectionsNull([
+                writing.section1,
+                writing.section2,
+                writing.section3,
+                writing.section4,
+                writing.section5,
+                writing.section6,
+                writing.section7,
+                writing.section8,
+            ])
+                ? undefined
+                : sections.writingScore,
+
+            speakingScore: areAllSectionsNull([
+                speaking.section1,
+                speaking.section2,
+                speaking.section3,
+                speaking.section4,
+            ])
+                ? undefined
+                : sections.speakingScore,
 
             listening: {
                 id: sections.listening.id,
