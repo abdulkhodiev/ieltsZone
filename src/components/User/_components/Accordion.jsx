@@ -151,18 +151,27 @@ const Accordion = ({
                             style={{
                                 backgroundColor:
                                     status === "NEW"
-                                        ? "yellow"
+                                        ? "orange"
                                         : status === "REJECTED"
                                         ? "red"
                                         : status === "MARKED"
                                         ? "blue"
+                                        : status === "P_MARKED"
+                                        ? "yellow"
                                         : "green",
-                                padding: "0.2rem 0.5rem",
+                                padding: "0.1rem 0.5rem",
                                 borderRadius: "0.6rem",
-                                color: status === "NEW" ? "black" : "white",
+                                color:
+                                    status === "NEW" || status === "P_MARKED"
+                                        ? "black"
+                                        : "white",
                             }}
                         >
-                            {status}
+                            {status === "NEW"
+                                ? "Pending"
+                                : status === "P_MARKED"
+                                ? "In Progress"
+                                : status}
                         </span>
                     </h6>
 
