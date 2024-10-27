@@ -11,10 +11,10 @@ const UserScoreCheck = () => {
     const [userInfo, setUserInfo] = useState({});
 
     const [sections, setSections] = useState({
-        listening: "",
-        reading: "",
-        writing: "",
-        speaking: "",
+        listening: null,
+        reading: null,
+        writing: null,
+        speaking: null,
     });
 
     const [offer, setOffer] = useState({
@@ -146,7 +146,9 @@ const UserScoreCheck = () => {
                                     fontSize: "1.5rem",
                                 }}
                             >
-                                {sections[section] || "N/A"}
+                                {sections[section] === null
+                                    ? "N/A"
+                                    : sections[section]}
                             </Typography>
                         </Card>
                     ))}
