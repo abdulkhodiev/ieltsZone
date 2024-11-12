@@ -1429,7 +1429,7 @@ const FeedbackFolder = () => {
                                             Score
                                         </Typography>
                                         <Typography variant="h6">
-                                            {sections.listening?.sectionFour}/10
+                                            {sections.speaking?.sectionFour}/9
                                         </Typography>
                                     </Box>
                                     <Box>

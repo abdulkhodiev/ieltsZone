@@ -6,7 +6,6 @@ import Stack from "@mui/joy/Stack";
 import Typography from "@mui/joy/Typography";
 import { Close } from "@mui/icons-material";
 import { registerForLesson } from "../../../utils/api/requests/exam-check-by-section";
-import { set } from "date-fns";
 
 export default function SuggestionModal({ message, examRegistrationId }) {
     const [open, setOpen] = useState(false);
@@ -19,6 +18,8 @@ export default function SuggestionModal({ message, examRegistrationId }) {
     useEffect(() => {
         setTimeout(() => setOpen(true), 3000);
     }, []);
+
+    console.log(message);
 
     return (
         <React.Fragment>
@@ -33,12 +34,8 @@ export default function SuggestionModal({ message, examRegistrationId }) {
                 sx={{
                     bgcolor: "#FBFCFE",
                     p: 5,
-                    width: {
-                        xs: "90%",
-                        sm: "90%",
-                        md: "max-content",
-                        lg: "max-content",
-                    },
+                    width: "90%",
+                    maxWidth: "500px",
                     background: "rgba(255, 255, 255, 0.2)",
                     boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
                     backdropFilter: "blur(10px)",

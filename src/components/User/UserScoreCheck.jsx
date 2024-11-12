@@ -77,18 +77,6 @@ const UserScoreCheck = () => {
                 gap={5}
                 width={{ xs: "100%", md: "max-content" }}
             >
-                {userInfo.listeningScore !== null &&
-                    userInfo.readingScore !== null &&
-                    userInfo.writingScore !== null &&
-                    userInfo.speakingScore !== null &&
-                    !offer.isStudent &&
-                    !offer.isRegistered && (
-                        <SuggestionModal
-                            message={offerMap[calculateBandScore()]}
-                            examRegistrationId={examRegistrationId}
-                        />
-                    )}
-
                 <Stack
                     direction={{
                         xs: "column",
@@ -185,6 +173,17 @@ const UserScoreCheck = () => {
                 >
                     Feedbacks
                 </Button>
+                {userInfo.listeningScore !== null &&
+                    userInfo.readingScore !== null &&
+                    userInfo.writingScore !== null &&
+                    userInfo.speakingScore !== null &&
+                    !offer.isStudent &&
+                    !offer.isRegistered && (
+                        <SuggestionModal
+                            message={offerMap[calculateBandScore()]}
+                            examRegistrationId={examRegistrationId}
+                        />
+                    )}
             </Box>
         </Grow>
     );
