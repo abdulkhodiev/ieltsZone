@@ -86,4 +86,26 @@ const readingScoreMap = {
     0: 0,
 };
 
-export { listeningScoreMap, readingScoreMap };
+const offerMap = {
+    0: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    0.5: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    1: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    1.5: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    2: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    2.5: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    3: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    3.5: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    4: "Our Pre-Intermediate groups are designed to strengthen your foundation. The first lesson is completely FREE. Ready to give it a try?",
+    4.5: "Our Intermediate groups are perfect for you! The first lesson is absolutely FREE. Do you want to give it a try?",
+    5: "Our Intermediate groups are perfect for you! The first lesson is absolutely FREE. Do you want to give it a try?",
+    5.5: "You’re set for our IELTS Novice course! Dive into essential IELTS preparation with your first lesson FREE. Want to join?",
+    6: "Our IELTS Standard course will refine your strategies for a higher band. First lesson is FREE! Ready to start?",
+    6.5: "Our IELTS Standard course will refine your strategies for a higher band. First lesson is FREE! Ready to start?",
+    7: " The IELTS Expert course is a perfect fit to master advanced techniques. Your first lesson is FREE! Would you like to try?",
+    7.5: " The IELTS Expert course is a perfect fit to master advanced techniques. Your first lesson is FREE! Would you like to try?",
+    8: "Step into our IELTS Ultimate course and polish your skills for the top band. First lesson is FREE. Are you in?",
+    8.5: "Step into our IELTS Ultimate course and polish your skills for the top band. First lesson is FREE. Are you in?",
+    9: "Step into our IELTS Ultimate course and polish your skills for the top band. First lesson is FREE. Are you in?",
+};
+
+export { listeningScoreMap, readingScoreMap, offerMap };

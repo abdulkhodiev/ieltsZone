@@ -4,19 +4,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
 import { getExamResults } from "../../utils/api/requests/exam-check-by-section";
 import SuggestionModal from "./_components/SuggestionModal";
+import { offerMap } from "../../utils/calculators/calculators";
 
 const UserScoreCheck = () => {
     const { examRegistrationId } = useParams();
 
     const [userInfo, setUserInfo] = useState({});
-
     const [sections, setSections] = useState({
         listening: null,
         reading: null,
         writing: null,
         speaking: null,
     });
-
     const [offer, setOffer] = useState({
         isRegistered: false,
         isStudent: false,
@@ -78,12 +77,17 @@ const UserScoreCheck = () => {
                 gap={5}
                 width={{ xs: "100%", md: "max-content" }}
             >
-                {/* {userInfo.listeningScore !== null &&
+                {userInfo.listeningScore !== null &&
                     userInfo.readingScore !== null &&
                     userInfo.writingScore !== null &&
                     userInfo.speakingScore !== null &&
                     !offer.isStudent &&
-                    !offer.isRegistered && <SuggestionModal />} */}
+                    !offer.isRegistered && (
+                        <SuggestionModal
+                            message={offerMap[calculateBandScore()]}
+                            examRegistrationId={examRegistrationId}
+                        />
+                    )}
 
                 <Stack
                     direction={{

@@ -42,6 +42,18 @@ export const getFeedbackFolder = async (id) => {
     }
 };
 
+export const registerForLesson = async (id) => {
+    try {
+        const res = await $api.post(
+            "/course-registration?examRegistrationId=" + id
+        );
+        return res.data;
+    } catch (error) {
+        console.error("Error fetching applied users:", error);
+        throw error;
+    }
+};
+
 export const putSectionScores = async (id, data) => {
     try {
         const res = await $api.put(`/exam-result/${id}`, data);

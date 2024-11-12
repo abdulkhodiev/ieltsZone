@@ -4,9 +4,17 @@ import Snackbar from "@mui/joy/Snackbar";
 import Button from "@mui/joy/Button";
 import Stack from "@mui/joy/Stack";
 import Typography from "@mui/joy/Typography";
+import { Close } from "@mui/icons-material";
+import { registerForLesson } from "../../../utils/api/requests/exam-check-by-section";
+import { set } from "date-fns";
 
-export default function SuggestionModal() {
+export default function SuggestionModal({ message, examRegistrationId }) {
     const [open, setOpen] = useState(false);
+
+    const handleRegistration = async () => {
+        await registerForLesson(examRegistrationId);
+        setOpen(false);
+    };
 
     useEffect(() => {
         setTimeout(() => setOpen(true), 3000);
@@ -15,7 +23,6 @@ export default function SuggestionModal() {
     return (
         <React.Fragment>
             <Snackbar
-                autoHideDuration={10000}
                 variant="solid"
                 color="primary"
                 size="xl"
@@ -40,27 +47,34 @@ export default function SuggestionModal() {
                 }}
             >
                 <div>
-                    <Typography level="h3" fontWeight="lg">
-                        Hey, Congratulations 🎉
-                    </Typography>
-                    <Typography sx={{ mt: 1, mb: 2 }}>
-                        Are you sure, you want to leave this page without
-                        confirming your order?
-                    </Typography>
+                    <div>
+                        <Typography level="h3" fontWeight="lg">
+                            Hey, Congratulations 🎉
+                        </Typography>
+                        <button
+                            onClick={() => setOpen(false)}
+                            style={{
+                                position: "absolute",
+                                right: "1rem",
+                                top: "1rem",
+                                border: "none",
+                                background: "none",
+                                pointerEvents: "auto",
+                            }}
+                        >
+                            <Close />
+                        </button>
+                    </div>
+
+                    <Typography sx={{ mt: 1, mb: 2 }}>{message}</Typography>
                     <Stack direction="row" spacing={1}>
                         <Button
+                            onClick={handleRegistration}
+                            className="w-100"
                             variant="solid"
                             color="primary"
-                            onClick={() => setOpen(false)}
                         >
-                            Yes, Maybe later
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => setOpen(false)}
-                        >
-                            No, I want to stay
+                            Yes
                         </Button>
                     </Stack>
                 </div>
