@@ -7,7 +7,11 @@ import Typography from "@mui/joy/Typography";
 import { Close } from "@mui/icons-material";
 import { registerForLesson } from "../../../utils/api/requests/exam-check-by-section";
 
-export default function SuggestionModal({ message, examRegistrationId }) {
+export default function SuggestionModal({
+    message,
+    calculatedBandScore,
+    examRegistrationId,
+}) {
     const [open, setOpen] = useState(false);
 
     const handleRegistration = async () => {
@@ -44,8 +48,12 @@ export default function SuggestionModal({ message, examRegistrationId }) {
                 }}
             >
                 <div>
-                    <div>
-                        <Typography level="h3" fontWeight="lg">
+                    <div className="mb-4">
+                        <Typography
+                            level="h3"
+                            fontWeight="lg"
+                            sx={{ textWrap: "nowrap" }}
+                        >
                             Hey, Congratulations 🎉
                         </Typography>
                         <button
@@ -63,7 +71,12 @@ export default function SuggestionModal({ message, examRegistrationId }) {
                         </button>
                     </div>
 
-                    <Typography sx={{ mt: 1, mb: 2 }}>{message}</Typography>
+                    <Typography sx={{ mb: 4 }}>
+                        <span style={{ fontWeight: "bold" }}>
+                            Scored {calculatedBandScore}?{" "}
+                        </span>{" "}
+                        {message}
+                    </Typography>
                     <Stack direction="row" spacing={1}>
                         <Button
                             onClick={handleRegistration}

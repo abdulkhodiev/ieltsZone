@@ -171,7 +171,7 @@ const UserScoreCheck = () => {
                         );
                     }}
                 >
-                    Feedbacks
+                    Feedback
                 </Button>
                 {userInfo.listeningScore !== null &&
                     userInfo.readingScore !== null &&
@@ -181,6 +181,7 @@ const UserScoreCheck = () => {
                     !offer.isRegistered && (
                         <SuggestionModal
                             message={offerMap[calculateBandScore()]}
+                            calculatedBandScore={calculateBandScore()}
                             examRegistrationId={examRegistrationId}
                         />
                     )}

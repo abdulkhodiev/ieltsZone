@@ -35,7 +35,7 @@ import Cookie from "js-cookie";
 const UserApply = () => {
     const { examId } = useParams();
     const navigate = useNavigate();
-    const [isStudent, setIsStudent] = useState(false);
+    const [isStudent, setIsStudent] = useState(null);
     const [speakingDateId, setSpeakingDateId] = useState("");
     const [paymentPictureId, setPaymentPictureId] = useState(0);
     const [availableSpeakingTimes, setAvailableSpeakingTimes] = useState([]);
@@ -45,6 +45,7 @@ const UserApply = () => {
     const [countdown, setCountdown] = useState(900);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const fetchExamInfo = async () => {
         try {
@@ -114,6 +115,7 @@ const UserApply = () => {
         setOpen(true);
 
         return () => clearInterval(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleCancel = () => {
@@ -129,6 +131,11 @@ const UserApply = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setErrorMessage(null);
+        if (!paymentPictureId) {
+            setErrorMessage("Payment image is required");
+            return;
+        }
         try {
             const userData = {
                 isStudent,
@@ -141,6 +148,7 @@ const UserApply = () => {
             navigate("/user/exams");
         } catch (error) {
             console.error("Error submitting application:", error);
+            setErrorMessage("Are you an IELTS ZONE student?");
         }
     };
 
@@ -152,9 +160,10 @@ const UserApply = () => {
         try {
             const paymentRes = await paymentPic(file);
             setPaymentPictureId(paymentRes);
-            setLoading(false);
         } catch (error) {
             console.error("Error uploading payment image:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -210,6 +219,44 @@ const UserApply = () => {
                     {formatTime()}
                 </Typography>
             </Stack>
+            <Stack
+                className={`${errorMessage ? "d-block" : "d-none"}`}
+                sx={{
+                    padding: {
+                        xs: "0.3rem",
+                        sm: "0.3rem",
+                    },
+                    margin: {
+                        xs: "0.5rem",
+                        sm: "1rem",
+                        md: "1.5rem",
+                    },
+                    width: {
+                        xs: "100%",
+                        sm: "80%",
+                        md: "50%",
+                    },
+
+                    boxShadow: "0 0 5px 0 rgba(0, 0, 0, 0.2)",
+                    backgroundColor: "white",
+                    borderRadius: "1rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Typography
+                    variant="body1"
+                    gutterBottom
+                    fontWeight="medium"
+                    color="red"
+                    textAlign="center"
+                    className="mb-0"
+                >
+                    {errorMessage}
+                </Typography>
+            </Stack>
 
             <Paper
                 marginY={{
@@ -246,7 +293,7 @@ const UserApply = () => {
                 <form onSubmit={handleSubmit}>
                     <Grid item xs={12} sx={{ textAlign: "center", mb: 3 }}>
                         <h6 className="mb-3  fw-bold">
-                            Are you an IELTSZONE student?
+                            Are you an IELTS ZONE student?
                         </h6>
                         <div className="d-flex flex-row justify-content-center items-center gap-2 w-full">
                             <Button
@@ -254,8 +301,14 @@ const UserApply = () => {
                                     width: "100%",
                                     border: `2px solid ${colors.primary}`,
                                     borderRadius: "0.5rem",
-                                    bgcolor: isStudent ? colors.primary : null,
-                                    color: isStudent ? "white" : colors.primary,
+                                    bgcolor:
+                                        isStudent && isStudent !== null
+                                            ? colors.primary
+                                            : "white",
+                                    color:
+                                        isStudent && isStudent !== null
+                                            ? "white"
+                                            : colors.primary,
                                     fontWeight: "bold",
                                     ":hover": {
                                         bgcolor: colors.primary,
@@ -272,8 +325,14 @@ const UserApply = () => {
                                     width: "100%",
                                     border: `2px solid ${colors.primary}`,
                                     borderRadius: "0.5rem",
-                                    bgcolor: isStudent ? null : colors.primary,
-                                    color: isStudent ? colors.primary : "white",
+                                    bgcolor:
+                                        !isStudent && isStudent !== null
+                                            ? colors.primary
+                                            : "white",
+                                    color:
+                                        !isStudent && isStudent !== null
+                                            ? "white"
+                                            : colors.primary,
                                     fontWeight: "bold",
                                     ":hover": {
                                         bgcolor: colors.primary,
@@ -332,7 +391,6 @@ const UserApply = () => {
                                 style={{ display: "none" }}
                                 id="payment-screenshot"
                                 type="file"
-                                required
                                 onChange={handlePaymentScreenshotChange}
                             />
                             <label htmlFor="payment-screenshot">
