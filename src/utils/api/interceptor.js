@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export const API_URL = "https://mock.ieltszone.uz/api/v1/";
+export const API_URL = "https://old-mock.ieltszone.uz/api/v1/";
 
 const options = {
     baseURL: API_URL,
